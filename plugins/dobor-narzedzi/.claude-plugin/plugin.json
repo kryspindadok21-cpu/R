@@ -1,0 +1,29 @@
+{
+  "name": "dobor-narzedzi",
+  "displayName": "Dobór narzędzi i dyscyplina limitów",
+  "version": "1.0.0",
+  "description": "Dobiera umiejętności pod konkretne zadanie w ramach budżetu tokenów i narzuca zasady pracy, które nie przepalają limitu.",
+  "author": {
+    "name": "kryspindadok21-cpu"
+  },
+  "license": "MIT",
+  "keywords": ["skills", "routing", "limity", "kontekst", "seo"],
+  "userConfig": {
+    "budzet_tokenow": {
+      "type": "number",
+      "title": "Budżet tokenów na umiejętności",
+      "description": "Ile tokenów wolno wydać na wczytanie SKILL.md w jednym zadaniu.",
+      "default": 12000,
+      "min": 1000,
+      "max": 60000
+    },
+    "max_umiejetnosci": {
+      "type": "number",
+      "title": "Maksymalna liczba umiejętności",
+      "description": "Ile umiejętności wolno wczytać naraz.",
+      "default": 4,
+      "min": 1,
+      "max": 10
+    }
+  }
+}

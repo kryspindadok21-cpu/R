@@ -27,7 +27,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 8. CLI `seo init` | ukończone, uruchomione na zywo | `1a6275c` |
 | 9. CLI `gsc sync` / `verify` / `smoke` | ukończone | `4ac959f` |
 | 10. Raport HTML | ukończone, obejrzany na danych demo | `befc95b` |
-| 11. CI + reguły zależności + skan sekretów | ukończone, 168 testów zielonych w trzech strefach | `713d6f0` |
+| 11. CI + reguły zależności + skan sekretów | ukończone, 160 testów zielonych w trzech strefach | `713d6f0` |
 | 12. Odbiór na prawdziwych danych | **czeka na właściciela** — wymaga klucza konta serwisowego i Zadania 0 | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone), potem pierwsze zadanie ze stanem innym niż „ukończone".

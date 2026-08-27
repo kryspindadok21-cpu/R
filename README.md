@@ -84,6 +84,29 @@ po hasłach to dane, które Google celowo ukrywa dla ochrony prywatności wyszuk
 Reguł pilnuje `pnpm check:deps`: czyste silniki nie mogą importować wejścia/wyjścia,
 bazy dotyka wyłącznie `packages/db`, do sieci wychodzi wyłącznie `packages/providers`.
 
+## Dobór umiejętności pod zadanie (plugin `dobor-narzedzi`)
+
+Repozytorium wiezie piętnaście umiejętności w `.agents/skills` — wczytanie
+wszystkich to około 48 tys. tokenów samych `SKILL.md`. Plugin dobiera te, które
+pasują do konkretnego zadania, i pilnuje budżetu:
+
+```bash
+pnpm skills:index                                   # przelicz katalog i koszty
+pnpm skills:pick "test się wywala, znajdź przyczynę" # dobierz umiejętności
+```
+
+W Claude Code, z katalogu nadrzędnego wobec repozytorium:
+
+```
+/plugin marketplace add ./R
+/plugin install dobor-narzedzi@seo-platform
+/skille chcę dodać dane strukturalne do stron produktów
+```
+
+Szczegóły działania i ograniczenia: `plugins/dobor-narzedzi/README.md`.
+Katalog `skills-index.json` jest wersjonowany, a test pilnuje, żeby nie
+rozjechał się z zawartością `.agents/skills`.
+
 ## Bramka jakości
 
 ```bash

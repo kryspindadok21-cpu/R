@@ -8,12 +8,15 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "typecheck": "turbo run typecheck",
+    "typecheck": "turbo run typecheck && pnpm typecheck:scripts",
     "test": "vitest run",
     "test:tz-east": "TZ=Pacific/Kiritimati vitest run",
     "test:tz-west": "TZ=Pacific/Niue vitest run",
     "check:deps": "tsx scripts/check-deps.ts",
-    "check:secrets": "tsx scripts/check-secrets.ts"
+    "check:secrets": "tsx scripts/check-secrets.ts",
+    "skills:index": "tsx scripts/skills-index.ts",
+    "skills:pick": "tsx scripts/skills-pick.ts",
+    "typecheck:scripts": "tsc -p scripts/tsconfig.json"
   },
   "devDependencies": {
     "@types/node": "^26.4.0",

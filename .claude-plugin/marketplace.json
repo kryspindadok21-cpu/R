@@ -1,0 +1,16 @@
+{
+  "name": "seo-platform",
+  "owner": {
+    "name": "kryspindadok21-cpu"
+  },
+  "plugins": [
+    {
+      "name": "dobor-narzedzi",
+      "source": "./plugins/dobor-narzedzi",
+      "displayName": "Dobór narzędzi i dyscyplina limitów",
+      "description": "Dobiera umiejętności pod konkretne zadanie w ramach budżetu tokenów i narzuca zasady pracy, które nie przepalają limitu.",
+      "keywords": ["skills", "routing", "limity", "kontekst", "seo"],
+      "category": "productivity"
+    }
+  ]
+}
