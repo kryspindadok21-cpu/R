@@ -21,6 +21,7 @@ Co zmieniamy względem pierwotnego planu:
 | Liczniki darmowych limitów | Faza 4 | **Faza 0** | Doklejenie ich po fakcie to przerabianie kilkunastu miejsc w kodzie. |
 | Rozdział danych między klientami | etykieta w tabeli | **etykieta + jedno miejsce, które tego pilnuje** | Sama etykieta nie chroni. Pierwszy klient zobaczyłby dane drugiego. |
 | Kolejka zadań | „w pamięci" | **decyzja: trwała** (implementacja w Fazie 1) | Kolejka w pamięci gubi całą pracę przy zamknięciu programu. |
+| Warstwa widoczna dla człowieka | dopiero Faza 5 (panel Next.js) | **statyczny raport HTML od Fazy 0**, projekt ekranów nadal w Fazie 5 | Bez tego przez 8 tygodni nie da się na oczy sprawdzić, czy dane są sensowne. Raport jest też testem, czy model danych umie odpowiedzieć na pytania produktu. |
 | Kamień milowy | „liczby muszą się zgadzać" | **konkretny, sprawdzalny warunek** (§8) | Liczby w oryginalnym brzmieniu nie mają prawa się zgodzić — Google celowo ukrywa część danych. |
 
 Czas: **3 dni roboty są realne po tych cięciach.** Bez nich zakres wychodził na 1,5–2 tygodnie.
@@ -51,6 +52,7 @@ Faza 0 **nie** produkuje wartości dla użytkownika końcowego. Produkuje fundam
 - JSON przechowujemy jako `text`, walidowany schematem `zod` przy odczycie.
 - Enumy jako `text` + `CHECK`.
 - Znaczniki czasu jako `integer` (epoch w milisekundach, UTC) — z wyjątkiem opisanym w D3.
+- **Migracje pisane ręcznie jako pliki `.sql`**, uruchamiane własnym migratorem; Drizzle służy wyłącznie jako typowany builder zapytań. Powód: `drizzle-kit` generuje migracje zależne od swojej wersji, `ALTER TABLE` w SQLite jest ubogi, a jawny SQL jest jedyną formą, którą da się przenieść na Postgres przez przeczytanie, a nie przez regenerację.
 
 **Ścieżka do Postgresa (gdy pojawi się pierwszy płacący klient):** nie przez „ten sam schemat", tylko przez port. `packages/db` eksponuje wyłącznie funkcje domenowe (nie surowe zapytania), więc podmiana dialektu dotyka jednego pakietu. Identyfikatory ULID (D6) sprawiają, że przeniesienie danych z lokalnych baz do wspólnej jest skryptem, a nie archeologią.
 
@@ -162,6 +164,34 @@ export interface SiteMetricsProvider {
 
 Dodatkowo Część 6 przewidywała trzy kształty, do których Google Search Console — jedyne źródło Fazy 0 — nie pasuje. `SiteMetricsProvider` jest tym brakującym czwartym kształtem.
 
+### D10 — Warstwa prezentacji: raport teraz, projekt ekranów później
+
+**Decyzja:** od Fazy 0 istnieje polecenie `seo report`, które generuje **jeden samowystarczalny plik HTML** z lokalnej bazy i otwiera go w przeglądarce przez `file://`. Bez serwera, bez frameworka, bez hostingu, bez żadnej zależności ładowanej z sieci — style i wykresy (inline SVG) są w tym samym pliku.
+
+**Projekt ekranów, menu, marki i kolorów nie powstaje teraz.** Powstaje po Fazie 4, na prawdziwych danych z własnej strony.
+
+**Uzasadnienie:**
+
+1. *Weryfikowalność przez właściciela produktu.* Fazy 0–4 to narzędzie wiersza poleceń. Bez raportu jedyną formą kontaktu z wynikami przez osiem tygodni jest tekst w terminalu i zapytania SQL. Właściciel produktu, który nie programuje, nie ma wtedy żadnego sposobu, żeby stwierdzić, czy dane są sensowne — a to on jest jedyną osobą znającą własną stronę na tyle, żeby wyłapać, że liczby kłamią.
+
+2. *Raport jest testem modelu danych.* Jeżeli napisanie zapytania pod kafelek raportu jest niemożliwe albo nienaturalne, to jest błąd schematu bazy. Chcemy go znaleźć w pierwszym tygodniu, a nie w dwudziestym, gdy schemat ma czterdzieści tabel i historię danych.
+
+3. *Nie jest wyrzucany.* Zapytania napisane pod raport stają się warstwą zapytań panelu w Fazie 5. Wyrzucona zostaje wyłącznie warstwa HTML, czyli najtańsza część.
+
+**Dlaczego nie odwrotnie (projekt ekranów przed kodem):** panel zaprojektowany na wymyślonych danych jest ładnym panelem pokazującym niewłaściwe rzeczy. Wygląd nie jest sprzężony z bazą — kolory i układ menu można zmienić w każdej chwili bez dotykania silnika. Sprzężone z bazą jest **to, na jakie pytania produkt umie odpowiedzieć**, a to rozstrzyga schemat z §6, nie makieta.
+
+**Zakres raportu w Fazie 0 — pięć odpowiedzi, nic więcej:**
+
+| # | Pytanie | Źródło |
+|---|---|---|
+| 1 | Ile kliknięć i wyświetleń dziennie przez ostatnie 90 dni? | `gsc_daily` |
+| 2 | Które hasła dają kliknięcia? (50 najlepszych) | `gsc_query_daily` |
+| 3 | **Ile danych Google przede mną ukrył?** | `gsc_reconciliation` |
+| 4 | Czy dane uzgodniły się z Search Console? | `gsc_reconciliation`, AC3 |
+| 5 | Ile zużyliśmy darmowych limitów? | `provider_call` |
+
+Pozycja 3 nie jest ozdobnikiem: żadne z dwudziestu przeanalizowanych narzędzi nie pokazuje klientowi, jaka część jego własnych danych jest przed nim zasłonięta. To pierwsza rzecz, którą ta platforma robi uczciwiej od rynku, i kosztuje jedno zapytanie.
+
 ---
 
 ## 4. Zakres
@@ -172,9 +202,10 @@ Dodatkowo Część 6 przewidywała trzy kształty, do których Google Search Con
 2. `packages/core` — normalizacja URL i `NORMALIZER_VERSION`, generator ULID, `TenantScope`, typy bazowe.
 3. `packages/db` — schemat SQLite w Drizzle, migracje, warstwa repozytoriów w całości scoped per tenant.
 4. `packages/providers` — `SiteMetricsProvider`, adapter `gsc`, rejestr `provider_call`.
-5. `apps/cli` — polecenia `seo init`, `seo gsc sync`, `seo gsc verify`, `seo gsc smoke`.
-6. `fixtures/gsc/` — nagrane odpowiedzi API + skrypt ich odświeżania.
-7. CI — typecheck, testy, reguły zależności, skan na wyciek klucza serwisowego.
+5. `apps/cli` — polecenia `seo init`, `seo gsc sync`, `seo gsc verify`, `seo gsc smoke`, `seo report`.
+6. `packages/report` — generator statycznego HTML (D10), bez zależności ładowanych z sieci.
+7. `fixtures/gsc/` — nagrane odpowiedzi API + skrypt ich odświeżania.
+8. CI — typecheck, testy, reguły zależności, skan na wyciek klucza serwisowego.
 
 **Poza Fazą 0 (jawnie, żeby nie było sporu przy planie):**
 
@@ -183,6 +214,7 @@ Dodatkowo Część 6 przewidywała trzy kształty, do których Google Search Con
 - URL Inspection API (indeksacja) — Faza 1
 - `SerpProvider`, `KeywordProvider`, `LlmEngineProvider` — Fazy 2–3
 - Postgres, Neon, praca wielu klientów naraz, OAuth, płatności, panel — Faza 5
+- projekt ekranów, menu, marka, kolory, framework frontendowy — Faza 5, na prawdziwych danych (D10)
 
 ---
 
@@ -195,13 +227,14 @@ packages/
   core/                   url.ts, ids.ts, tenant.ts, types.ts
   db/                     schema.ts, migrations/, repo/*.ts  (jedyne wejście do bazy)
   providers/              site-metrics.ts, ledger.ts, adapters/gsc/
+  report/                 generator statycznego HTML
 fixtures/
   gsc/                    nagrane odpowiedzi API
 docs/
   superpowers/specs/      ten dokument
 ```
 
-Zależności: `apps/cli` → `db`, `providers`, `core`. `providers` → `core`. `db` → `core`. `core` → nic.
+Zależności: `apps/cli` → `db`, `providers`, `report`, `core`. `providers` → `core`. `db` → `core`. `report` → `core`. `core` → nic.
 
 ---
 
@@ -263,6 +296,8 @@ Faza 0 jest zakończona wtedy i tylko wtedy, gdy wszystkie poniższe przechodzą
 **AC8 — reguły zależności.** Żaden pakiet poza `packages/db` nie importuje `drizzle-orm` ani `better-sqlite3`. Żaden poza `packages/providers` nie importuje klienta HTTP ani SDK Google. Naruszenie zatrzymuje CI.
 
 **AC9 — testy działają bez sieci.** Cały pakiet testów adaptera GSC przechodzi offline, na nagranych odpowiedziach. Jedyne prawdziwe wywołanie API to `seo gsc smoke`, uruchamiane ręcznie, poza CI.
+
+**AC11 — raport.** `seo report` tworzy jeden plik HTML odpowiadający na pięć pytań z D10. Plik otwarty przez `file://` renderuje się poprawnie **z odciętą siecią** — test CI sprawdza, że w wyniku nie ma odwołań do `http://`, `https://` ani `//` w atrybutach `src` i `href`.
 
 **AC10 — klucz nie wycieka.** Test CI sprawdza, że w drzewie git nie ma pliku o kształcie klucza konta serwisowego.
 
