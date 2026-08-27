@@ -1,0 +1,1107 @@
+<title>Dossier Auto-SEO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --bg:#F1F2F5;
+  --surface:#FFFFFF;
+  --surface-2:#F7F8FA;
+  --ink:#14181F;
+  --ink-soft:#3A4450;
+  --muted:#657081;
+  --line:#DBDFE6;
+  --line-soft:#E8EBF0;
+  --accent:#8A2846;
+  --accent-soft:#F5E8ED;
+  --signal:#0C6B6B;
+  --signal-soft:#E3F1F1;
+  --warn:#8F5209;
+  --warn-soft:#FBF0DF;
+  --shadow:0 1px 2px rgba(20,24,31,.05), 0 8px 24px -12px rgba(20,24,31,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1015;
+    --surface:#161A21;
+    --surface-2:#1B2029;
+    --ink:#E7EBF1;
+    --ink-soft:#BFC7D3;
+    --muted:#8892A1;
+    --line:#282F3A;
+    --line-soft:#20262F;
+    --accent:#E4728C;
+    --accent-soft:#2A171E;
+    --signal:#48BDB9;
+    --signal-soft:#12262A;
+    --warn:#DCA45C;
+    --warn-soft:#241C10;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1015;
+  --surface:#161A21;
+  --surface-2:#1B2029;
+  --ink:#E7EBF1;
+  --ink-soft:#BFC7D3;
+  --muted:#8892A1;
+  --line:#282F3A;
+  --line-soft:#20262F;
+  --accent:#E4728C;
+  --accent-soft:#2A171E;
+  --signal:#48BDB9;
+  --signal-soft:#12262A;
+  --warn:#DCA45C;
+  --warn-soft:#241C10;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  max-width:1240px;
+  margin:0 auto;
+  padding:0 24px 96px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0;
+}
+@media (min-width:1080px){
+  .shell{grid-template-columns:220px minmax(0,1fr);gap:56px;padding-right:40px;}
+}
+
+/* ---------- nav ---------- */
+.nav{
+  display:none;
+}
+@media (min-width:1080px){
+  .nav{
+    display:block;
+    position:sticky;
+    top:0;
+    align-self:start;
+    max-height:100vh;
+    overflow-y:auto;
+    padding:104px 0 40px;
+  }
+}
+.nav-label{
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 14px;
+}
+.nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px;}
+.nav a{
+  display:flex;
+  gap:10px;
+  padding:7px 10px 7px 0;
+  color:var(--ink-soft);
+  text-decoration:none;
+  font-size:13.5px;
+  line-height:1.4;
+  border-left:2px solid transparent;
+  padding-left:12px;
+  transition:color .15s, border-color .15s;
+}
+.nav a:hover{color:var(--accent);border-left-color:var(--accent);}
+.nav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px;}
+.nav a .n{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:11px;
+  color:var(--muted);
+  padding-top:2px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- masthead ---------- */
+.masthead{padding:76px 0 0;}
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 22px;
+}
+.kicker::before{
+  content:"";
+  width:22px;
+  height:1px;
+  background:var(--accent);
+}
+h1{
+  font-family:"Newsreader", Georgia, serif;
+  font-weight:600;
+  font-size:clamp(2.4rem, 5.5vw, 3.9rem);
+  line-height:1.06;
+  letter-spacing:-.02em;
+  margin:0 0 24px;
+  text-wrap:balance;
+  max-width:16ch;
+}
+.standfirst{
+  font-family:"Newsreader", Georgia, serif;
+  font-size:clamp(1.12rem,2.1vw,1.35rem);
+  line-height:1.55;
+  color:var(--ink-soft);
+  max-width:56ch;
+  margin:0 0 40px;
+}
+.standfirst em{color:var(--accent);font-style:italic;}
+
+/* headline stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-radius:3px;
+  overflow:hidden;
+  margin:0 0 20px;
+}
+.stat{background:var(--surface);padding:20px 20px 22px;}
+.stat .v{
+  font-family:"Newsreader", Georgia, serif;
+  font-size:2.15rem;
+  line-height:1;
+  font-weight:600;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+  display:block;
+  margin-bottom:8px;
+}
+.stat .k{
+  font-size:12.5px;
+  line-height:1.4;
+  color:var(--muted);
+}
+.stat.hl .v{color:var(--accent);}
+
+/* ---------- sections ---------- */
+main{padding-top:8px;}
+section{padding:56px 0 0;scroll-margin-top:24px;}
+.sec-head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin:0 0 8px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+.sec-num{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:11px;
+  letter-spacing:.12em;
+  color:var(--muted);
+  text-transform:uppercase;
+  white-space:nowrap;
+  padding-top:4px;
+}
+h2{
+  font-family:"Newsreader", Georgia, serif;
+  font-weight:600;
+  font-size:clamp(1.6rem,3vw,2.15rem);
+  line-height:1.18;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+h3{
+  font-family:"IBM Plex Sans", sans-serif;
+  font-weight:600;
+  font-size:1.05rem;
+  line-height:1.35;
+  letter-spacing:-.005em;
+  margin:34px 0 12px;
+  text-wrap:balance;
+}
+h4{
+  font-family:"IBM Plex Mono", monospace;
+  font-weight:500;
+  font-size:11px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:28px 0 12px;
+}
+p{margin:0 0 16px;max-width:68ch;color:var(--ink-soft);}
+p.lead{color:var(--ink);font-size:1.02rem;}
+strong{color:var(--ink);font-weight:600;}
+a{color:var(--accent);}
+code{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.86em;
+  background:var(--surface-2);
+  border:1px solid var(--line-soft);
+  padding:1px 5px;
+  border-radius:3px;
+  color:var(--ink);
+}
+ul{margin:0 0 16px;padding-left:20px;max-width:68ch;color:var(--ink-soft);}
+li{margin-bottom:7px;}
+li::marker{color:var(--muted);}
+
+/* ---------- verdict block ---------- */
+.verdict{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:3px solid var(--accent);
+  border-radius:3px;
+  padding:24px 26px;
+  margin:26px 0;
+  box-shadow:var(--shadow);
+}
+.verdict h3{margin-top:0;}
+.verdict p:last-child{margin-bottom:0;}
+
+.note{
+  border-left:2px solid var(--signal);
+  background:var(--signal-soft);
+  padding:16px 20px;
+  border-radius:0 3px 3px 0;
+  margin:22px 0;
+}
+.note p{margin-bottom:0;max-width:64ch;}
+.note p + p{margin-top:12px;}
+
+.warn-box{
+  border-left:2px solid var(--warn);
+  background:var(--warn-soft);
+  padding:16px 20px;
+  border-radius:0 3px 3px 0;
+  margin:22px 0;
+}
+.warn-box p{margin-bottom:0;max-width:64ch;}
+.warn-box .wt{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:10.5px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--warn);
+  display:block;
+  margin-bottom:8px;
+  font-weight:500;
+}
+
+/* ---------- tool cards ---------- */
+.cat{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:38px 0 16px;
+}
+.cat-name{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:11px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--accent);
+  white-space:nowrap;
+}
+.cat-rule{flex:1;height:1px;background:var(--line);}
+
+.tools{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:14px;
+}
+.tool{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:18px 18px 16px;
+}
+.tool-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.tool-name{
+  font-family:"Newsreader", Georgia, serif;
+  font-size:1.13rem;
+  font-weight:600;
+  letter-spacing:-.01em;
+  color:var(--ink);
+}
+.tool-price{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:10.5px;
+  color:var(--muted);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.tool dl{margin:0;display:flex;flex-direction:column;gap:9px;}
+.tool dt{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:10px;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:2px;
+}
+.tool dd{margin:0;font-size:13.6px;line-height:1.5;color:var(--ink-soft);}
+.tool dd b{color:var(--ink);font-weight:600;}
+.star{color:var(--accent);}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:3px;background:var(--surface);}
+table{border-collapse:collapse;width:100%;font-size:13.8px;min-width:480px;}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+thead th{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:10px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:500;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none;}
+td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;}
+th.num{text-align:right;}
+tfoot td{
+  font-weight:600;
+  color:var(--ink);
+  background:var(--surface-2);
+  border-top:1px solid var(--line);
+}
+.pill{
+  display:inline-block;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:10px;
+  letter-spacing:.06em;
+  padding:2px 7px;
+  border-radius:2px;
+  white-space:nowrap;
+  text-transform:uppercase;
+}
+.pill.auto{background:var(--signal-soft);color:var(--signal);}
+.pill.ok{background:var(--accent-soft);color:var(--accent);}
+.pill.stop{background:var(--warn-soft);color:var(--warn);}
+.free{color:var(--signal);font-weight:600;}
+
+/* ---------- code ---------- */
+pre{
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:16px 18px;
+  overflow-x:auto;
+  margin:18px 0;
+  font-size:13px;
+  line-height:1.65;
+}
+pre code{background:none;border:none;padding:0;font-size:inherit;color:var(--ink-soft);}
+.cmt{color:var(--muted);}
+
+/* ---------- phases ---------- */
+.phases{display:flex;flex-direction:column;gap:0;margin:24px 0;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface);}
+.phase{display:grid;grid-template-columns:74px 1fr;gap:0;border-bottom:1px solid var(--line-soft);}
+.phase:last-child{border-bottom:none;}
+.phase-n{
+  background:var(--surface-2);
+  border-right:1px solid var(--line-soft);
+  padding:18px 12px;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  color:var(--muted);
+  text-align:center;
+  text-transform:uppercase;
+}
+.phase-n b{display:block;font-size:1.5rem;color:var(--accent);letter-spacing:-.02em;margin-bottom:2px;font-weight:500;}
+.phase-b{padding:18px 20px;}
+.phase-b h4{margin:0 0 6px;color:var(--ink);font-family:"IBM Plex Sans",sans-serif;font-size:14.5px;letter-spacing:0;text-transform:none;font-weight:600;}
+.phase-b p{margin:0;font-size:13.8px;max-width:62ch;}
+.phase-b .ms{
+  display:block;
+  margin-top:9px;
+  font-size:12.8px;
+  color:var(--signal);
+  font-weight:500;
+}
+
+/* ---------- layers list ---------- */
+.layer{
+  border-top:1px solid var(--line-soft);
+  padding:14px 0;
+  display:grid;
+  grid-template-columns:26px 1fr;
+  gap:14px;
+}
+.layer:first-of-type{border-top:1px solid var(--line);}
+.layer-k{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:12px;
+  color:var(--accent);
+  padding-top:1px;
+}
+.layer-b h4{margin:0 0 5px;color:var(--ink);font-family:"IBM Plex Sans",sans-serif;font-size:14px;letter-spacing:0;text-transform:none;font-weight:600;}
+.layer-b p{margin:0;font-size:13.4px;max-width:70ch;}
+
+footer{
+  margin-top:72px;
+  padding-top:22px;
+  border-top:1px solid var(--line);
+  font-size:12.6px;
+  color:var(--muted);
+  max-width:68ch;
+}
+footer a{color:var(--muted);}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;animation:none !important;}
+}
+</style>
+
+<div class="shell">
+  <nav class="nav" aria-label="Spis treści">
+    <p class="nav-label">Spis treści</p>
+    <ol>
+      <li><a href="#teza"><span class="n">00</span> Teza</a></li>
+      <li><a href="#narzedzia"><span class="n">01</span> Analiza 20 narzędzi</a></li>
+      <li><a href="#ile"><span class="n">02</span> Ile funkcji</a></li>
+      <li><a href="#skille"><span class="n">03</span> Który skill pack</a></li>
+      <li><a href="#darmowe"><span class="n">04</span> Stack za zero zł</a></li>
+      <li><a href="#architektura"><span class="n">05</span> Architektura</a></li>
+      <li><a href="#fazy"><span class="n">06</span> Fazy budowy</a></li>
+      <li><a href="#ostrzezenia"><span class="n">07</span> Ostrzeżenia</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <p class="kicker">Analiza rynku &amp; plan budowy</p>
+      <h1>20 narzędzi, 110 funkcji, jedna luka</h1>
+      <p class="standfirst">Przeanalizowałem dwadzieścia najpopularniejszych narzędzi SEO i GEO pod kątem tego, <em>jak działa każda funkcja</em>. Rynek dzieli się na te, które mierzą, i te, które wykonują. Prawie nikt nie zamyka pętli — i to jest miejsce, w które wchodzimy.</p>
+
+      <div class="stats">
+        <div class="stat"><span class="v">110</span><span class="k">funkcji atomowych w 9 warstwach, po rozbiciu całego rynku</span></div>
+        <div class="stat hl"><span class="v">36</span><span class="k">funkcji w MVP, które realnie zamyka pętlę</span></div>
+        <div class="stat"><span class="v">87</span><span class="k">funkcji w wersji bijącej każde pojedyncze narzędzie</span></div>
+        <div class="stat"><span class="v">0&nbsp;zł</span><span class="k">koszt startowy — cały stack na darmowych źródłach</span></div>
+      </div>
+    </header>
+
+    <section id="teza">
+      <div class="sec-head"><span class="sec-num">00</span><h2>Teza</h2></div>
+      <p class="lead">Ahrefs, Semrush, Profound, Peec i Otterly <strong>mierzą</strong> — mówią ci, co jest źle. BabyLoveGrowth, SEObot, AirOps i Okara <strong>wykonują</strong> — piszą i publikują. Żadne z tej dwudziestki nie robi rzeczy trzeciej i najważniejszej: nie sprawdza, <strong>czy to, co zrobiło, faktycznie zadziałało</strong>.</p>
+
+      <div class="verdict">
+        <h3>Pętla, której nikt nie zamyka</h3>
+        <p>Wykryj lukę → wygeneruj → opublikuj → <strong>zmierz efekt względem grupy kontrolnej</strong> → zaktualizuj model tego, co działa na tej konkretnej stronie.</p>
+        <p>Ostatnie dwa kroki to cała przewaga. Narzędzie, które po dwóch miesiącach wie, że „na tej stronie linkowanie wewnętrzne daje wyniki, a odświeżanie treści nie", to inny produkt niż takie, które w kółko odgrywa ten sam scenariusz.</p>
+      </div>
+
+      <p>Liczba funkcji sama w sobie nie jest przewagą — to warstwa H z rozbicia poniżej (siedem funkcji: scoring okazji, task board, scheduler, framework eksperymentów, pomiar zwrotny, governor budżetu, policy engine). Żadne z przeanalizowanych narzędzi nie ma jej kompletu.</p>
+    </section>
+
+    <section id="narzedzia">
+      <div class="sec-head"><span class="sec-num">01</span><h2>Jak działa każde z dwudziestu narzędzi</h2></div>
+      <p>Nie „co reklamują", tylko mechanizm pod spodem — bo to on decyduje, co da się odtworzyć za darmo, a czego nie.</p>
+
+      <div class="cat"><span class="cat-name">A · Suity danych</span><span class="cat-rule"></span></div>
+      <div class="tools">
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Ahrefs</span><span class="tool-price">od $129/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Własny crawler <b>AhrefsBot</b> — drugi największy po Googlebocie — buduje graf linków. DR/UR to logarytmiczna funkcja PageRank na tym grafie.</dd></div>
+            <div><dt>Wyróżnik</dt><dd><b>Traffic Potential</b> zamiast samego wolumenu: realne kliknięcia po odjęciu tego, co zjadają SERP features. Content Gap na <b>10 konkurentów</b> naraz.</dd></div>
+            <div><dt>Słabość</dt><dd>Rank tracker odświeża tygodniowo; dzienny tylko w płatnym dodatku.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Semrush</span><span class="tool-price">od $140/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Dane klikstreamowe kupowane od dostawców przeglądarek. <b>Visibility Score</b> = suma pozycji ważona krzywą CTR.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Position Tracking <b>codziennie</b>, z granulacją do poziomu miasta. Site Audit: ~140 checków z wagami → <b>Site Health %</b>.</dd></div>
+            <div><dt>GEO</dt><dd>AI Visibility Toolkit: $189/mc za 100 promptów, $989 za 1000. Dodatek do suity, nie rdzeń.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Moz Pro</span><span class="tool-price">od $99/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd><b>Domain Authority</b> to model ML przewidujący ranking, nie pomiar. Priority Score łączy wolumen × trudność × CTR × twoje realne szanse.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Spam Score jako sygnał ryzyka profilu linków.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">SE Ranking</span><span class="tool-price">od $65/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Tańszy odpowiednik Semrusha z własnym trackerem widoczności AI.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Mocny white-label — projektowany pod agencje obsługujące wielu klientów.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Majestic</span><span class="tool-price">od $50/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd><b>Trust Flow / Citation Flow</b> — dwuwymiarowa metryka jakości. Sam stosunek TF do CF wykrywa spam lepiej niż pojedyncza liczba.</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="cat"><span class="cat-name">B · Crawlery techniczne</span><span class="cat-rule"></span></div>
+      <div class="tools">
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Screaming Frog</span><span class="tool-price">£199/rok</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Wielowątkowy crawler desktopowy. Headless Chromium robi <b>diff między surowym HTML a wyrenderowanym DOM</b> — pokazuje dokładnie, co znika bez JS.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Custom extraction: XPath, CSS, regex — do 100 ekstraktorów naraz. Wykrywa orphany przez różnicę zbiorów crawl ∪ sitemap ∪ GSC.</dd></div>
+            <div><dt>Do odtworzenia</dt><dd class="free">W całości za darmo. To jest crawler, nie indeks.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Sitebulb</span><span class="tool-price">od $45/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd><b>300+ checków</b> z priorytetyzacją i wyjaśnieniem „dlaczego to ważne". Evergreen Chromium.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Wizualizacja architektury jako graf force-directed. „Hints" zamiast surowych błędów — to różnica w użyteczności, nie w danych.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Lumar / Botify</span><span class="tool-price">enterprise</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Łączą crawl + logi serwera + GSC + analytics w jeden model. Skala: miliony URL-i.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Botify <b>Activation</b> — wypycha strony do indeksacji przez API, zamiast czekać na Googlebota.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">ContentKing / Ryte</span><span class="tool-price">od $59/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Monitoring <b>ciągły</b>, nie batchowy crawl. Wykrywa zmianę na stronie w minutach.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Alert o regresji — ktoś wrzucił noindex na produkcję i dowiadujesz się dziś, nie za miesiąc.</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="cat"><span class="cat-name">C · Optymalizacja treści (NLP)</span><span class="cat-rule"></span></div>
+      <p>Wszystkie cztery robią dokładnie to samo pod spodem: pobierają top 10–30 wyników, ekstrahują termy, budują model „co musi zawierać strona, żeby rankować" i skorują twój draft na żywo. <span class="free">To jest w 100% odtwarzalne za darmo</span> — nie ma tu żadnego zastrzeżonego indeksu, tylko algorytm.</p>
+      <div class="tools">
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Surfer SEO</span><span class="tool-price">od $99/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Content Editor z żywym wynikiem 0–100. Sugeruje termy NLP <b>z częstotliwością</b> — ile razy użyć, nie tylko czy.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Content Planner klastruje frazy w topical map przed pisaniem.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Clearscope</span><span class="tool-price">od $189/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Ocena <b>A++ do F</b> na podstawie semantycznego pokrycia tematu względem top-rankujących.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Świadomie ogranicza liczbę sygnałów. Najczystszy sygnał, najmniej gamifikacji — i to jest cała ich przewaga.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">MarketMuse</span><span class="tool-price">od $99/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Nie TF-IDF, tylko <b>własne topic modeling</b>. Personalized Difficulty liczy twoją szansę, nie ogólną trudność.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Content Inventory klasyfikuje <b>każdą</b> stronę domeny: zostaw / odśwież / scal / usuń.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Frase</span><span class="tool-price">od $45/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Pełny przepływ research → brief → draft → optymalizacja w jednym miejscu.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Automatyczne briefy prosto z SERP-a, najtańszy w kategorii.</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="cat"><span class="cat-name">D · Automatyzacja AI-SEO (wykonawcze)</span><span class="cat-rule"></span></div>
+      <div class="tools">
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name"><span class="star">★</span> BabyLoveGrowth</span><span class="tool-price">od $99/mc</span></div>
+          <dl>
+            <div><dt>Onboarding</dt><dd>Z samego URL-a analizuje branżę, konkurencję i grupę docelową.</dd></div>
+            <div><dt>Treść</dt><dd>Kalendarz klastrowany po SERP-ach. <b>1 artykuł dziennie, do 30/mc, 20+ języków</b> — każdy z cytowaniami, linkowaniem wewnętrznym, infografikami i JSON-LD.</dd></div>
+            <div><dt>Linki</dt><dd>Automatyczna sieć wymiany <b>4000+ partnerów</b>, linki kontekstowe w pełnych artykułach.</dd></div>
+            <div><dt>GEO</dt><dd>Cytowania marki w ChatGPT, Perplexity, Claude i Gemini + które prompty je wywołują.</dd></div>
+            <div><dt>Publikacja</dt><dd>Natywnie: WordPress, Webflow, Shopify, Wix, Ghost, Duda, BigCommerce + webhook.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">SEObot</span><span class="tool-price">od $19/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Autonomiczny agent dla founderów: research → strategia → long-form → linkowanie → obrazy → cytowania → publikacja.</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Nastawiony na programmatic SEO — wysokowolumenowe long-taile.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">AirOps</span><span class="tool-price">enterprise</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Platforma workflow CMS-agnostyczna. Routing zadań przez Asana, ClickUp, Slack; gating publikacji.</dd></div>
+            <div><dt>Wyróżnik</dt><dd><b>Bulk refresh setek URL-i naraz</b> — naprawa linków, fact-checking, aktualizacja pozycjonowania w jednej operacji.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">SEOmatic</span><span class="tool-price">od $149/mc</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Szablon + dane strukturalne → masowa publikacja stron (miasta, porównania, glosariusze).</dd></div>
+            <div><dt>Wyróżnik</dt><dd>Task board agenta: <b>needs-you / in-flight / measuring / done</b>. Jedyni, którzy mają kolumnę „measuring".</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name"><span class="star">★</span> Okara</span><span class="tool-price">$129/mc flat</span></div>
+          <dl>
+            <div><dt>Mechanizm</dt><dd>Najbliżej naszej wizji: monitoring <b>i</b> egzekucja w jednym, płaska cena.</dd></div>
+            <div><dt>Agenci</dt><dd>Writer (artykuły „answer-first" pod przegrywane prompty), Reddit (odpowiedzi w wątkach rekomendacyjnych), SEO/coding (2 fixy techniczne dziennie).</dd></div>
+            <div><dt>Czego brak</dt><dd>Pomiaru zwrotnego. Publikuje, ale nie dowodzi efektu.</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="cat"><span class="cat-name">E · GEO — widoczność w AI</span><span class="cat-rule"></span></div>
+      <div class="tools">
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Profound</span><span class="tool-price">$99–399+/mc</span></div>
+          <dl>
+            <div><dt>Pozycja</dt><dd>Lider: $155M zebrane, wycena $1&nbsp;mld, klienci z Fortune 500.</dd></div>
+            <div><dt>Wyróżnik</dt><dd><b>Realne wolumeny promptów — 1,5 mld</b> posegmentowanych po intencji. Tego nie ma nikt inny i tego nie da się odtworzyć.</dd></div>
+            <div><dt>Funkcje</dt><dd>Query explosion (jak jedno pytanie rozpada się na wiele), <b>Agent Analytics</b> — przyloty crawlerów AI na twoją stronę. Do 9 silników.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Peec AI</span><span class="tool-price">od $95/mc</span></div>
+          <dl>
+            <div><dt>Pozycja</dt><dd>Najszybciej rosnący challenger: $29M zebrane, $4M ARR w 10 miesięcy.</dd></div>
+            <div><dt>Wyróżnik</dt><dd><b>Fan-out query identification</b> — ujawnia podzapytania, które model odpala pod spodem. Actions view klastruje cytowane źródła na owned/earned i skoruje luki po wielkości.</dd></div>
+            <div><dt>Metoda</dt><dd>Scraping interfejsu konsumenckiego, nie API. Nielimitowane miejsca w zespole.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Otterly.AI</span><span class="tool-price">od $29/mc</span></div>
+          <dl>
+            <div><dt>Pozycja</dt><dd>Najtańsze wejście w kategorię. Gartner Cool Vendor.</dd></div>
+            <div><dt>Wyróżnik</dt><dd><b>GEO audit na 25+ czynnikach on-page</b> z konkretnymi zaleceniami — bardziej wykonalne niż u droższych. 50+ krajów, konektor Looker Studio.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">AthenaHQ</span><span class="tool-price">free / $295/mc</span></div>
+          <dl>
+            <div><dt>Wyróżnik</dt><dd><b>9 modeli już w podstawowym płatnym planie</b> — Claude, Copilot, Grok włącznie. Natywna integracja GA4 i GSC.</dd></div>
+            <div><dt>Ambicja</dt><dd>Próba atrybucji przychodu przez korelację ruchu. Zbudowane przez byłych inżynierów Google Search i DeepMind.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Scrunch / Sitecore</span><span class="tool-price">od $250/mc</span></div>
+          <dl>
+            <div><dt>Wyróżnik</dt><dd><b>AI Delivery layer</b> — formatuje treść pod konsumpcję przez modele. Agent Traffic śledzi przyloty botów.</dd></div>
+            <div><dt>Dla kogo</dt><dd>White-label multi-brand. Po przejęciu priorytety siedzą wewnątrz większej platformy.</dd></div>
+          </dl>
+        </article>
+
+        <article class="tool">
+          <div class="tool-top"><span class="tool-name">Promptwatch</span><span class="tool-price">od $95/mc</span></div>
+          <dl>
+            <div><dt>Wyróżnik</dt><dd><b>Analiza logów crawlerów w każdym planie</b>, nie tylko enterprise. Sześć modeli, tracking do poziomu miasta na wyższych planach.</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section id="ile">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Ile funkcji musi mieć naprawdę dobre auto-SEO</h2></div>
+      <p>Rozbiłem cały rynek na funkcje atomowe. Wyszło <strong>110 w dziewięciu warstwach</strong>. Ale nie buduje się 110 naraz — oto uczciwy podział.</p>
+
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>Warstwa</th><th class="num">Razem</th><th class="num">MVP</th><th class="num">v1.0</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>A · Discovery i research</td><td class="num">15</td><td class="num">6</td><td class="num">12</td></tr>
+            <tr><td>B · Crawl techniczny i audyt</td><td class="num">19</td><td class="num">8</td><td class="num">15</td></tr>
+            <tr><td>C · Content intelligence</td><td class="num">18</td><td class="num">5</td><td class="num">13</td></tr>
+            <tr><td>D · GEO i widoczność w AI</td><td class="num">14</td><td class="num">4</td><td class="num">12</td></tr>
+            <tr><td>E · Rank i performance</td><td class="num">9</td><td class="num">3</td><td class="num">7</td></tr>
+            <tr><td>F · Off-page i autorytet</td><td class="num">7</td><td class="num">0</td><td class="num">4</td></tr>
+            <tr><td>G · Egzekucja i automatyzacja</td><td class="num">13</td><td class="num">5</td><td class="num">11</td></tr>
+            <tr><td>H · Warstwa agentowa <span class="star">★</span></td><td class="num">7</td><td class="num">4</td><td class="num">7</td></tr>
+            <tr><td>I · Reporting i multi-tenancy</td><td class="num">8</td><td class="num">1</td><td class="num">6</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Razem</td><td class="num">110</td><td class="num">36</td><td class="num">87</td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <h3>Odpowiedź wprost</h3>
+        <p><strong>36 funkcji</strong> — MVP, które realnie działa i zamyka pętlę. Cztery do sześciu tygodni.</p>
+        <p><strong>87 funkcji</strong> — wersja bijąca każde pojedyncze narzędzie z tej dwudziestki. Sześć do dziewięciu miesięcy.</p>
+        <p><strong>110 funkcji</strong> — pełna platforma klasy enterprise. Roadmapa na dwa, trzy lata.</p>
+      </div>
+
+      <h3>Co siedzi w każdej warstwie</h3>
+      <div class="layer">
+        <div class="layer-k">A</div>
+        <div class="layer-b"><h4>Discovery i research — 15</h4><p>Ekspansja seedów, wolumen i trend, difficulty, klasyfikacja intencji, traffic potential, snapshot SERP z features, klastrowanie po overlapie SERP, mapa encji, content gap, wykrywanie konkurentów, mining pytań, ekspansja lokalna, sezonowość, discovery promptów GEO, detekcja fan-out.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">B</div>
+        <div class="layer-b"><h4>Crawl techniczny i audyt — 19</h4><p>Silnik crawlera z renderowaniem JS, robots i sitemapy, statusy i łańcuchy przekierowań, canonical, hreflang, paginacja, indeksowalność i orphany, duplikaty, metadane, walidacja schema, Core Web Vitals, parity mobile, graf linków wewnętrznych, logi Googlebota, <strong>analityka crawlerów AI</strong>, głębokość architektury, custom extraction, diff surowy↔wyrenderowany, crawl budget, detekcja regresji.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">C</div>
+        <div class="layer-b"><h4>Content intelligence — 18</h4><p>Reverse-engineering SERP, ekstrakcja termów, ocena treści, briefy, outline'y, inwentaryzacja z werdyktem, detekcja decay, decyzja odśwież-czy-nowa, kanibalizacja, czytelność, audyt E-E-A-T, <strong>detekcja AI-slopu</strong>, wielojęzyczność, obrazy i alt, sugestie linków wewnętrznych, cytowania, JSON-LD per typ strony, <strong>optymalizacja chunków pod retrieval LLM</strong>.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">D</div>
+        <div class="layer-b"><h4>GEO i widoczność w AI — 14</h4><p>Zarządzanie promptami, runner multi-engine, detekcja wzmianki i pozycji w odpowiedzi, share of voice, sentyment, ekstrakcja cytowanych źródeł, klasyfikacja owned/earned/competitor, luki promptowe, GEO audit on-page, llms.txt, spójność encji, powierzchnie third-party, tracking AI Overviews, <strong>warstwa statystyczna z przedziałami ufności</strong>.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">E</div>
+        <div class="layer-b"><h4>Rank i performance — 9</h4><p>Rank tracker dzienny z granulacją miejską, visibility score, ownership SERP features, GSC, GA4, forecasting, monitoring konkurencji, kanibalizacja z danych GSC, <strong>atrybucja ruchu z LLM-ów</strong>.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">F</div>
+        <div class="layer-b"><h4>Off-page i autorytet — 7</h4><p>Indeks linków, monitoring new/lost, toksyczność, link gap, prospecting i outreach, monitoring wzmianek, sculpting autorytetu wewnętrznego. <em>Jedyna warstwa, gdzie płatne realnie wygrywają.</em></p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">G</div>
+        <div class="layer-b"><h4>Egzekucja i automatyzacja — 13</h4><p>Kalendarz treści, pipeline artykułu, strony programatyczne, bulk refresh, adaptery CMS, <strong>publikacja przez PR do repo</strong>, aplikowanie linków, deploy schema, PR-y z fixami technicznymi, auto-sitemap, mapa przekierowań, workflow akceptacji, rollback.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">H</div>
+        <div class="layer-b"><h4>Warstwa agentowa — 7 <span class="star">★ tu jest przewaga</span></h4><p>Scoring i priorytetyzacja okazji, task board z kolumną „measuring", autonomiczny scheduler, framework eksperymentów, <strong>pętla zwrotna atrybucji</strong>, governor budżetu, policy engine decydujący, co agent może zrobić bez pytania.</p></div>
+      </div>
+      <div class="layer">
+        <div class="layer-k">I</div>
+        <div class="layer-b"><h4>Reporting i multi-tenancy — 8</h4><p>Dashboard, raporty cykliczne, white-label multi-brand, konektor BI, alerty, API i webhooki, role i uprawnienia, portal klienta.</p></div>
+      </div>
+    </section>
+
+    <section id="skille">
+      <div class="sec-head"><span class="sec-num">03</span><h2>Który skill pack — odpowiedź</h2></div>
+      <p class="lead">Pytałeś, czy skill packi są lepsze od plugin packów i który jest najlepszy. <strong>To nie jest konkurencja.</strong> Plugin to kontener, który może zawierać skille, komendy, serwery MCP, agentów i hooki. Skill to pojedyncza instrukcja proceduralna. Plugin pack to opakowane skille plus dodatki. Pytanie nie brzmi „skille czy pluginy", tylko <em>która konkretna kolekcja</em>.</p>
+
+      <p>Przejrzałem ekosystem: skills.sh, tonsofskills.com (471 pluginów, 3069 skilli), superpowers-marketplace i Twój własny katalog. Dla tego projektu wygrywa <strong>kombinacja trzech warstw</strong>, nie jeden pack.</p>
+
+      <div class="verdict">
+        <h3>Warstwa 1 · Domena — <code>coreyhaines31/marketingskills</code></h3>
+        <p><strong>To jest ten pack, o który pytasz.</strong> 45,8 tys. gwiazdek, licencja MIT, 48 skilli, całkowicie za darmo. Zawiera dokładnie to, co budujemy:</p>
+        <ul>
+          <li><code>seo-audit</code> — 195 tys. instalacji, najpopularniejszy skill SEO w całym ekosystemie</li>
+          <li><code>ai-seo</code> — AEO, GEO i LLMO, czyli cała nasza warstwa D</li>
+          <li><code>programmatic-seo</code> — 124 tys. instalacji, generowanie stron z szablonów</li>
+          <li><code>schema</code>, <code>site-architecture</code>, <code>content-strategy</code>, <code>competitors</code></li>
+          <li><code>analytics</code> i <code>attribution</code> — pomiar i zwrot z inwestycji</li>
+        </ul>
+        <pre><code>npx skills add coreyhaines31/marketingskills
+
+<span class="cmt"># albo wybiórczo, tylko to, czego potrzebujesz:</span>
+npx skills add coreyhaines31/marketingskills \
+  --skill seo-audit ai-seo programmatic-seo schema</code></pre>
+      </div>
+
+      <h3>Warstwa 2 · Metodyka — <code>obra/superpowers</code></h3>
+      <p>Ponad 170 tys. gwiazdek, najbardziej rozbudowany ekosystem pluginów Claude Code. Nie daje wiedzy SEO — daje <strong>dyscyplinę budowania</strong>: <code>/brainstorm</code> → <code>/write-plan</code> → <code>/execute-plan</code>, wymuszony TDD, dispatch subagentów, wstrzykiwanie kontekstu na starcie sesji. Przy projekcie tej wielkości, budowanym przez wiele sesji, to realnie ratuje przed chaosem.</p>
+      <pre><code>/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace</code></pre>
+      <p>Zastrzeżenie: wymusza pełny proces, więc przy drobnych poprawkach bywa uciążliwy.</p>
+
+      <h3>Warstwa 3 · Twój katalog</h3>
+      <p>Masz w tej chwili <strong>zero włączonych pluginów</strong>. W katalogu <code>knowledge-work-plugins</code> czekają cztery istotne:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Plugin</th><th>Co daje</th><th>Kiedy</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>searchfit-seo</code></td>
+              <td>11 skilli i 6 komend: audyt, technical, on-page, klastrowanie fraz, briefy, linkowanie, schema, AI visibility, tłumaczenia</td>
+              <td><span class="pill ok">od razu</span> nie wymaga zewnętrznych kont</td>
+            </tr>
+            <tr>
+              <td><code>brightdata-plugin</code></td>
+              <td>18 skilli: SERP jako JSON, scraping z omijaniem bot-detekcji, competitive intel, brand listening</td>
+              <td><span class="pill stop">z budżetem</span> wymaga płatnego konta</td>
+            </tr>
+            <tr>
+              <td><code>marketing</code></td>
+              <td>Serwery MCP do Ahrefs i Similarweb, plus 8 skilli marketingowych</td>
+              <td><span class="pill stop">z budżetem</span> MCP darmowe, konto Ahrefs nie</td>
+            </tr>
+            <tr>
+              <td><code>nimble</code></td>
+              <td><code>seo-intel</code>, monitoring wzmianek marki, agenci researchowi</td>
+              <td><span class="pill stop">z budżetem</span> backup dla Bright Data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn-box">
+        <span class="wt">Krytyczne rozróżnienie — żeby nie stracić miesiąca</span>
+        <p><strong>Skill to instrukcja dla mnie — działa tylko wtedy, gdy jestem uruchomiony. Produkt to Twój kod — działa o trzeciej w nocy, gdy śpisz, a klient płaci.</strong></p>
+        <p>Skille przyspieszą budowę i podniosą jakość tego, co napiszemy. Ale nie sprzedasz klientowi dostępu do skilla. Sprzedaje się działającą platformę. Skille to rusztowanie, nie budynek.</p>
+      </div>
+    </section>
+
+    <section id="darmowe">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Stack za zero złotych</h2></div>
+      <p class="lead">Powiedziałeś: <em>„ma działać jak płatne, za darmo"</em>. Oto uczciwa odpowiedź — co się da, a czego się nie da.</p>
+
+      <h3>Dlaczego płatne kosztują i gdzie mają słaby punkt</h3>
+      <p>Ahrefs i Semrush sprzedają <strong>własne indeksy</strong> — graf linków budowany latami przez własne crawlery i dane klikstreamowe kupowane od dostawców przeglądarek. <strong>Tego nie da się odtworzyć za darmo. Nigdy.</strong></p>
+      <p>Ale indeks to tylko jakieś 20% wartości. Pozostałe 80% to <strong>analiza</strong> — a analiza to dokładnie ta rzecz, w której model językowy jest mocny i za którą nie musisz płacić.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Co sprzedają za pieniądze</th><th>Jak zrobić za zero</th></tr></thead>
+          <tbody>
+            <tr><td>Keyword Difficulty</td><td>Scrawluj top 10 na żywo, zmierz głębokość i strukturę wyników, policz własny wskaźnik</td></tr>
+            <tr><td>Klasyfikacja intencji</td><td>LLM klasyfikuje — <span class="free">lepiej niż płatne narzędzia</span>, bo rozumie kontekst</td></tr>
+            <tr><td>Content gap</td><td>Zassij sitemapy konkurentów, wyekstrahuj tematy modelem, odejmij od swoich</td></tr>
+            <tr><td>Content score (Surfer, Clearscope)</td><td>Crawl top 10 + embeddingi + ekstrakcja termów — <span class="free">dosłownie ten sam algorytm</span></td></tr>
+            <tr><td>Briefy i outline'y</td><td>LLM, za darmo</td></tr>
+            <tr><td><strong>Wolumeny wyszukiwań</strong></td><td><span class="free">Bing Webmaster Tools API — dokładne liczby, nie widełki</span></td></tr>
+            <tr><td>GEO i widoczność w AI</td><td>Odpytuj modele bezpośrednio — to i tak <span class="free">jedyna uczciwa metoda</span>, płatni robią to samo</td></tr>
+            <tr><td>Audyt techniczny</td><td>Własny crawler na Playwright i Chromium</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Konkretne darmowe źródła</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Warstwa</th><th>Źródło</th><th>Limit</th><th>Co daje</th></tr></thead>
+          <tbody>
+            <tr><td>Prawda o Twojej stronie</td><td>GSC Search Analytics API</td><td>50 000 wierszy dziennie</td><td>zapytania, strony, kliknięcia, CTR, pozycja, kraj, urządzenie — 16 miesięcy historii</td></tr>
+            <tr><td>Indeksacja</td><td>GSC URL Inspection API</td><td>~2000 URL dziennie</td><td>status indeksacji, canonical wybrany przez Google</td></tr>
+            <tr><td>Dane masowe</td><td>GSC Bulk Export → BigQuery</td><td>1 TB zapytań/mc</td><td>omija limit 1000 wierszy z interfejsu</td></tr>
+            <tr><td><strong>Wolumeny fraz</strong></td><td><strong>Bing Webmaster Tools API</strong></td><td class="free">bez limitu</td><td><strong>dokładne wolumeny plus filtr „Question" — złoto pod GEO</strong></td></tr>
+            <tr><td>Long-tail</td><td>Google Autocomplete, People Also Ask</td><td class="free">darmowe</td><td>podpowiedzi i pytania realnych użytkowników</td></tr>
+            <tr><td>Sezonowość</td><td>Google Trends</td><td class="free">darmowe</td><td>momentum i trendy</td></tr>
+            <tr><td>Wydajność</td><td>PageSpeed Insights API</td><td>25 000 dziennie</td><td>Core Web Vitals, pełny Lighthouse</td></tr>
+            <tr><td>Konwersje</td><td>GA4 Data API</td><td class="free">darmowe</td><td>ruch, cele, <strong>referrale z ChatGPT i Perplexity</strong></td></tr>
+            <tr><td>Crawl</td><td>Playwright + Chromium</td><td class="free">darmowe</td><td>pełny audyt techniczny z renderowaniem JS</td></tr>
+            <tr><td>Indeksowanie</td><td>IndexNow</td><td class="free">darmowe</td><td>natychmiastowe zgłoszenie do Bing i Yandex</td></tr>
+            <tr><td>Encje</td><td>Wikidata, Wikipedia API</td><td class="free">darmowe</td><td>mapa encji, spójność marki</td></tr>
+            <tr><td><strong>GEO</strong></td><td>Groq, Gemini free, OpenRouter</td><td>do 14 400 req/dzień</td><td>odpytywanie modeli o widoczność marki</td></tr>
+            <tr><td>Hosting</td><td>Cloudflare Workers + Pages, Neon</td><td>100k req/dzień</td><td class="free">cała platforma za 0 zł/mc</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn-box">
+        <span class="wt">Czego nie da się za darmo — mówię wprost</span>
+        <p><strong>Backlinki konkurencji.</strong> GSC pokaże Twoje własne linki. Reszta to Common Crawl — nieaktualny i dziurawy. To jedyne miejsce, gdzie płatne narzędzia realnie wygrywają, i dlatego warstwę off-page odkładamy do czasu, aż pojawią się klienci.</p>
+        <p><strong>Wolumeny Google.</strong> Bing daje dokładne dane, ale to Bing. Korelacja z Google jest wysoka, lecz nie idealna. GSC pokrywa lukę dla fraz, na które <em>już</em> się wyświetlasz.</p>
+        <p><strong>Skala SERP-ów.</strong> Za darmo zrobisz setki zapytań dziennie, nie setki tysięcy. Dla Ciebie i pierwszych klientów to wystarczy z zapasem.</p>
+      </div>
+
+      <div class="note">
+        <p><strong>Wniosek.</strong> Platforma na starcie realnie zastępuje około 75% Ahrefsa i jakieś 90% Surfera czy Clearscope'a. A w warstwie GEO jest <strong>równorzędna z Profoundem i Peec</strong> — bo tam wszyscy robią dokładnie to samo, tylko odpytują modele.</p>
+      </div>
+    </section>
+
+    <section id="architektura">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Architektura</h2></div>
+
+      <h3>Zasada 1 · Silniki są czyste, wejście-wyjście na krawędziach</h3>
+      <p>Analiza crawla, reguły audytu, scoring treści, klastrowanie, statystyka GEO i scoring okazji to <strong>czyste funkcje na zwykłych strukturach danych</strong>. Nigdy nie dotykają bazy, HTTP ani kolejki. To kupuje trzy rzeczy naraz: ten sam kod działa w trybie CLI z SQLite bez żadnej infrastruktury i w SaaS z Postgresem; silniki testujesz na fixture'ach HTML, co jest jedynym sposobem, żeby 300 reguł pozostało poprawne; a całość uruchamiasz lokalnie, bez serwisów w tle.</p>
+
+      <h3>Zasada 2 · Warstwa providerów to Twoja polisa <span class="star">★</span></h3>
+      <p>To najważniejszy plik w całym repozytorium <em>dla Ciebie</em>, bo zaczynasz bez kasy i chcesz dokupić później.</p>
+      <pre><code>interface SerpProvider {
+  readonly id: 'gsc' | 'bing-wmt' | 'autocomplete'
+              | 'serper' | 'dataforseo' | 'fixture'
+  search(q: SerpQuery): Promise&lt;SerpResult&gt;
+  estimateCost(qs: SerpQuery[]): Cents   <span class="cmt">// dla darmowych = 0</span>
+}</code></pre>
+      <p>Startujesz z adapterami <code>gsc</code>, <code>bing-wmt</code>, <code>autocomplete</code>, <code>groq</code>, <code>gemini</code>. Gdy pojawi się klient i budżet, dopisujesz adapter <code>dataforseo</code> w jeden wieczór — i <strong>nic innego w kodzie się nie zmienia</strong>. Dokładnie to, o co Ci chodziło: zaczynam za darmo, dokupię pakiety, gdy znajdę klientów.</p>
+
+      <h3>Decyzje, które oszczędzają najwięcej</h3>
+      <ul>
+        <li><strong>Dwustopniowy fetch.</strong> Każdy URL najpierw zwykłym żądaniem. Chromium uruchamiamy tylko wtedy, gdy heurystyka wykryje aplikację SPA. W praktyce renderujesz 5–20% adresów zamiast wszystkich — <strong>dziesięć do dwudziestu razy taniej</strong> na najdroższej części crawla.</li>
+        <li><strong>Żądania warunkowe.</strong> <code>ETag</code> i <code>Last-Modified</code> per URL. Przy ponownym crawlu stabilnej strony 60–80% odpowiedzi to 304. Najtańsza optymalizacja w całym produkcie.</li>
+        <li><strong>Adaptacyjna współbieżność.</strong> Start od dwóch równoległych żądań na host, +1 co dwadzieścia udanych, połowa przy pierwszym 429. To różnica między crawlerem, który dostaje bana, a takim, który go nie dostaje.</li>
+        <li><strong>Klastrowanie po overlapie SERP, nie po embeddingach.</strong> Jeśli dwie frazy dzielą co najmniej trzy te same adresy w top 10, Google uważa je za tę samą intencję. To bezpośredni pomiar opinii samego algorytmu — dlatego klastry Ahrefsa czy Surfera „czują się" trafne, a czysto embeddingowe wydają się prawdopodobne, ale nietrafione.</li>
+        <li><strong>Długość tekstu jako przedział, nie liczba.</strong> „Napisz 2347 słów" to najczęściej kopiowany i najgorszy pomysł w tej branży — produkuje lanie wody, czyli dokładnie to, co Google karze.</li>
+      </ul>
+
+      <h3>Statystyka GEO — tu wszyscy oszukują <span class="star">★</span></h3>
+      <p>Pojedynczy przebieg promptu to <strong>próba Bernoulliego, nie pomiar</strong>. Przy prawdziwym prawdopodobieństwie wzmianki na poziomie 0,3 i trzech przebiegach błąd standardowy wynosi <strong>±26 punktów procentowych</strong>. Czyli: cotygodniowe wykresy „widoczności" rysowane z jednego czy trzech przebiegów to szum, a sprzedawanie tego jako trendu jest główną wadą całej tej kategorii narzędzi.</p>
+      <p>Co robimy zamiast tego:</p>
+      <ul>
+        <li><strong>50 promptów × 3 przebiegi tygodniowo</strong> — rozdzielczość około 8–10 punktów procentowych tydzień do tygodnia</li>
+        <li><strong>Raportujemy różnice sparowane, nigdy surowe poziomy</strong> — wariancja między promptami dominuje i jest stała, dopóki zestaw promptów się nie zmienia</li>
+        <li><strong>Wygaszona iskierka i etykieta „jeszcze nieistotne"</strong>, gdy zmiana mieści się w przedziale ufności. Klienci to szanują — sparzyli się na narzędziach, które tego nie robią</li>
+        <li><strong>Nigdy nie mieszamy trybu dostępu</strong> — API z groundingiem i przechwytywanie interfejsu konsumenckiego to dwa różne pomiary, dwie osobne serie</li>
+        <li><strong>Głośny alert przy zmianie wersji modelu</strong> — upgrade silnika to skokowa zmiana procesu i musi być adnotacją na wykresie, dokładnie jak core update Google</li>
+      </ul>
+      <p>Groq z limitem 14 400 żądań dziennie w darmowym planie spokojnie unosi 50 promptów razy 3 przebiegi razy 5 silników.</p>
+
+      <h3>Pętla agentowa</h3>
+      <pre><code>SENSE     crawl, GSC, GA4, GEO, logi, cytowania
+   ↓
+SCORE     generatory kandydatów → Opportunity[]
+          score = (impact × confidence × fit) / (effort × risk)
+   ↓
+PLAN      policy engine: auto | zatwierdź | nigdy
+   ↓
+ACT       agent_task → zadania → CMS lub pull request
+   ↓
+MEASURE   okno eksperymentu, DiD vs. grupa kontrolna, werdykt
+   ↓
+          aktualizacja priors ──→ z powrotem do SCORE</code></pre>
+
+      <p><strong>Scoring to deterministyczna arytmetyka, nie wywołanie modelu.</strong> LLM dostaje jedno wąskie zadanie: ułożyć trzydzieści najlepszych okazji w spójny plan — sekwencja, grupowanie, wykrywanie konfliktów. Modele są w tym dobre, a w konsekwentnym rankingu liczbowym złe.</p>
+      <p><strong>Planer nie może niczego wykonać.</strong> Emituje wyłącznie zadania w stanie <code>proposed</code>. Wykonanie idzie przez policy engine i system kolejek, czyli deterministyczny kod. Agent, który potrafi proponować, ale nie wykonywać, ma z definicji ograniczony zasięg rażenia.</p>
+      <p><strong>Pomiar metodą difference-in-differences:</strong> <code>(treatment_po − treatment_przed) − (control_po − control_przed)</code>. To absorbuje core update'y, sezonowość i ruchy konkurencji, które czynią naiwne porównanie „przed i po" bezwartościowym. Tego <strong>nie robi żaden konkurent z tej dwudziestki</strong> — i tylko to pozwala powiedzieć klientowi: „nasze zmiany dały +6,4% CTR, przedział ufności 95% od 2,1% do 10,7%, zmierzone na Twojej stronie".</p>
+
+      <h3>Bezpieczniki</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Akcja</th><th>Domyślnie</th><th>Dlaczego</th></tr></thead>
+          <tbody>
+            <tr><td>Crawl, audyt, tracking, GEO, logi</td><td><span class="pill auto">auto</span></td><td>tylko odczyt</td></tr>
+            <tr><td>Generowanie briefu i draftu</td><td><span class="pill auto">auto</span></td><td>nic nie zostaje opublikowane</td></tr>
+            <tr><td>Linki wewnętrzne, do trzech</td><td><span class="pill auto">auto</span></td><td>niskie ryzyko, wysoka wartość, odwracalne</td></tr>
+            <tr><td>Przepisanie title i description</td><td><span class="pill auto">auto + 24h cofnięcia</span></td><td>odwracalne, duży wolumen</td></tr>
+            <tr><td>Wstrzyknięcie JSON-LD</td><td><span class="pill ok">zatwierdzenie</span></td><td>zła schema to ryzyko manualnej kary</td></tr>
+            <tr><td>Publikacja nowego artykułu</td><td><span class="pill ok">zatwierdzenie</span></td><td>auto dopiero po 10 akceptacjach z 90% skutecznością</td></tr>
+            <tr><td>Strony programatyczne</td><td><span class="pill stop">zawsze zatwierdzenie</span></td><td>bezpośrednia ekspozycja na scaled content abuse</td></tr>
+            <tr><td>Przekierowania, canonical, noindex</td><td><span class="pill stop">zawsze zatwierdzenie</span></td><td>może skasować cały ruch strony</td></tr>
+            <tr><td>Wymiana linków, outreach</td><td><span class="pill stop">zawsze zatwierdzenie</span></td><td>ekspozycja na link scheme</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Do tego trzy globalne wyłączniki, nie do obejścia z interfejsu:</p>
+      <ul>
+        <li><strong>Limit tempa publikacji</strong> — maksimum z trzech dziennie albo 10% zaindeksowanych stron miesięcznie</li>
+        <li><strong>Limit zasięgu rażenia</strong> — żadna automatyczna akcja nie dotyka więcej niż 5% stron bez zatwierdzenia</li>
+        <li><strong>Zatrzymanie przy regresji</strong> — spadek kliknięć o ponad 20% tydzień do tygodnia wstrzymuje wszystkie akcje zapisu. Zasada: nie pozwól robotowi kopać szybciej, kiedy jesteś w dole</li>
+      </ul>
+    </section>
+
+    <section id="fazy">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Fazy budowy</h2></div>
+      <p>Multi-tenancy projektujemy w schemacie bazy od pierwszej tabeli, ale billingu nie budujemy, dopóki nie ma klienta.</p>
+
+      <div class="phases">
+        <div class="phase">
+          <div class="phase-n"><b>0</b>dni 1–3</div>
+          <div class="phase-b">
+            <h4>Fundament</h4>
+            <p>Monorepo TypeScript, SQLite przez Drizzle, schemat z <code>tenant_id</code> od pierwszej tabeli, OAuth do Search Console.</p>
+            <span class="ms">Kamień milowy: realne dane z Twojej GSC lądują w bazie.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-n"><b>1</b>tydz. 1–2</div>
+          <div class="phase-b">
+            <h4>Crawler i audyt</h4>
+            <p>Silnik crawlera na Playwright, kolejka, respekt dla robots.txt, trzydzieści reguł, które naprawdę mają znaczenie — nie trzysta. Diff surowy kontra wyrenderowany, graf linków wewnętrznych, PageSpeed.</p>
+            <span class="ms">Kamień milowy: pełny raport techniczny Twojej strony.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-n"><b>2</b>tydz. 3–4</div>
+          <div class="phase-b">
+            <h4>Tracker GEO</h4>
+            <p>Zarządzanie promptami, runner multi-engine na darmowych modelach, detekcja wzmianek i pozycji w odpowiedzi, share of voice, ekstrakcja cytowań, warstwa statystyczna z przedziałami ufności, generator llms.txt.</p>
+            <span class="ms">Kamień milowy: wiesz, w których promptach jesteś niewidoczny.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-n"><b>3</b>tydz. 5–6</div>
+          <div class="phase-b">
+            <h4>Silnik treści</h4>
+            <p>Klastrowanie fraz z Bing API i GSC, reverse-engineering SERP, scoring treści, briefy, pipeline artykułu z bramkami anty-slop, adaptery publikacji — WordPress REST, webhook oraz pull request do repozytorium.</p>
+            <span class="ms">Kamień milowy: pierwszy artykuł opublikowany automatycznie.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-n"><b>4</b>tydz. 7–8</div>
+          <div class="phase-b">
+            <h4>Pętla agentowa <span class="star">★</span></h4>
+            <p>Scoring okazji, task board z kolumną „measuring", autonomiczny scheduler, pomiar zwrotny po 14, 30 i 60 dniach, policy engine, governor budżetu.</p>
+            <span class="ms">Kamień milowy: system działa tydzień bez Ciebie i raportuje, co zadziałało.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-n"><b>5</b>później</div>
+          <div class="phase-b">
+            <h4>Dashboard i sprzedaż</h4>
+            <p>Next.js, wykresy, raporty white-label, onboarding, limity per klient, płatności. Dopiero <strong>po</strong> tym, jak Faza 4 udowodni wyniki na Twojej własnej stronie.</p>
+            <span class="ms">Kamień milowy: pierwszy płacący klient.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <h3>Zasada nadrzędna</h3>
+        <p>Nie sprzedajesz obietnicy. Najpierw <strong>Twoja własna strona ma urosnąć dzięki tej platformie</strong> — to jest Twój case study i jedyny uczciwy dowód, jaki będziesz miał. Dopiero potem klienci.</p>
+      </div>
+    </section>
+
+    <section id="ostrzezenia">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Cztery ostrzeżenia</h2></div>
+      <p>Rzeczy, które muszę powiedzieć wprost, zanim napiszemy pierwszą linijkę.</p>
+
+      <div class="warn-box">
+        <span class="wt">01 · Nie buduj sieci wymiany linków</span>
+        <p>BabyLoveGrowth ma ponad 4000 partnerów i to sprzedaje. <strong>To jest link scheme.</strong> To jedyna funkcja z całej listy z bezpośrednim ryzykiem manualnej kary dla Twoich klientów — i zatruje wiarygodność wszystkiego innego, co platforma zarekomenduje. Buduj prospecting i pisanie outreachu: ta sama robota do wykonania, zero ekspozycji na karę.</p>
+      </div>
+
+      <div class="warn-box">
+        <span class="wt">02 · llms.txt generuj, ale nie buduj na nim narracji</span>
+        <p>Google oficjalnie stwierdziło, że plik nie jest potrzebny dla AI Overviews ani AI Mode i nie planuje jego wsparcia. Żaden duży dostawca nie zobowiązał się do czytania go w otwartym webie. Generator zrób, bo klienci pytają, wrzuć do audytu jako uwagę o niskim priorytecie — a wysiłek włóż w czynniki, które <em>realnie</em> wpływają na retrieval: samodzielność chunków, odpowiedź wprost w pierwszych zdaniach, dostępność bez JavaScriptu, znaczniki encji.</p>
+      </div>
+
+      <div class="warn-box">
+        <span class="wt">03 · Strona renderowana po stronie klienta jest niewidoczna dla AI</span>
+        <p>Część crawlerów retrievalowych nie wykonuje JavaScriptu. Strona może świetnie rankować w Google i być <strong>kompletnie nieobecna</strong> w odpowiedziach modeli. Nasz crawler to wychwytuje, bo i tak porównuje surowy HTML z wyrenderowanym — to jedna z niewielu rzeczy, których większość narzędzi GEO w ogóle nie sprawdza.</p>
+      </div>
+
+      <div class="warn-box">
+        <span class="wt">04 · Dyscyplina zakresu</span>
+        <p>Te dwadzieścia narzędzi to około czterystu lat pracy inżynierskiej. Wygrywającym ruchem <strong>nie jest parytet funkcji</strong> — tylko bycie jedynym narzędziem, które zamyka pętlę i dowodzi efektu. Każda funkcja z Fazy 1 musi dać się uzasadnić jednym zdaniem: „to jest niezbędne, żeby zadanie przeszło od sygnału do zmierzonego werdyktu".</p>
+      </div>
+
+      <div class="note">
+        <p><strong>Bramki anty-slop są egzystencjalne, nie kosmetyczne.</strong> Strony publikujące duże wolumeny nieredagowanej treści AI dostały 50–80% spadków ruchu przy egzekwowaniu polityki scaled content abuse. System musi być zbudowany tak, żeby <em>strukturalnie nie mógł</em> produkować masowo bezwartościowych stron: bramka oryginalności odrzucająca drafty zbyt podobne do top 10, wymóg unikalnego zasobu w każdym artykule, nazwany prawdziwy autor, strażnik generujący zadanie „popraw albo usuń" dla artykułów z zerowymi wyświetleniami po sześćdziesięciu dniach, i zasada „najpierw konsoliduj, potem twórz".</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Analiza obejmuje dwadzieścia narzędzi z pięciu kategorii, stan na sierpień 2026. Ceny i zakresy funkcji w kategorii GEO zmieniają się co miesiąc — przed decyzją zakupową warto zweryfikować aktualne plany u dostawcy. Repozytorium <code>kryspindadok21-cpu/R</code>, gałąź <code>claude/seo-tools-analysis-plan-wzkfxr</code>.</p>
+    </footer>
+  </main>
+</div>
