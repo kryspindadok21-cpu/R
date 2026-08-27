@@ -1,0 +1,59 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { afterEach, describe, expect, it } from 'vitest'
+import { checkDependencyRules } from './check-deps.js'
+
+let dir: string
+afterEach(() => { if (dir) rmSync(dir, { recursive: true, force: true }) })
+
+function fakeRepo(files: Record<string, string>): string {
+  const root = mkdtempSync(join(tmpdir(), 'deps-'))
+  for (const [path, content] of Object.entries(files)) {
+    const full = join(root, path)
+    mkdirSync(join(full, '..'), { recursive: true })
+    writeFileSync(full, content)
+  }
+  return root
+}
+
+describe('checkDependencyRules', () => {
+  it('nie zglasza nic dla poprawnego ukladu', () => {
+    dir = fakeRepo({ 'packages/core/src/a.ts': "import { z } from 'zod'\n" })
+    expect(checkDependencyRules(dir)).toEqual([])
+  })
+
+  it('zglasza drizzle poza packages/db', () => {
+    dir = fakeRepo({ 'packages/core/src/a.ts': "import { eq } from 'drizzle-orm'\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('zglasza google-auth-library poza packages/providers', () => {
+    dir = fakeRepo({ 'packages/db/src/a.ts': "import { JWT } from 'google-auth-library'\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('zglasza node:fs w czystym silniku', () => {
+    dir = fakeRepo({ 'packages/report/src/a.ts': "import { readFileSync } from 'node:fs'\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('pozwala better-sqlite3 w packages/db', () => {
+    dir = fakeRepo({ 'packages/db/src/a.ts': "import Database from 'better-sqlite3'\n" })
+    expect(checkDependencyRules(dir)).toEqual([])
+  })
+
+  it('pomija pliki testowe', () => {
+    dir = fakeRepo({ 'packages/core/src/a.test.ts': "import { readFileSync } from 'node:fs'\n" })
+    expect(checkDependencyRules(dir)).toEqual([])
+  })
+
+  it('wykrywa import dynamiczny', () => {
+    dir = fakeRepo({ 'packages/core/src/a.ts': "const m = await import('drizzle-orm')\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('nie zglasza samego repozytorium', () => {
+    expect(checkDependencyRules(process.cwd())).toEqual([])
+  })
+})

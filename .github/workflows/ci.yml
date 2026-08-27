@@ -1,0 +1,27 @@
+name: CI
+on:
+  push: { branches: ["**"] }
+  pull_request:
+
+jobs:
+  sprawdz:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # AC5: identyczne wyniki po obu stronach linii zmiany daty.
+        tz: ["UTC", "Pacific/Kiritimati", "Pacific/Niue"]
+    env:
+      TZ: ${{ matrix.tz }}
+    steps:
+      - uses: actions/checkout@v4
+      # Wersja pnpm pochodzi z pola packageManager w package.json —
+      # podanie jej tutaj drugi raz konczy sie konfliktem wersji.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm check:deps    # AC8
+      - run: pnpm check:secrets # AC10
