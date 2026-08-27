@@ -19,7 +19,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 0. Weryfikacja faktów u Google | **do zrobienia przez właściciela** (wymaga dostępu do jego Search Console) | — |
 | 1. Monorepo + normalizacja URL | ukończone, 33 testy zielone | `e8d938f`, `30fd48d` |
 | 2. ULID + TenantScope | ukończone, 47 testów zielonych łącznie | `6cb6e41` |
-| 3. Schemat bazy + migrator | **w toku** — migracja SQL gotowa i zweryfikowana; brakuje `connection.ts`, `migrate.ts`, `schema.ts`, testów | `f6b97c8` |
+| 3. Schemat bazy + migrator | ukończone, 70 testów zielonych łącznie | `f6b97c8`, `27dc512` |
 | 4. Repozytoria scoped per tenant | nierozpoczęte | — |
 | 5. Providers: typy + rejestr wywołań | nierozpoczęte | — |
 | 6. Adapter GSC | nierozpoczęte (zależy od Zadania 0) | — |
