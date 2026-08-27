@@ -16,7 +16,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 
 | Zadanie | Stan | Commit |
 |---|---|---|
-| 0. Weryfikacja faktów u Google | **w toku** — klucz konta serwisowego działa, Kroki 3–5 zablokowane wyłączonym API (patrz „Ustalenia" pod zadaniem) | — |
+| 0. Weryfikacja faktów u Google | **w toku** — klucz działa, API włączone; zostało nadanie uprawnienia w Search Console (Krok 2) | — |
 | 1. Monorepo + normalizacja URL | ukończone, 33 testy zielone | `e8d938f`, `30fd48d` |
 | 2. ULID + TenantScope | ukończone, 47 testów zielonych łącznie | `6cb6e41` |
 | 3. Schemat bazy + migrator | ukończone, 70 testów zielonych łącznie | `f6b97c8`, `27dc512` |
@@ -90,25 +90,31 @@ Sprawdzone na dostarczonym kluczu, w tej kolejności:
 1. **Klucz jest poprawny.** Wymiana JWT na token pod `https://oauth2.googleapis.com/token`
    z zakresem `webmasters.readonly` zwraca `200` i `access_token`. Podpis, `client_email`
    i `private_key` się zgadzają — po stronie samego klucza nie ma nic do poprawiania.
-2. **Search Console API jest wyłączone w projekcie.** Pierwsze prawdziwe wywołanie
-   (`GET /webmasters/v3/sites`) kończy się `403` z `reason: SERVICE_DISABLED` dla usługi
-   `searchconsole.googleapis.com` w projekcie `980443426125`. To jest brakująca połowa
-   Kroku 1: konto serwisowe zostało utworzone, ale samo API nie zostało włączone.
+2. **Search Console API było wyłączone — właściciel włączył je tego samego dnia.**
+   Wcześniej `GET /webmasters/v3/sites` kończyło się `403` z `reason: SERVICE_DISABLED`
+   dla `searchconsole.googleapis.com` w projekcie `980443426125`. Po włączeniu to samo
+   wywołanie zwraca `200`. Krok 1 jest domknięty.
+3. **Konto serwisowe nie widzi żadnej property.** `GET /webmasters/v3/sites` zwraca
+   `200` i **puste ciało** (`{}`), czyli zero pozycji `siteEntry`. Uprawnienie API jest
+   więc w porządku, a brakuje wyłącznie Kroku 2: adres konta serwisowego nie został
+   (jeszcze) dodany jako użytkownik property w Search Console. Pusta lista przy statusie
+   `200` to jednoznaczny podpis tego stanu — gdyby chodziło o API lub klucz, byłby `403`.
 
-**Co odblokowuje dalsze kroki (do zrobienia przez właściciela, jednorazowo):**
+**Co zostało do odblokowania (do zrobienia przez właściciela, jednorazowo):**
 
-- Włączyć „Google Search Console API" w projekcie:
-  `https://console.developers.google.com/apis/api/searchconsole.googleapis.com/overview?project=980443426125`
-  Po włączeniu Google każe odczekać kilka minut na propagację.
-- Potwierdzić Krok 2, czyli że `seo-bot@project-e22c888f-c657-4dce-921.iam.gserviceaccount.com`
-  jest dodany jako użytkownik property w Search Console (Ustawienia → Użytkownicy
-  i uprawnienia, poziom „Ograniczony").
+- W Search Console → Ustawienia → **Użytkownicy i uprawnienia** → Dodaj użytkownika:
+  `seo-bot@project-e22c888f-c657-4dce-921.iam.gserviceaccount.com`, poziom „Ograniczony".
+  To trzeba zrobić **w tej property**, której dotyczą dane — uprawnienie nadaje się
+  osobno dla każdej property, nie globalnie dla konta Google.
 - Podać `siteUrl` property dokładnie w formie, w jakiej występuje w Search Console
   (`sc-domain:przyklad.pl` dla property domenowej albo `https://przyklad.pl/` dla prefiksu URL).
 
-Dopiero po tym Kroki 3–5 dają się wykonać: `GET /webmasters/v3/sites` wypisze widoczne
-property (to od razu weryfikuje Krok 2 bez zgadywania), a `seo gsc smoke --site <uri>`
-przechodzi ścieżkę zapytania tym samym kodem, którym pójdzie synchronizacja.
+Po nadaniu uprawnienia `GET /webmasters/v3/sites` przestanie zwracać puste ciało i sam
+wypisze widoczne property — to weryfikuje Krok 2 bez pytania właściciela o potwierdzenie.
+
+Dopiero po tym Kroki 3–5 dają się wykonać: `seo gsc smoke --site <uri>` przechodzi ścieżkę
+zapytania tym samym kodem, którym pójdzie synchronizacja, więc niespodzianek w składaniu
+żądania być nie powinno.
 
 - [ ] **Krok 2: Nadać uprawnienie w Search Console**
 
