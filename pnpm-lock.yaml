@@ -24,6 +24,22 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@26.4.0)(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(tsx@4.23.12))
 
+  apps/cli:
+    dependencies:
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@seo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@seo/providers':
+        specifier: workspace:*
+        version: link:../../packages/providers
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
   packages/core:
     dependencies:
       ulid:

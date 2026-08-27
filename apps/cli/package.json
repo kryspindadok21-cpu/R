@@ -1,0 +1,18 @@
+{
+  "name": "@seo/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": { "seo": "./dist/bin.js" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0"
+  },
+  "dependencies": {
+    "@seo/core": "workspace:*",
+    "@seo/db": "workspace:*",
+    "@seo/providers": "workspace:*"
+  }
+}
