@@ -10,6 +10,34 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-27-faza-0-fundament-design.md`
 
+## STAN PRAC — czytaj to najpierw
+
+Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
+
+| Zadanie | Stan | Commit |
+|---|---|---|
+| 0. Weryfikacja faktów u Google | **do zrobienia przez właściciela** (wymaga dostępu do jego Search Console) | — |
+| 1. Monorepo + normalizacja URL | ukończone, 33 testy zielone | `e8d938f`, `30fd48d` |
+| 2. ULID + TenantScope | ukończone, 47 testów zielonych łącznie | `6cb6e41` |
+| 3. Schemat bazy + migrator | **w toku** — migracja SQL gotowa i zweryfikowana; brakuje `connection.ts`, `migrate.ts`, `schema.ts`, testów | `f6b97c8` |
+| 4. Repozytoria scoped per tenant | nierozpoczęte | — |
+| 5. Providers: typy + rejestr wywołań | nierozpoczęte | — |
+| 6. Adapter GSC | nierozpoczęte (zależy od Zadania 0) | — |
+| 7. Arytmetyka dat + uzgodnienie | nierozpoczęte | — |
+| 8. CLI `seo init` | nierozpoczęte | — |
+| 9. CLI `gsc sync` / `verify` / `smoke` | nierozpoczęte | — |
+| 10. Raport HTML | nierozpoczęte | — |
+| 11. CI + reguły zależności + skan sekretów | nierozpoczęte | — |
+| 12. Odbiór na prawdziwych danych | nierozpoczęte | — |
+
+**Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone), potem pierwsze zadanie ze stanem innym niż „ukończone".
+
+**Odstępstwa od planu odnotowane w trakcie:**
+- pnpm 10.33 zamiast 9.12 (wersja w środowisku).
+- `@types/node` deklarowane w każdym pakiecie osobno — pnpm nie hoistuje typów z roota workspace.
+
+---
+
 ## Ograniczenia globalne
 
 Obowiązują w każdym zadaniu. Wartości przepisane dosłownie ze specyfikacji.
