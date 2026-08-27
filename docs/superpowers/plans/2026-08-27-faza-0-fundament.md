@@ -16,7 +16,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 
 | Zadanie | Stan | Commit |
 |---|---|---|
-| 0. Weryfikacja faktów u Google | **do zrobienia przez właściciela** (wymaga dostępu do jego Search Console) | — |
+| 0. Weryfikacja faktów u Google | **w toku** — klucz konta serwisowego działa, Kroki 3–5 zablokowane wyłączonym API (patrz „Ustalenia" pod zadaniem) | — |
 | 1. Monorepo + normalizacja URL | ukończone, 33 testy zielone | `e8d938f`, `30fd48d` |
 | 2. ULID + TenantScope | ukończone, 47 testów zielonych łącznie | `6cb6e41` |
 | 3. Schemat bazy + migrator | ukończone, 70 testów zielonych łącznie | `f6b97c8`, `27dc512` |
@@ -30,7 +30,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 11. CI + reguły zależności + skan sekretów | ukończone, 208 testów zielonych w trzech strefach | `713d6f0` |
 | 12. Odbiór na prawdziwych danych | **czeka na właściciela** — wymaga klucza konta serwisowego i Zadania 0 | — |
 
-**Cały kod Fazy 0 jest gotowy.** Otwarte pozostają wyłącznie Zadanie 0 i Zadanie 12 — oba wymagają dostępu właściciela do Search Console. Ścieżka od API do raportu jest przetestowana od końca do końca na serwerze pętli zwrotnej (`apps/cli/src/e2e.test.ts`), więc po podstawieniu prawdziwego klucza nie powinno być niespodzianek w składaniu żądania.
+**Cały kod Fazy 0 jest gotowy.** Otwarte pozostają wyłącznie Zadanie 0 i Zadanie 12 — oba wymagają dostępu właściciela do Search Console. Właściciel dostarczył klucz konta serwisowego (`seo-bot@project-e22c888f-c657-4dce-921.iam.gserviceaccount.com`); klucz leży poza repozytorium w `~/.seo/gsc.sa.json` i **poprawnie wystawia token OAuth**. Dalszy postęp blokuje jedna rzecz do kliknięcia po stronie właściciela — opisana w „Ustaleniach" pod Zadaniem 0. Ścieżka od API do raportu jest przetestowana od końca do końca na serwerze pętli zwrotnej (`apps/cli/src/e2e.test.ts`), więc po podstawieniu prawdziwego klucza nie powinno być niespodzianek w składaniu żądania.
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone), potem pierwsze zadanie ze stanem innym niż „ukończone".
 
@@ -79,9 +79,36 @@ Ryzyka R1 i R2 ze specyfikacji. Wykonać **przed** Zadaniem 6, najlepiej pierwsz
 **Pliki:**
 - Modyfikacja: `docs/superpowers/specs/2026-08-27-faza-0-fundament-design.md` (sekcja 10, tabela ryzyk)
 
-- [ ] **Krok 1: Utworzyć konto serwisowe**
+- [x] **Krok 1: Utworzyć konto serwisowe** — *częściowo: konto i klucz są, API nie jest włączone*
 
 W Google Cloud Console: nowy projekt → włączyć „Google Search Console API" → utworzyć konto serwisowe → wygenerować klucz JSON. Zapisać klucz poza repozytorium, np. `~/.seo/gsc.sa.json`, i ustawić `chmod 600`.
+
+#### Ustalenia (2026-08-27)
+
+Sprawdzone na dostarczonym kluczu, w tej kolejności:
+
+1. **Klucz jest poprawny.** Wymiana JWT na token pod `https://oauth2.googleapis.com/token`
+   z zakresem `webmasters.readonly` zwraca `200` i `access_token`. Podpis, `client_email`
+   i `private_key` się zgadzają — po stronie samego klucza nie ma nic do poprawiania.
+2. **Search Console API jest wyłączone w projekcie.** Pierwsze prawdziwe wywołanie
+   (`GET /webmasters/v3/sites`) kończy się `403` z `reason: SERVICE_DISABLED` dla usługi
+   `searchconsole.googleapis.com` w projekcie `980443426125`. To jest brakująca połowa
+   Kroku 1: konto serwisowe zostało utworzone, ale samo API nie zostało włączone.
+
+**Co odblokowuje dalsze kroki (do zrobienia przez właściciela, jednorazowo):**
+
+- Włączyć „Google Search Console API" w projekcie:
+  `https://console.developers.google.com/apis/api/searchconsole.googleapis.com/overview?project=980443426125`
+  Po włączeniu Google każe odczekać kilka minut na propagację.
+- Potwierdzić Krok 2, czyli że `seo-bot@project-e22c888f-c657-4dce-921.iam.gserviceaccount.com`
+  jest dodany jako użytkownik property w Search Console (Ustawienia → Użytkownicy
+  i uprawnienia, poziom „Ograniczony").
+- Podać `siteUrl` property dokładnie w formie, w jakiej występuje w Search Console
+  (`sc-domain:przyklad.pl` dla property domenowej albo `https://przyklad.pl/` dla prefiksu URL).
+
+Dopiero po tym Kroki 3–5 dają się wykonać: `GET /webmasters/v3/sites` wypisze widoczne
+property (to od razu weryfikuje Krok 2 bez zgadywania), a `seo gsc smoke --site <uri>`
+przechodzi ścieżkę zapytania tym samym kodem, którym pójdzie synchronizacja.
 
 - [ ] **Krok 2: Nadać uprawnienie w Search Console**
 
