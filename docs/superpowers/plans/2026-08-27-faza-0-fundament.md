@@ -21,10 +21,10 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 2. ULID + TenantScope | ukończone, 47 testów zielonych łącznie | `6cb6e41` |
 | 3. Schemat bazy + migrator | ukończone, 70 testów zielonych łącznie | `f6b97c8`, `27dc512` |
 | 4. Repozytoria scoped per tenant | ukończone, 100 testów zielonych łącznie | `b321471` |
-| 5. Providers: typy + rejestr wywołań | nierozpoczęte | — |
-| 6. Adapter GSC | nierozpoczęte (zależy od Zadania 0) | — |
+| 5. Providers: typy + rejestr wywołań | ukończone | `1a62236` |
+| 6. Adapter GSC | ukończone na fixture'ach; `GSC_MAX_ROW_LIMIT` do potwierdzenia w Zadaniu 0 | `815d91c` |
 | 7. Arytmetyka dat + uzgodnienie | ukończone (wykonane przed Zadaniem 4 — dostarcza `GSC_SOURCE_TIMEZONE`) | `8462ff7` |
-| 8. CLI `seo init` | nierozpoczęte | — |
+| 8. CLI `seo init` | ukończone, uruchomione na zywo | `1a6275c` |
 | 9. CLI `gsc sync` / `verify` / `smoke` | nierozpoczęte | — |
 | 10. Raport HTML | nierozpoczęte | — |
 | 11. CI + reguły zależności + skan sekretów | nierozpoczęte | — |
