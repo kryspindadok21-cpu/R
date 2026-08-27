@@ -25,10 +25,10 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 6. Adapter GSC | ukończone na fixture'ach; `GSC_MAX_ROW_LIMIT` do potwierdzenia w Zadaniu 0 | `815d91c` |
 | 7. Arytmetyka dat + uzgodnienie | ukończone (wykonane przed Zadaniem 4 — dostarcza `GSC_SOURCE_TIMEZONE`) | `8462ff7` |
 | 8. CLI `seo init` | ukończone, uruchomione na zywo | `1a6275c` |
-| 9. CLI `gsc sync` / `verify` / `smoke` | nierozpoczęte | — |
-| 10. Raport HTML | nierozpoczęte | — |
-| 11. CI + reguły zależności + skan sekretów | nierozpoczęte | — |
-| 12. Odbiór na prawdziwych danych | nierozpoczęte | — |
+| 9. CLI `gsc sync` / `verify` / `smoke` | ukończone | `4ac959f` |
+| 10. Raport HTML | ukończone, obejrzany na danych demo | `befc95b` |
+| 11. CI + reguły zależności + skan sekretów | ukończone, 168 testów zielonych w trzech strefach | `713d6f0` |
+| 12. Odbiór na prawdziwych danych | **czeka na właściciela** — wymaga klucza konta serwisowego i Zadania 0 | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone), potem pierwsze zadanie ze stanem innym niż „ukończone".
 
@@ -38,6 +38,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 - Zadanie 7 wykonane przed Zadaniem 4: `repo.ts` importuje `GSC_SOURCE_TIMEZONE`, którego jedyną definicją jest `packages/core/src/dates.ts` (plan dopuszcza tę kolejność w Zadaniu 6).
 - `packages/db` eksportuje dodatkowo `closeDatabase` — CLI musi domknąć plik WAL. Nie osłabia D5: nadal nie ma dostępu do surowego uchwytu ani do `schema`.
 - Ponad plan: `packages/db/src/schema.test.ts` porównuje kolumny schematu Drizzle z `PRAGMA table_info`, żeby definicje nie rozjechały się z DDL.
+- `barChartSvg` eskejpuje etykiety — w planie trafiały do `<title>` w SVG bez eskejpowania.
+- `check-secrets` wymaga nagłówka PEM **wraz z ciałem klucza**: sam nagłówek występuje w dokumentacji skanera i dawał fałszywy alarm na własnym repozytorium.
+- CI nie podaje wersji pnpm — bierze ją z pola `packageManager`, inaczej `pnpm/action-setup` kończy się konfliktem wersji.
 
 ---
 
