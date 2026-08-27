@@ -10,7 +10,7 @@ export { GSC_SOURCE_TIMEZONE } from '@seo/core'
 /** Wartosc ustalona w Zadaniu 0, Krok 4. Zaktualizuj, jesli weryfikacja da inna. */
 export const GSC_MAX_ROW_LIMIT = 25_000
 
-const ENDPOINT = 'https://www.googleapis.com/webmasters/v3/sites'
+export const GSC_ENDPOINT = 'https://www.googleapis.com/webmasters/v3/sites'
 
 const ResponseSchema = z.object({
   rows: z.array(z.object({
@@ -27,6 +27,8 @@ export interface GscDeps {
   readonly fetchFn: typeof globalThis.fetch
   readonly ledger: CallLedger
   readonly now: () => number
+  /** Podmieniany wylacznie w tescie na serwerze petli zwrotnej. */
+  readonly baseUrl?: string | undefined
 }
 
 function capabilityOf(query: PerformanceQuery): SiteMetricsCapability {
@@ -61,7 +63,8 @@ export function createGscProvider(deps: GscDeps): SiteMetricsProvider {
         },
         deps.now,
         async () => {
-          const url = `${ENDPOINT}/${encodeURIComponent(query.siteUrl)}/searchAnalytics/query`
+          const base = deps.baseUrl ?? GSC_ENDPOINT
+          const url = `${base}/${encodeURIComponent(query.siteUrl)}/searchAnalytics/query`
           const response = await deps.fetchFn(url, {
             method: 'POST',
             headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },

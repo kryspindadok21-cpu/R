@@ -27,8 +27,10 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 8. CLI `seo init` | ukończone, uruchomione na zywo | `1a6275c` |
 | 9. CLI `gsc sync` / `verify` / `smoke` | ukończone | `4ac959f` |
 | 10. Raport HTML | ukończone, obejrzany na danych demo | `befc95b` |
-| 11. CI + reguły zależności + skan sekretów | ukończone, 160 testów zielonych w trzech strefach | `713d6f0` |
+| 11. CI + reguły zależności + skan sekretów | ukończone, 208 testów zielonych w trzech strefach | `713d6f0` |
 | 12. Odbiór na prawdziwych danych | **czeka na właściciela** — wymaga klucza konta serwisowego i Zadania 0 | — |
+
+**Cały kod Fazy 0 jest gotowy.** Otwarte pozostają wyłącznie Zadanie 0 i Zadanie 12 — oba wymagają dostępu właściciela do Search Console. Ścieżka od API do raportu jest przetestowana od końca do końca na serwerze pętli zwrotnej (`apps/cli/src/e2e.test.ts`), więc po podstawieniu prawdziwego klucza nie powinno być niespodzianek w składaniu żądania.
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone), potem pierwsze zadanie ze stanem innym niż „ukończone".
 
@@ -41,6 +43,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 - `barChartSvg` eskejpuje etykiety — w planie trafiały do `<title>` w SVG bez eskejpowania.
 - `check-secrets` wymaga nagłówka PEM **wraz z ciałem klucza**: sam nagłówek występuje w dokumentacji skanera i dawał fałszywy alarm na własnym repozytorium.
 - CI nie podaje wersji pnpm — bierze ją z pola `packageManager`, inaczej `pnpm/action-setup` kończy się konfliktem wersji.
+- Ponad plan: `GscDeps.baseUrl` — podmieniany wyłącznie w teście od końca do końca, żeby przepuścić całą ścieżkę przez prawdziwy `fetch` i prawdziwy serwer HTTP na pętli zwrotnej.
+- Ponad plan: `scripts/` objęte typecheckiem (`scripts/tsconfig.json`) — dotąd były poza nim.
+- Ponad plan: plugin `dobor-narzedzi` z narzędziami `skills:index` i `skills:pick` (poza zakresem Fazy 0, na wyraźne życzenie właściciela).
 
 ---
 
