@@ -1,3 +1,9 @@
-export { closeDatabase, openDatabase, rawHandle, type Db } from './connection.js'
+export { closeDatabase, openDatabase, type Db } from './connection.js'
 export { migrate } from './migrate.js'
-export * as schema from './schema.js'
+export {
+  repos,
+  type DailyInput, type ProviderCallInput, type QueryDailyInput,
+  type ReconciliationInput, type Repos,
+} from './repo.js'
+// rawHandle i schema swiadomie nieeksportowane — jedynym wejsciem do bazy
+// jest repos(), ktore wymusza TenantScope (D5).
