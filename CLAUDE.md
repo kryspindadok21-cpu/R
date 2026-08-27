@@ -114,6 +114,19 @@ osobowych.** Jeśli lista rośnie ponad ~20 punktów, scal pokrewne zamiast dopi
 
 ### Decyzje trwałe
 
+- **Marka: `mentiometry`, domena `mentiometry.com`** (decyzja 2026-08-27).
+  Od łac. *mentio* — „wzmianka" — plus *-metria*, pomiar. Nazwa opisuje produkt
+  dosłownie: mierzenie wzmianek marki w odpowiedziach AI.
+  - **Bez frazy „seo" w domenie i marce.** Keyword stuffing obniża widoczność
+    w AI o ~10% (Princeton GEO, KDD 2024), a nazwa generyczna jest niemierzalna
+    dla naszego własnego trackera share of voice z Fazy 2 — marka musi być encją,
+    którą da się policzyć.
+  - **Jedna domena, jeden autorytet.** Angielski w `/`, polski w `/pl/`, `hreflang`
+    między wersjami. `mentiometry.pl` i `mentiomentry.com` (literówka) tylko jako
+    przekierowania 301 — nigdy jako osobne serwisy.
+  - Znane ryzyko: podobieństwo do marki Mentimeter (ankiety na żywo). Inna
+    kategoria i inny klient, ryzyko ocenione jako niskie i zaakceptowane.
+
 - **Własna strona najpierw, klienci potem.** Nie sprzedajemy obietnicy —
   case study ma powstać na jego własnym ruchu.
 - **Zero budżetu** jest granicą projektu, nie preferencją do negocjacji.
