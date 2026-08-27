@@ -20,10 +20,10 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 1. Monorepo + normalizacja URL | ukończone, 33 testy zielone | `e8d938f`, `30fd48d` |
 | 2. ULID + TenantScope | ukończone, 47 testów zielonych łącznie | `6cb6e41` |
 | 3. Schemat bazy + migrator | ukończone, 70 testów zielonych łącznie | `f6b97c8`, `27dc512` |
-| 4. Repozytoria scoped per tenant | nierozpoczęte | — |
+| 4. Repozytoria scoped per tenant | ukończone, 100 testów zielonych łącznie | `b321471` |
 | 5. Providers: typy + rejestr wywołań | nierozpoczęte | — |
 | 6. Adapter GSC | nierozpoczęte (zależy od Zadania 0) | — |
-| 7. Arytmetyka dat + uzgodnienie | nierozpoczęte | — |
+| 7. Arytmetyka dat + uzgodnienie | ukończone (wykonane przed Zadaniem 4 — dostarcza `GSC_SOURCE_TIMEZONE`) | `8462ff7` |
 | 8. CLI `seo init` | nierozpoczęte | — |
 | 9. CLI `gsc sync` / `verify` / `smoke` | nierozpoczęte | — |
 | 10. Raport HTML | nierozpoczęte | — |
@@ -35,6 +35,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 **Odstępstwa od planu odnotowane w trakcie:**
 - pnpm 10.33 zamiast 9.12 (wersja w środowisku).
 - `@types/node` deklarowane w każdym pakiecie osobno — pnpm nie hoistuje typów z roota workspace.
+- Zadanie 7 wykonane przed Zadaniem 4: `repo.ts` importuje `GSC_SOURCE_TIMEZONE`, którego jedyną definicją jest `packages/core/src/dates.ts` (plan dopuszcza tę kolejność w Zadaniu 6).
+- `packages/db` eksportuje dodatkowo `closeDatabase` — CLI musi domknąć plik WAL. Nie osłabia D5: nadal nie ma dostępu do surowego uchwytu ani do `schema`.
+- Ponad plan: `packages/db/src/schema.test.ts` porównuje kolumny schematu Drizzle z `PRAGMA table_info`, żeby definicje nie rozjechały się z DDL.
 
 ---
 
