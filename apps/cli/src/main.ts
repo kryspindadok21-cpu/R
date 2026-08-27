@@ -6,6 +6,7 @@ import {
   GSC_MAX_ROW_LIMIT, createGscProvider, createServiceAccountTokenSource,
 } from '@seo/providers'
 import { openInitialized, runInit } from './commands/init.js'
+import { runReport } from './commands/report.js'
 import { runSync } from './commands/sync.js'
 import { runVerify } from './commands/verify.js'
 import type { Config } from './config.js'
@@ -136,6 +137,39 @@ async function runGsc(config: Config, sub: string | undefined, args: readonly st
   }
 }
 
+/**
+ * Moment wygenerowania raportu — jedyne miejsce, gdzie wolno formatowac czas
+ * lokalnie, bo dotyczy chwili uruchomienia, a nie dat z Search Console (D3).
+ */
+function generatedAtLabel(now: Date): string {
+  return new Intl.DateTimeFormat('pl-PL', { dateStyle: 'medium', timeStyle: 'short' }).format(now)
+}
+
+function runReportCommand(config: Config, args: readonly string[]): number {
+  const flags = parseFlags(args)
+  const siteUrl = requireFlag(flags.site, 'site')
+  const range = defaultSyncRange(new Date(), GSC_SOURCE_TIMEZONE)
+  const { db } = openInitialized(config)
+
+  try {
+    const result = runReport(db, tenantScope(config.tenantId), {
+      siteUrl,
+      from: flags.from ?? range.from,
+      to: flags.to ?? range.to,
+      outPath: flags.out ?? 'raport-seo.html',
+      generatedAt: generatedAtLabel(new Date()),
+    })
+    process.stdout.write(
+      `Raport:                      ${result.outPath}\n` +
+      `Dni w raporcie:              ${result.days}\n` +
+      `Hasla w raporcie:            ${result.queries}\n`,
+    )
+    return 0
+  } finally {
+    closeDatabase(db)
+  }
+}
+
 export async function main(argv: readonly string[]): Promise<number> {
   const [command, sub] = argv
 
@@ -157,6 +191,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
 
     if (command === 'gsc') return await runGsc(config, sub, argv.slice(2))
+
+    if (command === 'report') return runReportCommand(config, argv.slice(1))
 
     process.stderr.write(`Nieznane polecenie: ${command}${sub ? ` ${sub}` : ''}\n\n${USAGE}`)
     return 1

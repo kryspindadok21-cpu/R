@@ -2,7 +2,9 @@
   "name": "@seo/cli",
   "version": "0.0.0",
   "type": "module",
-  "bin": { "seo": "./dist/bin.js" },
+  "bin": {
+    "seo": "./dist/bin.js"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc"
@@ -13,6 +15,7 @@
   "dependencies": {
     "@seo/core": "workspace:*",
     "@seo/db": "workspace:*",
-    "@seo/providers": "workspace:*"
+    "@seo/providers": "workspace:*",
+    "@seo/report": "workspace:*"
   }
 }
