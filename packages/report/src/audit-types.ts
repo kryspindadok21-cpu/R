@@ -38,6 +38,17 @@ export interface RedirectRow {
   readonly hops: number
 }
 
+export interface PsiRow {
+  readonly url: string
+  readonly strategy: 'mobile' | 'desktop'
+  /** `field` to dane od prawdziwych uzytkownikow; `lab` to symulacja. */
+  readonly source: 'lab' | 'field'
+  readonly lcpMs: number | null
+  readonly inpMs: number | null
+  readonly cls: number | null
+  readonly ttfbMs: number | null
+}
+
 export interface SkippedRuleRow {
   readonly ruleId: string
   readonly missing: readonly string[]
@@ -60,5 +71,6 @@ export interface AuditReportData {
   readonly orphans: readonly string[]
   readonly deepestPages: readonly DeepPageRow[]
   readonly redirects: readonly RedirectRow[]
+  readonly psi: readonly PsiRow[]
   readonly skipped: readonly SkippedRuleRow[]
 }

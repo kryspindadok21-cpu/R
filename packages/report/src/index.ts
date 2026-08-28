@@ -4,7 +4,7 @@ export { renderReport } from './render.js'
 export { renderAuditReport } from './audit.js'
 export { STYLE } from './style.js'
 export type {
-  AuditReportData, DeepPageRow, FindingRow, RedirectRow, RuleCountRow,
+  AuditReportData, DeepPageRow, FindingRow, PsiRow, RedirectRow, RuleCountRow,
   Severity, SkippedRuleRow, StatusCountRow,
 } from './audit-types.js'
 export type {

@@ -35,7 +35,7 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się:
 - `packages/crawler` — `robots.txt`, mapy, kolejka, graf linków. Czysty; źródło
   stron dostaje **wstrzyknięte** interfejsem `PageSource` (D12).
 - `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`,
-  `crawl`, `audit`, `psi`, `report`.
+  `crawl`, `audit`, `psi`, `report`, `report --audit`.
 
 Reguły zależności egzekwuje `scripts/check-deps.ts` — nie obchodź ich, popraw projekt.
 
@@ -58,6 +58,14 @@ Wartości w kodzie, nie w konfiguracji. Flaga może zejść w dół, nigdy powy�
 15 min na crawl. `User-Agent` jawny i możliwy do zablokowania — **nigdy nie
 podszywamy się pod przeglądarkę.**
 
+## Renderowanie (D16)
+
+`--render N` renderuje **próbkę** stron, nie wszystkie: Chromium na 500 stronach
+to kilkadziesiąt minut. Zależność to `playwright-core` (opcjonalna, nic nie
+pobiera w tle). Przeglądarkę pobiera się raz: `npx playwright install chromium`,
+albo wskazuje istniejącą przez `SEO_CHROMIUM_PATH`. **Brak przeglądarki nigdy
+nie unieważnia udanego crawla.**
+
 ## Ograniczenia twarde
 
 Wynikają ze specyfikacji, nie z gustu. Łamanie ich to zmiana decyzji, nie detal:
@@ -75,6 +83,12 @@ Wynikają ze specyfikacji, nie z gustu. Łamanie ich to zmiana decyzji, nie deta
   poza CI.
 - **Raport nie pobiera niczego z sieci** — bez `http://`, `https://` i `//`
   w `src`/`href`.
+- **Zero oceny zbiorczej 0–100** (D18). Liczymy ustalenia wg wagi. Ocena wymaga
+  wag, których nikt nie umie uzasadnić, i zachęca do poprawiania wskaźnika
+  zamiast strony.
+- **Reguła bez spełnionych `requires` milczy i melduje się jako pominięta** (D17).
+  Cicho pominięta reguła to fałszywe poczucie porządku, nie brak problemu.
+- **Dane terenowe i laboratoryjne z PSI nigdy nie są mieszane** w jednej liczbie.
 
 ## Konwencje pracy
 

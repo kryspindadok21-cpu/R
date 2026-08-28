@@ -42,6 +42,16 @@ const DANE: AuditReportData = {
   orphans: ['https://przyklad.test/ukryta'],
   deepestPages: [{ url: 'https://przyklad.test/gleboko/bardzo/daleko', clickDepth: 6 }],
   redirects: [{ from: 'https://przyklad.test/stara', to: 'https://przyklad.test/nowa', hops: 2 }],
+  psi: [
+    {
+      url: 'https://przyklad.test/', strategy: 'mobile', source: 'field',
+      lcpMs: 2400, inpMs: 180, cls: 0.12, ttfbMs: 620,
+    },
+    {
+      url: 'https://przyklad.test/', strategy: 'mobile', source: 'lab',
+      lcpMs: 2100, inpMs: null, cls: 0.09, ttfbMs: 410,
+    },
+  ],
   skipped: [{ ruleId: 'ai.js-required-for-content', missing: ['render-diff'] }],
 }
 
@@ -104,6 +114,19 @@ describe('renderAuditReport', () => {
     expect(html).toContain('ai.js-required-for-content')
     expect(html).toContain('render-diff')
     expect(html).toContain('Reguły pominięte')
+  })
+
+  it('nie miesza danych terenowych z laboratoryjnymi', () => {
+    const html = renderAuditReport(DANE)
+    expect(html).toContain('teren')
+    expect(html).toContain('laboratorium')
+    expect(html).toContain('tylko one liczą się w Core Web Vitals')
+  })
+
+  it('brakującą metrykę pokazuje jako myślnik, nie jako zero', () => {
+    const html = renderAuditReport(DANE)
+    // INP w laboratorium nie istnieje — zero bylby klamstwem.
+    expect(html).toContain('<td class="l">—</td>')
   })
 
   it('pokazuje łańcuchy przekierowań z liczbą przeskoków', () => {

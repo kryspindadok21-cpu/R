@@ -24,8 +24,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 10. `apps/cli` — `seo audit` | ukończone, AC7 zielone; 586 testów zielonych łącznie | `eee3592` |
 | 11. `packages/report` — raport audytu | ukończone, AC10 zielone, **kamień milowy Fazy 1 osiągnięty**; 612 testów zielonych | `3cb0a31` |
 | 12. Renderowanie i diff surowy↔wyrenderowany (D16) | ukończone, AC9 zielone, sprawdzone na prawdziwym Chromium; 628 testów zielonych | `c7c8ef1`, `b5a5c13` |
-| 13. PageSpeed Insights (D21) | nie zaczęte | — |
-| 14. `check-deps`, CI, odbiór na własnej stronie | nie zaczęte | — |
+| 13. PageSpeed Insights (D21) | ukończone, sekcja w raporcie; 651 testów zielonych | `PENDING13` |
+| 14. `check-deps`, CI, dokumentacja | ukończone; **odbiór na własnej stronie właściciela czeka na niego** | `PENDING13` |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
@@ -63,6 +63,10 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Crawler nie idzie za linkiem `nofollow` ani ze strony z `<meta robots nofollow>`,
   ale **krawędź zapisuje** — graf ma pokazywać, co autor strony zrobił, a nie
   tylko to, dokąd doszedł crawler.
+- PSI rozdziela **dane terenowe** (CrUX, od prawdziwych użytkowników — tylko one
+  liczą się w Core Web Vitals) od **laboratoryjnych** (Lighthouse). Nie są mieszane
+  w jednej liczbie; to najczęstsze oszustwo narzędzi wydajnościowych.
+  Lighthouse nie mierzy INP, więc w wierszu laboratoryjnym jest tam `null`, nie zero.
 - Zależność to `playwright-core`, nie `playwright`. Ten drugi ściąga w postinstall
   ~150 MB przeglądarki przy każdym `pnpm install`, także w CI, gdzie żadna
   przeglądarka nie jest potrzebna. Przeglądarkę pobiera właściciel, raz, świadomie.

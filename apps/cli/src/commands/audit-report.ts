@@ -149,6 +149,16 @@ export function runAuditReport(
     orphans: graph.orphans,
     deepestPages,
     redirects,
+    psi: crawlRepo.read.listPsiMeasurements(site.id, 0, Number.MAX_SAFE_INTEGER)
+      .map((m) => ({
+        url: m.url,
+        strategy: m.strategy,
+        source: m.source,
+        lcpMs: m.lcpMs,
+        inpMs: m.inpMs,
+        cls: m.cls,
+        ttfbMs: m.ttfbMs,
+      })),
     skipped: skipped.map((s) => ({ ruleId: s.ruleId, missing: parseMissing(s.missing) })),
   }
 

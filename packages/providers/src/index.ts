@@ -21,3 +21,7 @@ export {
   RenderUnavailableError, createRenderProvider, type RenderDeps,
 } from './render/playwright.js'
 export type { RenderOptions, RenderProvider, RenderedPage } from './render/types.js'
+export {
+  PSI_BACKOFF_BASE_MS, PSI_ENDPOINT, PSI_MAX_RETRIES, createPsiProvider, type PsiDeps,
+} from './psi/provider.js'
+export type { PsiMetrics, PsiProvider, PsiResult, PsiSource, PsiStrategy } from './psi/types.js'

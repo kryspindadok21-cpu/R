@@ -3,9 +3,11 @@ import { parseArgs } from 'node:util'
 import { GSC_SOURCE_TIMEZONE, defaultSyncRange, tenantScope } from '@seo/core'
 import { closeDatabase } from '@seo/db'
 import {
-  GSC_MAX_ROW_LIMIT, RenderUnavailableError, createGscProvider,
+  GSC_MAX_ROW_LIMIT, RenderUnavailableError, createGscProvider, createPsiProvider,
   createRenderProvider, createServiceAccountTokenSource, createSiteFetchProvider,
+  type PsiStrategy,
 } from '@seo/providers'
+import { runPsi } from './commands/psi.js'
 import { runAuditReport } from './commands/audit-report.js'
 import { runAudit } from './commands/audit.js'
 import { runCrawlCommand, systemClock } from './commands/crawl.js'
@@ -26,6 +28,7 @@ const USAGE = `seo — platforma SEO/GEO
   seo crawl      --site <uri> [--max-pages N] [--max-depth N] [--delay MS] [--dry-run]
                              [--render N]  wyrenderuj N stron i porownaj z surowym HTML
   seo audit      --site <uri> [--run <id>]
+  seo psi        --site <uri> [--limit N] [--strategy mobile|desktop]
   seo report     --site <uri> [--out sciezka.html]
   seo report     --site <uri> --audit [--out sciezka.html]   raport techniczny z crawla
 
@@ -38,6 +41,7 @@ Zmienne srodowiskowe:
   SEO_GSC_KEY_FILE   sciezka klucza JSON konta serwisowego
   SEO_TENANT         identyfikator tenanta (domyslnie "local")
   SEO_CHROMIUM_PATH  sciezka do binarki przegladarki dla --render (opcjonalna)
+  SEO_PSI_KEY        klucz PageSpeed Insights (opcjonalny, podnosi limit)
 `
 
 interface Flags {
@@ -53,6 +57,8 @@ interface Flags {
   'dry-run'?: boolean | undefined
   audit?: boolean | undefined
   render?: string | undefined
+  limit?: string | undefined
+  strategy?: string | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -71,6 +77,8 @@ function parseFlags(args: readonly string[]): Flags {
       'dry-run': { type: 'boolean' },
       audit: { type: 'boolean' },
       render: { type: 'string' },
+      limit: { type: 'string' },
+      strategy: { type: 'string' },
     },
     allowPositionals: true,
   })
@@ -278,6 +286,50 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
   }
 }
 
+async function runPsiCommand(config: Config, args: readonly string[]): Promise<number> {
+  const flags = parseFlags(args)
+  const siteUrl = requireFlag(flags.site, 'site')
+  const scope = tenantScope(config.tenantId)
+
+  if (flags.strategy !== undefined && flags.strategy !== 'mobile' && flags.strategy !== 'desktop') {
+    throw new Error(`Flaga --strategy przyjmuje "mobile" albo "desktop", otrzymano "${flags.strategy}"`)
+  }
+  const strategy = (flags.strategy ?? 'mobile') as PsiStrategy
+  const { db } = openInitialized(config)
+
+  try {
+    const provider = createPsiProvider({
+      fetchFn: globalThis.fetch,
+      ledger: dbLedger(db, scope),
+      now: () => Date.now(),
+      sleep: (ms) => new Promise((resolve) => { setTimeout(resolve, ms) }),
+      apiKey: process.env.SEO_PSI_KEY,
+    })
+
+    const limit = optionalNumber(flags.limit, 'limit')
+    const result = await runPsi(db, scope, provider, {
+      siteUrl,
+      ...(limit === undefined ? {} : { limit }),
+      strategy,
+    })
+
+    process.stdout.write(
+      `Strategia:                   ${result.strategy}\n` +
+      `Strony zmierzone:            ${result.measured}\n` +
+      `Strony nieudane:             ${result.failed}\n`,
+    )
+    if (result.slowest.length > 0) {
+      process.stdout.write('\nNajwolniejsze wczytanie tresci glownej:\n')
+      for (const page of result.slowest) {
+        process.stdout.write(`  ${String(Math.round(page.lcpMs)).padStart(6)} ms  ${page.url}\n`)
+      }
+    }
+    return result.failed > 0 && result.measured === 0 ? 1 : 0
+  } finally {
+    closeDatabase(db)
+  }
+}
+
 function runAuditCommand(config: Config, args: readonly string[]): number {
   const flags = parseFlags(args)
   const siteUrl = requireFlag(flags.site, 'site')
@@ -394,6 +446,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (command === 'crawl') return await runCrawlCommandLine(config, argv.slice(1))
 
     if (command === 'audit') return runAuditCommand(config, argv.slice(1))
+
+    if (command === 'psi') return await runPsiCommand(config, argv.slice(1))
 
     if (command === 'report') return runReportCommand(config, argv.slice(1))
 

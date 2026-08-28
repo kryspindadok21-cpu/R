@@ -162,6 +162,24 @@ ${table(
   data.deepestPages.map((p) => [p.url, formatInt(p.clickDepth)]),
 )}
 
+<h2>Wydajność (PageSpeed Insights)</h2>
+<p class="nota">Kolumna „źródło" ma znaczenie. <strong>Teren</strong> to pomiary od prawdziwych
+użytkowników i tylko one liczą się w Core Web Vitals. <strong>Laboratorium</strong> to symulacja —
+powtarzalna, ale nie jest tym, co bierze pod uwagę Google. Mieszanie ich w jednej liczbie
+to najczęstsze oszustwo narzędzi wydajnościowych, więc ich nie mieszamy.</p>
+${table(
+  ['Adres', 'Urządzenie', 'Źródło', 'LCP [ms]', 'INP [ms]', 'CLS', 'TTFB [ms]'],
+  data.psi.map((p) => [
+    p.url,
+    p.strategy === 'mobile' ? 'telefon' : 'komputer',
+    p.source === 'field' ? 'teren' : 'laboratorium',
+    p.lcpMs === null ? '—' : formatInt(p.lcpMs),
+    p.inpMs === null ? '—' : formatInt(p.inpMs),
+    p.cls === null ? '—' : p.cls.toFixed(3),
+    p.ttfbMs === null ? '—' : formatInt(p.ttfbMs),
+  ]),
+)}
+
 <h2>Przekierowania</h2>
 <p class="nota">Każdy przeskok kosztuje budżet crawlowania i rozmywa sygnały.
 Link prowadzący prosto do adresu docelowego jest zawsze lepszy niż link przez przekierowanie.</p>
