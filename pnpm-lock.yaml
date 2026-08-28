@@ -53,6 +53,19 @@ importers:
         specifier: ^26.4.0
         version: 26.4.0
 
+  packages/crawler:
+    dependencies:
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@seo/parse':
+        specifier: workspace:*
+        version: link:../parse
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
   packages/db:
     dependencies:
       '@seo/core':

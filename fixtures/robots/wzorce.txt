@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /*.pdf$
+Disallow: /prywatne
+Allow: /prywatne/publiczne
+Disallow: /*?sesja=

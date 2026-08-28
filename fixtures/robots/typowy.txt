@@ -1,0 +1,13 @@
+# robots.txt sklepu
+User-agent: *
+Disallow: /koszyk
+Disallow: /panel/
+Allow: /panel/pomoc
+Crawl-delay: 2
+
+User-agent: Googlebot
+User-agent: Bingbot
+Disallow: /szukaj
+
+Sitemap: https://przyklad.test/sitemap.xml
+Sitemap: https://przyklad.test/sitemap-blog.xml
