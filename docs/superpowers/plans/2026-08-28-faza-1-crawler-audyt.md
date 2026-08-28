@@ -15,9 +15,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 1. `packages/parse` — HTML → `PageFacts` | ukończone, 234 testy zielone łącznie | `c7c8ef1` |
 | 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | ukończone, 286 testów zielonych łącznie | `3deedf8` |
 | 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | ukończone, **52 reguły**, 364 testy zielone łącznie | `914b63f` |
-| 4. `packages/crawler` — `robots.txt` + mapy witryny | ukończone | `PENDING4` |
-| 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | ukończone, AC2/AC3/AC4 zielone | `PENDING4` |
-| 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `PENDING4` |
+| 4. `packages/crawler` — `robots.txt` + mapy witryny | ukończone | `0057a19` |
+| 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | ukończone, AC2/AC3/AC4 zielone | `0057a19` |
+| 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `0057a19` |
 | 7. `packages/providers` — grzeczny pobieracz stron | nie zaczęte | — |
 | 8. `packages/db` — migracja `0002` + repozytoria crawla | nie zaczęte | — |
 | 9. `apps/cli` — `seo crawl` | nie zaczęte | — |
