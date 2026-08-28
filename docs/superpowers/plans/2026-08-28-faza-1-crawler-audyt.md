@@ -14,7 +14,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 |---|---|---|
 | 1. `packages/parse` — HTML → `PageFacts` | ukończone, 234 testy zielone łącznie | `c7c8ef1` |
 | 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | ukończone, 286 testów zielonych łącznie | `3deedf8` |
-| 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | ukończone, **52 reguły**, 364 testy zielone łącznie | `914b63f` |
+| 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | ukończone, **61 reguł** po przeglądzie zgodności, 565 testów zielonych łącznie | `914b63f`, `70c8fda` |
 | 4. `packages/crawler` — `robots.txt` + mapy witryny | ukończone | `0057a19` |
 | 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | ukończone, AC2/AC3/AC4 zielone | `0057a19` |
 | 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `0057a19` |
@@ -63,6 +63,17 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Crawler nie idzie za linkiem `nofollow` ani ze strony z `<meta robots nofollow>`,
   ale **krawędź zapisuje** — graf ma pokazywać, co autor strony zrobił, a nie
   tylko to, dokąd doszedł crawler.
+- **Przegląd zgodności z założeniami (2026-08-28).** Porównanie z kryterium odbioru
+  z `analiza-seo-geo-i-plan-budowy.md` („pokrycie audytu Screaming Frog ≥80%")
+  wykazało 9 brakujących reguł. Dopisane: `canonical.multiple`,
+  `canonical.to-non-indexable`, `redirect.meta-refresh`, `security.mixed-content`,
+  `hreflang.missing-self`, `url.problematic`, `sitemap.missing-page`,
+  `sitemap.non-indexable-url`, `content.duplicate`. Razem **61 reguł**.
+- Ten sam przegląd wykazał dziurę w egzekwowaniu: `check-deps` pilnował tylko
+  modułów npm, a reguła z §Część 6 analizy brzmi „silniki nigdy nie zależą od `db`,
+  `http`, `providers`". Naruszeń nie było, ale nic ich nie pilnowało — teraz pilnuje.
+- `PageFacts` rozszerzone o `resources`, `canonicalCount` i `metaRefresh` — bez nich
+  reguły treści mieszanej i wielokrotnego canonicala nie mają danych.
 - Reguł wyszło **52**, nie 40 — paczki rozrosły się o `http.fetch-failed`,
   `jsonld.empty-type` i `link.to-redirect`. Żadna nie jest domysłem: każda ma
   test dodatni i ujemny.
