@@ -22,7 +22,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 8. `packages/db` — migracja `0002` + repozytoria crawla | ukończone, 530 testów zielonych łącznie | `783e689` |
 | 9. `apps/cli` — `seo crawl` | ukończone, AC1/AC2/AC3 zielone, uruchomione na żywo | `eee3592` |
 | 10. `apps/cli` — `seo audit` | ukończone, AC7 zielone; 586 testów zielonych łącznie | `eee3592` |
-| 11. `packages/report` — raport audytu | ukończone, AC10 zielone, **kamień milowy Fazy 1 osiągnięty**; 612 testów zielonych | `PENDING11` |
+| 11. `packages/report` — raport audytu | ukończone, AC10 zielone, **kamień milowy Fazy 1 osiągnięty**; 612 testów zielonych | `3cb0a31` |
 | 12. Renderowanie i diff surowy↔wyrenderowany (D16) | **częściowo** — `diffRenderedFacts` gotowy i przetestowany; został `RenderProvider` na Playwrighcie | `c7c8ef1` |
 | 13. PageSpeed Insights (D21) | nie zaczęte | — |
 | 14. `check-deps`, CI, odbiór na własnej stronie | nie zaczęte | — |
