@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@seo/core": "workspace:*",
-    "parse5": "^7.3.0"
+    "parse5": "^7.3.0",
+    "zod": "^4.4.3"
   }
 }

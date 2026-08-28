@@ -71,6 +71,9 @@ importers:
       '@seo/core':
         specifier: workspace:*
         version: link:../core
+      '@seo/parse':
+        specifier: workspace:*
+        version: link:../parse
       better-sqlite3:
         specifier: ^13.0.3
         version: 13.0.3
@@ -96,6 +99,9 @@ importers:
       parse5:
         specifier: ^7.3.0
         version: 7.3.0
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@types/node':
         specifier: ^26.4.0

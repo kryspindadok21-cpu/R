@@ -102,3 +102,103 @@ export const providerCall = sqliteTable('provider_call', {
   costMicros: integer('cost_micros').notNull(),
   requestFingerprint: text('request_fingerprint').notNull(),
 })
+
+// --- Faza 1: crawl i audyt -----------------------------------------------------
+
+export const crawlRun = sqliteTable('crawl_run', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  startedAt: integer('started_at').notNull(),
+  finishedAt: integer('finished_at'),
+  ok: integer('ok'),
+  error: text('error'),
+  pagesFetched: integer('pages_fetched').notNull(),
+  pagesFailed: integer('pages_failed').notNull(),
+  maxPages: integer('max_pages').notNull(),
+  maxDepth: integer('max_depth').notNull(),
+  delayMs: integer('delay_ms').notNull(),
+  renderSample: integer('render_sample').notNull(),
+  robotsState: text('robots_state', { enum: ['ok', 'missing', 'unreachable'] }).notNull(),
+  truncated: integer('truncated').notNull(),
+  truncationReason: text('truncation_reason'),
+  userAgent: text('user_agent').notNull(),
+})
+
+export const crawlPage = sqliteTable('crawl_page', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  crawlRunId: text('crawl_run_id').notNull(),
+  urlId: text('url_id').notNull(),
+  depth: integer('depth').notNull(),
+  httpStatus: integer('http_status'),
+  contentType: text('content_type'),
+  bytes: integer('bytes').notNull(),
+  durationMs: integer('duration_ms').notNull(),
+  fetchedAt: integer('fetched_at').notNull(),
+  redirectChain: text('redirect_chain').notNull(),
+  fetchError: text('fetch_error'),
+  title: text('title'),
+  metaDescription: text('meta_description'),
+  h1Count: integer('h1_count').notNull(),
+  wordCount: integer('word_count').notNull(),
+  indexable: integer('indexable').notNull(),
+  noindexReason: text('noindex_reason'),
+  canonicalUrl: text('canonical_url'),
+  inSitemap: integer('in_sitemap').notNull(),
+  facts: text('facts'),
+  rendered: integer('rendered').notNull(),
+  renderDiff: text('render_diff'),
+})
+
+export const pageLink = sqliteTable('page_link', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  crawlRunId: text('crawl_run_id').notNull(),
+  fromUrlId: text('from_url_id').notNull(),
+  toUrlId: text('to_url_id'),
+  toUrl: text('to_url').notNull(),
+  rel: text('rel', { enum: ['follow', 'nofollow', 'sponsored', 'ugc'] }).notNull(),
+  anchorText: text('anchor_text').notNull(),
+  isInternal: integer('is_internal').notNull(),
+})
+
+export const auditFinding = sqliteTable('audit_finding', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  crawlRunId: text('crawl_run_id').notNull(),
+  ruleId: text('rule_id').notNull(),
+  severity: text('severity', { enum: ['blocker', 'high', 'medium', 'low', 'info'] }).notNull(),
+  category: text('category').notNull(),
+  urlId: text('url_id'),
+  url: text('url'),
+  title: text('title').notNull(),
+  evidence: text('evidence').notNull(),
+  autofix: text('autofix'),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const auditSkippedRule = sqliteTable('audit_skipped_rule', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  crawlRunId: text('crawl_run_id').notNull(),
+  ruleId: text('rule_id').notNull(),
+  missing: text('missing').notNull(),
+})
+
+export const psiMeasurement = sqliteTable('psi_measurement', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  urlId: text('url_id').notNull(),
+  strategy: text('strategy', { enum: ['mobile', 'desktop'] }).notNull(),
+  measuredAt: integer('measured_at').notNull(),
+  lcpMs: real('lcp_ms'),
+  inpMs: real('inp_ms'),
+  cls: real('cls'),
+  ttfbMs: real('ttfb_ms'),
+  performanceScore: real('performance_score'),
+  source: text('source', { enum: ['lab', 'field'] }).notNull(),
+})

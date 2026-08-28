@@ -2,9 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { openDatabase, rawHandle } from './connection.js'
 import { migrate } from './migrate.js'
 
-const TABLES = [
+const TABLES_FAZA_0 = [
   'tenant', 'site', 'url', 'gsc_sync_run', 'gsc_daily',
   'gsc_query_daily', 'gsc_reconciliation', 'provider_call',
+]
+
+const TABLES_FAZA_1 = [
+  'crawl_run', 'crawl_page', 'page_link', 'audit_finding',
+  'audit_skipped_rule', 'psi_measurement',
 ]
 
 function tableNames(db: ReturnType<typeof openDatabase>): string[] {
@@ -18,12 +23,24 @@ describe('migrate', () => {
   it('tworzy wszystkie tabele Fazy 0', () => {
     const db = openDatabase(':memory:')
     migrate(db)
-    for (const t of TABLES) expect(tableNames(db)).toContain(t)
+    for (const t of TABLES_FAZA_0) expect(tableNames(db)).toContain(t)
   })
 
-  it('jest idempotentny', () => {
+  it('tworzy wszystkie tabele Fazy 1', () => {
     const db = openDatabase(':memory:')
-    expect(migrate(db)).toEqual(['0001_init.sql'])
+    migrate(db)
+    for (const t of TABLES_FAZA_1) expect(tableNames(db)).toContain(t)
+  })
+
+  // Lista migracji nie jest wpisana na sztywno: test sprawdza wlasnosc migratora
+  // (kolejnosc i idempotentnosc), a nie zawartosc katalogu, ktory bedzie rosl.
+  it('stosuje migracje po kolei i tylko raz', () => {
+    const db = openDatabase(':memory:')
+    const applied = migrate(db)
+
+    expect(applied).toEqual([...applied].sort())
+    expect(applied).toContain('0001_init.sql')
+    expect(applied).toContain('0002_crawl.sql')
     expect(migrate(db)).toEqual([])
   })
 

@@ -38,6 +38,17 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Akumulatory w `parsePage` siedzą w jednym obiekcie, nie w osobnych `let`.
   TypeScript zawęża `let` przypisywany wyłącznie w domknięciu do typu wartości
   początkowej; pole obiektu zachowuje typ zadeklarowany.
+- Schemat `zod` dla `PageFacts` mieszka w `@seo/parse`, nie w `@seo/db` — obok
+  typu, który opisuje. Test przepuszcza przez niego wynik `parsePage`, więc
+  rozejście się typu ze schematem wywala się od razu, a nie przy odczycie cudzej
+  bazy pół roku później. `packages/db` zależy przez to od `@seo/parse`.
+- Ponad plan: tabela `audit_skipped_rule`. Reguły pominięte z powodu `requires`
+  (D17) muszą być trwałe, inaczej raport nie umie pokazać, czego nie sprawdzono.
+- `page_link.to_url_id` jest `NULL` dla linków zewnętrznych — nie zakładamy
+  wiersza `url` dla cudzej domeny, bo nie my nią zarządzamy.
+- Dwa testy wpisywały listę migracji na sztywno (`['0001_init.sql']`) i psuły się
+  przy każdej nowej migracji. Sprawdzają teraz własność migratora — kolejność
+  i idempotentność — a nie zawartość katalogu.
 - `packages/providers` zależy od `@seo/crawler` (typy + `parseRobotsTxt`).
   To odwrócenie zależności, nie cykl: interfejs `PageSource` definiuje ten, kto
   go używa (crawler), a implementuje ten, kto ma wejście/wyjście (providers).

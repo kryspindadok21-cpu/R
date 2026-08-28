@@ -12,3 +12,6 @@ export type {
   HeadingFact, HreflangFact, ImageFact, JsonLdFact, LinkFact, LinkRel,
   MetaRobots, PageFacts,
 } from './facts.js'
+export {
+  PageFactsSchema, RenderDiffSchema, parsePageFactsJson, parseRenderDiffJson,
+} from './facts-schema.js'

@@ -12,7 +12,9 @@ describe('runInit', () => {
     dir = mkdtempSync(join(tmpdir(), 'seo-'))
     const cfg = { dbPath: join(dir, 'a.db'), gscKeyFile: undefined, tenantId: 'local' }
     const result = runInit(cfg)
-    expect(result.migrationsApplied).toEqual(['0001_init.sql'])
+    // Bez wpisywania listy na sztywno — katalog migracji rosnie z kazda faza.
+    expect(result.migrationsApplied).toContain('0001_init.sql')
+    expect(result.migrationsApplied).toEqual([...result.migrationsApplied].sort())
     expect(result.tenantId).toBe('local')
   })
 

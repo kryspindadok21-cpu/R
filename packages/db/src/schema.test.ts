@@ -20,8 +20,9 @@ function columnsInDatabase(table: string): string[] {
 describe('schema', () => {
   it('opisuje wszystkie tabele domenowe', () => {
     expect(tables.map(getTableName).sort()).toEqual([
+      'audit_finding', 'audit_skipped_rule', 'crawl_page', 'crawl_run',
       'gsc_daily', 'gsc_query_daily', 'gsc_reconciliation', 'gsc_sync_run',
-      'provider_call', 'site', 'tenant', 'url',
+      'page_link', 'provider_call', 'psi_measurement', 'site', 'tenant', 'url',
     ])
   })
 
