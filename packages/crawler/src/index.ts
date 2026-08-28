@@ -1,5 +1,5 @@
 export {
-  effectiveDelayMs, runCrawl,
+  effectiveDelayMs, isInScope, runCrawl,
   type Clock, type CrawlOptions, type CrawlResult, type CrawledPage, type FetchOptions,
   type FetchedPage, type LinkEdge, type PageSource, type RobotsState, type TruncationReason,
 } from './crawl.js'

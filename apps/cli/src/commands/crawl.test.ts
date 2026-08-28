@@ -155,6 +155,11 @@ describe('seo crawl — na prawdziwym serwerze', () => {
     expect(crawlRepos(db, scope).read.getCrawlRun(runIdOf(result))?.ok).toBe(1)
   })
 
+  it('crawl całej domeny nie melduje niczego poza zakresem', async () => {
+    const result = await crawl()
+    expect(result.outOfScope).toBe(0)
+  })
+
   it('respektuje Disallow — panel nie zostaje pobrany', async () => {
     const result = await crawl()
     const pages = crawlRepos(db, scope).read.listCrawlPages(runIdOf(result))

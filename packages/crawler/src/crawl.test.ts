@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { effectiveDelayMs, runCrawl, type CrawlResult } from './crawl.js'
+import { effectiveDelayMs, isInScope, runCrawl, type CrawlResult } from './crawl.js'
 import { DEFAULT_LIMITS, USER_AGENT, clampLimits } from './limits.js'
 import { EMPTY_ROBOTS, parseRobotsTxt } from './robots.js'
 import { fakeClock, fakePageSource, htmlWithLinks } from './site.test-helper.js'
@@ -238,5 +238,65 @@ describe('runCrawl — mapa witryny', () => {
       { sitemapUrls: ['https://obca.test/cokolwiek'] },
     )
     expect(result.pages).toHaveLength(1)
+  })
+})
+
+describe('runCrawl — zakres na wspoldzielonym hoscie', () => {
+  /**
+   * Darmowa poddomena (`uzytkownik.github.io/moj-projekt/`) to host wspoldzielony:
+   * obok naszych stron stoja cudze. Crawler ma zostac w swoim katalogu — inaczej
+   * audytuje cudza strone i puka do niej bez pytania.
+   */
+  const WSPOLDZIELONY = {
+    'https://uzytkownik.github.io/moj-projekt/':
+      htmlWithLinks('Mój projekt', ['/moj-projekt/o-mnie', '/czyjs-inny-projekt/', '/']),
+    'https://uzytkownik.github.io/moj-projekt/o-mnie': htmlWithLinks('O mnie', []),
+    'https://uzytkownik.github.io/czyjs-inny-projekt/': htmlWithLinks('Cudza strona', []),
+    'https://uzytkownik.github.io/':
+      htmlWithLinks('Katalog użytkownika', ['/moj-projekt/', '/czyjs-inny-projekt/']),
+  }
+
+  it('nie wychodzi poza katalog wskazany w adresie property', async () => {
+    const clock = fakeClock()
+    const source = fakePageSource(WSPOLDZIELONY, clock)
+    const result = await runCrawl({
+      siteUrl: 'https://uzytkownik.github.io/moj-projekt/',
+      pageSource: source,
+      clock,
+      limits: DEFAULT_LIMITS,
+      robots: EMPTY_ROBOTS,
+      robotsState: 'ok',
+    })
+
+    expect(result.pages.map((p) => p.url).sort()).toEqual([
+      'https://uzytkownik.github.io/moj-projekt/',
+      'https://uzytkownik.github.io/moj-projekt/o-mnie',
+    ])
+    expect(source.requested).not.toContain('https://uzytkownik.github.io/czyjs-inny-projekt/')
+    expect(result.outOfScope).toEqual([
+      'https://uzytkownik.github.io/',
+      'https://uzytkownik.github.io/czyjs-inny-projekt/',
+    ])
+  })
+
+  it('granica idzie po segmencie ścieżki, nie po tekście', () => {
+    expect(isInScope('https://a.test/projekt/x', 'https://a.test/projekt/')).toBe(true)
+    expect(isInScope('https://a.test/projekt', 'https://a.test/projekt/')).toBe(true)
+    // Najgrozniejszy przypadek: cudzy katalog o podobnej nazwie.
+    expect(isInScope('https://a.test/projekt-kogos-innego', 'https://a.test/projekt/')).toBe(false)
+    expect(isInScope('https://obca.test/projekt/x', 'https://a.test/projekt/')).toBe(false)
+  })
+
+  it('adres property bez ścieżki obejmuje cały host', async () => {
+    const clock = fakeClock()
+    const result = await runCrawl({
+      siteUrl: 'https://uzytkownik.github.io/',
+      pageSource: fakePageSource(WSPOLDZIELONY, clock),
+      clock,
+      limits: DEFAULT_LIMITS,
+      robots: EMPTY_ROBOTS,
+      robotsState: 'ok',
+    })
+    expect(result.pages.length).toBeGreaterThan(1)
   })
 })

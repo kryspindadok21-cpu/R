@@ -83,6 +83,8 @@ export interface CrawlResult {
   readonly pages: readonly CrawledPage[]
   readonly links: readonly LinkEdge[]
   readonly blockedByRobots: readonly string[]
+  /** Adresy na tym samym hoscie, ale poza katalogiem property — nie nasze. */
+  readonly outOfScope: readonly string[]
   /** `true`, gdy crawl uciel limit — wtedy reguly serwisowe milkna (D17). */
   readonly truncated: boolean
   readonly truncationReason: TruncationReason
@@ -99,9 +101,26 @@ function isHtml(contentType: string | null): boolean {
   return lower.includes('text/html') || lower.includes('application/xhtml+xml')
 }
 
-function sameHost(a: string, b: string): boolean {
+/**
+ * Zakres crawla: ten sam host **i** ta sama sciezka bazowa co adres property.
+ *
+ * Sam host nie wystarczy. Darmowa poddomena (`uzytkownik.github.io/moj-projekt/`,
+ * `konto.pages.dev`) to host wspoldzielony — obok naszych stron stoja cudze.
+ * Crawler, ktory chodzi po calym hoscie, audytuje cudza strone i puka do niej
+ * bez pytania. To samo dotyczy property typu „prefiks adresu" w Search Console:
+ * wlasciciel potwierdzil wlasnosc katalogu, nie calej domeny.
+ */
+export function isInScope(url: string, siteUrl: string): boolean {
   try {
-    return new URL(a).host === new URL(b).host
+    const target = new URL(url)
+    const base = new URL(siteUrl)
+    if (target.host !== base.host) return false
+
+    const prefix = base.pathname.replace(/\/+$/, '')
+    if (prefix === '') return true
+    // Granica na segmencie sciezki: `/projekt` obejmuje `/projekt/a`,
+    // ale nie `/projekt-innego-czlowieka`.
+    return target.pathname === prefix || target.pathname.startsWith(`${prefix}/`)
   } catch {
     return false
   }
@@ -133,7 +152,8 @@ export async function runCrawl(options: CrawlOptions): Promise<CrawlResult> {
   // narazalaby cudzy serwer w dokladnie tej sytuacji, w ktorej ma klopot.
   if (robotsState === 'unreachable') {
     return {
-      pages: [], links: [], blockedByRobots: [], truncated: false, truncationReason: null,
+      pages: [], links: [], blockedByRobots: [], outOfScope: [],
+      truncated: false, truncationReason: null,
       robotsState, requests: 0, startedAt, finishedAt: startedAt, userAgent,
     }
   }
@@ -141,8 +161,9 @@ export async function runCrawl(options: CrawlOptions): Promise<CrawlResult> {
   const frontier = createFrontier(limits.maxDepth)
   frontier.add(siteUrl, 0)
   const sitemapSet = new Set<string>()
+  const outOfScopeSeen = new Set<string>()
   for (const url of sitemapUrls) {
-    if (!sameHost(url, siteUrl)) continue
+    if (!isInScope(url, siteUrl)) { outOfScopeSeen.add(url); continue }
     sitemapSet.add(url)
     frontier.add(url, 0)
   }
@@ -212,8 +233,11 @@ export async function runCrawl(options: CrawlOptions): Promise<CrawlResult> {
         anchorText: link.anchorText,
         isInternal: link.isInternal,
       })
-      // Za linkiem wewnetrznym idziemy tylko wtedy, gdy strona pozwala isc dalej.
-      if (link.isInternal && !facts.metaRobots.nofollow && link.rel === 'follow') {
+      if (!link.isInternal) continue
+      // Ten sam host, ale cudzy katalog — zapisujemy fakt i zostawiamy w spokoju.
+      if (!isInScope(link.resolved, siteUrl)) { outOfScopeSeen.add(link.resolved); continue }
+      // Za linkiem idziemy tylko wtedy, gdy strona pozwala isc dalej.
+      if (!facts.metaRobots.nofollow && link.rel === 'follow') {
         frontier.add(link.resolved, item.depth + 1)
       }
     }
@@ -223,6 +247,7 @@ export async function runCrawl(options: CrawlOptions): Promise<CrawlResult> {
     pages,
     links,
     blockedByRobots,
+    outOfScope: [...outOfScopeSeen].sort(),
     truncated: truncationReason !== null || frontier.pending > 0,
     truncationReason,
     robotsState,

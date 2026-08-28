@@ -258,6 +258,10 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
       `Strony pobrane:              ${result.pagesFetched}\n` +
       `Strony nieudane:             ${result.pagesFailed}\n` +
       `Pominiete przez robots.txt:  ${result.blockedByRobots}\n` +
+      (result.outOfScope > 0
+        ? `Poza katalogiem property:    ${result.outOfScope} ` +
+          `— ten sam host, ale nie Twoje strony\n`
+        : '') +
       `Zadania HTTP:                ${result.requests}\n` +
       `Czas:                        ${Math.round(result.durationMs / 1000)} s\n` +
       (result.rendered > 0

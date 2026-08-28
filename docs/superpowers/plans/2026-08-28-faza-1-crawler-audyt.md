@@ -63,6 +63,13 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Crawler nie idzie za linkiem `nofollow` ani ze strony z `<meta robots nofollow>`,
   ale **krawędź zapisuje** — graf ma pokazywać, co autor strony zrobił, a nie
   tylko to, dokąd doszedł crawler.
+- **Naprawiony błąd znaleziony przy pytaniu właściciela o darmowy hosting:**
+  crawler uznawał za „wewnętrzne" wszystko na tym samym **hoście**, więc na
+  darmowej poddomenie (`uzytkownik.github.io/moj-projekt/`, `konto.pages.dev`)
+  wchodził w cudze katalogi. Audytowałby cudzą stronę i pukał do niej bez pytania.
+  Zakres to teraz host **plus ścieżka bazowa** property, z granicą na segmencie
+  ścieżki — `/projekt` nie obejmuje `/projekt-kogos-innego`. Adresy poza zakresem
+  są liczone i pokazywane, nie znikają po cichu.
 - PSI rozdziela **dane terenowe** (CrUX, od prawdziwych użytkowników — tylko one
   liczą się w Core Web Vitals) od **laboratoryjnych** (Lighthouse). Nie są mieszane
   w jednej liczbie; to najczęstsze oszustwo narzędzi wydajnościowych.

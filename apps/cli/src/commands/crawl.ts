@@ -50,6 +50,8 @@ export interface CrawlCommandResult {
   readonly pagesFetched: number
   readonly pagesFailed: number
   readonly blockedByRobots: number
+  /** Adresy na tym samym hoscie, ale poza katalogiem property. */
+  readonly outOfScope: number
   readonly robotsState: 'ok' | 'missing' | 'unreachable'
   readonly sitemapUrls: readonly string[]
   readonly truncated: boolean
@@ -144,7 +146,7 @@ export async function runCrawlCommand(
   if (options.dryRun === true) {
     return {
       siteId: site.id, runId: null, startUrl,
-      pagesFetched: 0, pagesFailed: 0, blockedByRobots: 0,
+      pagesFetched: 0, pagesFailed: 0, blockedByRobots: 0, outOfScope: 0,
       robotsState: robots.state, sitemapUrls,
       truncated: false, truncationReason: null, requests: 0, durationMs: 0,
       adjustments, limits, rendered: 0, renderFailed: 0, requiringJs: [],
@@ -242,6 +244,7 @@ export async function runCrawlCommand(
       pagesFetched: result.pages.length,
       pagesFailed,
       blockedByRobots: result.blockedByRobots.length,
+      outOfScope: result.outOfScope.length,
       robotsState: result.robotsState,
       sitemapUrls,
       truncated: result.truncated,
