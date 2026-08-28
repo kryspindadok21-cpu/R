@@ -9,7 +9,7 @@ import { RenderUnavailableError, createSiteFetchProvider } from '@seo/providers'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { dbLedger } from '../ledger.js'
 import { runAudit } from './audit.js'
-import { crawlStartUrl, runCrawlCommand } from './crawl.js'
+import { crawlStartUrl, defaultSitemapCandidates, runCrawlCommand } from './crawl.js'
 import { openInitialized } from './init.js'
 
 /**
@@ -143,6 +143,20 @@ describe('crawlStartUrl', () => {
 
   it('nie dubluje ukośnika', () => {
     expect(crawlStartUrl('https://przyklad.test/')).toBe('https://przyklad.test/')
+  })
+})
+
+describe('defaultSitemapCandidates', () => {
+  it('dla property w katalogu szuka najpierw u siebie, potem w korzeniu', () => {
+    expect(defaultSitemapCandidates('https://uzytkownik.github.io/moj-projekt/')).toEqual([
+      'https://uzytkownik.github.io/moj-projekt/sitemap.xml',
+      'https://uzytkownik.github.io/sitemap.xml',
+    ])
+  })
+
+  it('dla property w korzeniu nie dubluje tego samego adresu', () => {
+    expect(defaultSitemapCandidates('https://przyklad.test/'))
+      .toEqual(['https://przyklad.test/sitemap.xml'])
   })
 })
 

@@ -82,6 +82,17 @@ export function crawlStartUrl(propertyUri: string): string {
   return propertyUri.endsWith('/') ? propertyUri : `${propertyUri}/`
 }
 
+/**
+ * Gdzie szukac mapy witryny, gdy `robots.txt` jej nie wskazuje. Kolejnosc ma
+ * znaczenie: najpierw katalog property, potem korzen hosta. Serwis stojacy pod
+ * `uzytkownik.github.io/projekt/` nie ma wplywu na `/sitemap.xml` w korzeniu.
+ */
+export function defaultSitemapCandidates(startUrl: string): string[] {
+  const wPrefiksie = new URL('sitemap.xml', startUrl).toString()
+  const wKorzeniu = new URL('/sitemap.xml', startUrl).toString()
+  return wPrefiksie === wKorzeniu ? [wKorzeniu] : [wPrefiksie, wKorzeniu]
+}
+
 function fetchOptionsFrom(limits: CrawlLimits): SiteFetchOptions {
   return {
     timeoutMs: limits.requestTimeoutMs,
@@ -138,9 +149,13 @@ export async function runCrawlCommand(
   const startUrl = crawlStartUrl(options.siteUrl)
 
   const robots = await fetchRobots(provider, startUrl, fetchOptions)
+  // `robots.txt` czytamy wylacznie z korzenia hosta — tak robia prawdziwe crawlery
+  // i inne zachowanie rozjechaloby nas z Google. Ale mapy witryny szukamy takze
+  // **pod katalogiem property**: serwis na darmowej poddomenie albo property typu
+  // prefiks adresu trzyma swoja mape u siebie, nie w cudzym korzeniu.
   const sitemapRoots = robots.sitemaps.length > 0
     ? robots.sitemaps
-    : [new URL('/sitemap.xml', startUrl).toString()]
+    : defaultSitemapCandidates(startUrl)
   const sitemapUrls = await collectSitemapUrls(provider, sitemapRoots, fetchOptions)
 
   if (options.dryRun === true) {

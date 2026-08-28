@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widoczność w wyszukiwarkach AI: co ją blokuje</title>
+<meta name="description" content="Część crawlerów, z których korzystają modele językowe, nie wykonuje JavaScriptu. Strona może rankować w Google i nie istnieć w odpowiedziach AI.">
+<link rel="canonical" href="https://kryspindadok21-cpu.github.io/R/widocznosc-w-ai/">
+<link rel="stylesheet" href="/R/styl.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Widoczność w wyszukiwarkach AI: co ją blokuje">
+<meta property="og:description" content="Dlaczego treść doklejana JavaScriptem bywa niewidoczna dla modeli językowych.">
+<meta property="og:url" content="https://kryspindadok21-cpu.github.io/R/widocznosc-w-ai/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Widoczność w wyszukiwarkach AI: co ją blokuje","datePublished":"2026-08-28","inLanguage":"pl","mainEntityOfPage":"https://kryspindadok21-cpu.github.io/R/widocznosc-w-ai/"}
+</script>
+</head>
+<body>
+<header class="gorny">
+  <div class="szkielet">
+    <a class="znak" href="/R/">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="9.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.4 12.6 L9.6 8.2 L12.4 13.4 L15.8 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Audyt i widoczność</span>
+    </a>
+    <nav class="glowna">
+      <a href="/R/audyt-techniczny/">Audyt techniczny</a>
+      <a href="/R/widocznosc-w-ai/">Widoczność w AI</a>
+      <a href="/R/o-projekcie/">O projekcie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="szkielet">
+  <h1>Widoczność w wyszukiwarkach AI: co ją blokuje</h1>
+
+  <p class="wstep">Najczęstszą przyczyną nieobecności strony w odpowiedziach
+  modeli językowych nie jest słaba treść, tylko treść, której nie ma w surowym
+  kodzie strony. Część crawlerów pobierających dane dla modeli nie wykonuje
+  JavaScriptu — dla nich strona składana w przeglądarce jest pusta.</p>
+
+  <p class="data">Notatka z 28 sierpnia 2026</p>
+
+  <h2>Jak sprawdzić, czy strona wymaga JavaScriptu</h2>
+
+  <p>Sprawdzenie jest proste i nie wymaga narzędzi: pobierz stronę tak, jak robi
+  to zwykły klient HTTP, i porównaj to, co dostałeś, z tym, co widzisz
+  w przeglądarce. Jeśli w surowej odpowiedzi jest pusty kontener i odwołanie do
+  pliku ze skryptem, a cała treść pojawia się dopiero po jego wykonaniu, to
+  właśnie ten przypadek.</p>
+
+  <p>Narzędzie, o którym piszę na tej stronie, robi to samo automatycznie:
+  pobiera surowy dokument, renderuje ten sam adres w przeglądarce i podaje udział
+  treści widocznej dopiero po wykonaniu skryptu. Powyżej pewnego progu strona
+  dostaje ustalenie o wysokiej wadze.</p>
+
+  <h2>Dlaczego fragment tekstu musi bronić się sam</h2>
+
+  <p>Modele językowe rzadko cytują całą stronę. Tną ją na fragmenty i sięgają po
+  ten, który najlepiej odpowiada na pytanie. Fragment wyrwany z kontekstu musi
+  więc zawierać własny podmiot. Nagłówek brzmiący „Dlaczego?” nie niesie żadnej
+  informacji poza stroną, na której stoi. Ten sam nagłówek rozwinięty do
+  „Dlaczego audyt techniczny wykrywa ten problem wcześniej” działa samodzielnie.</p>
+
+  <p>Ta sama zasada dotyczy pierwszego akapitu po nagłówku. Jeśli odpowiada wprost
+  na pytanie postawione w nagłówku, w jednym zdaniu i bez rozbiegu, ma znacznie
+  większą szansę zostać wyciętym jako odpowiedź.</p>
+
+  <h2>Czego nie warto robić dla widoczności w AI</h2>
+
+  <p>Nie warto upychać nazwy marki w domenie ani w tytułach. Nie warto budować
+  narracji wokół plików, których żaden duży dostawca nie zobowiązał się czytać.
+  I nie warto mierzyć widoczności jednym przebiegiem promptu — odpowiedzi modeli
+  są niedeterministyczne, więc pojedynczy pomiar jest szumem, a nie trendem.</p>
+
+  <p>Warto natomiast to, co działa niezależnie od mody: treść dostępna bez
+  JavaScriptu, fragmenty samodzielne, odpowiedź wprost i porządne znaczniki encji.
+  To są czynniki strukturalne i one zostaną, kiedy dzisiejsze wskazówki się
+  zdezaktualizują.</p>
+
+  <p>O tym, jak sprawdzić stan techniczny strony, piszę w notatce o
+  <a href="/R/audyt-techniczny/">kolejności sprawdzeń w audycie</a>.</p>
+</main>
+
+<footer class="dolny">
+  <div class="szkielet">
+    <p><a href="/R/">Wróć na stronę główną</a></p>
+  </div>
+</footer>
+</body>
+</html>

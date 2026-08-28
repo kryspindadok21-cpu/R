@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O projekcie: narzędzie do audytu i pomiaru</title>
+<meta name="description" content="Czym jest budowane narzędzie, jak działa jego crawler, jakie ma bezpieczniki i dlaczego nie podaje oceny w skali punktowej.">
+<link rel="canonical" href="https://kryspindadok21-cpu.github.io/R/o-projekcie/">
+<link rel="stylesheet" href="/R/styl.css">
+<meta property="og:type" content="website">
+<meta property="og:title" content="O projekcie: narzędzie do audytu i pomiaru">
+<meta property="og:description" content="Czym jest budowane narzędzie, jak działa jego crawler i jakie ma bezpieczniki.">
+<meta property="og:url" content="https://kryspindadok21-cpu.github.io/R/o-projekcie/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"O projekcie: narzędzie do audytu i pomiaru","url":"https://kryspindadok21-cpu.github.io/R/o-projekcie/","inLanguage":"pl"}
+</script>
+</head>
+<body>
+<header class="gorny">
+  <div class="szkielet">
+    <a class="znak" href="/R/">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="9.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.4 12.6 L9.6 8.2 L12.4 13.4 L15.8 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Audyt i widoczność</span>
+    </a>
+    <nav class="glowna">
+      <a href="/R/audyt-techniczny/">Audyt techniczny</a>
+      <a href="/R/widocznosc-w-ai/">Widoczność w AI</a>
+      <a href="/R/o-projekcie/">O projekcie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="szkielet">
+  <h1>O projekcie: narzędzie do audytu i pomiaru</h1>
+
+  <p class="wstep">To jest strona testowa narzędzia, które przechodzi serwis
+  jak robot wyszukiwarki, sprawdza go zestawem reguł i produkuje raport,
+  w którym każde ustalenie ma adres i zmierzoną wartość. Narzędzie działa
+  lokalnie, trzyma dane w jednym pliku i nie wymaga żadnej płatnej usługi.</p>
+
+  <h2>Jak zachowuje się crawler wobec cudzego serwera</h2>
+
+  <p>Crawler przedstawia się własną nazwą i adresem kontaktowym, więc każdy
+  administrator może go zablokować. Nie podszywa się pod przeglądarkę. Czyta
+  <code>robots.txt</code> i respektuje zarówno zakazy, jak i prośbę o wolniejsze
+  tempo. Jeśli <code>robots.txt</code> jest nieosiągalny z powodu awarii serwera,
+  crawl nie rusza — bo to jest właśnie ta chwila, w której nie należy dokładać
+  komuś ruchu.</p>
+
+  <p>Domyślne tempo to jedno żądanie na sekundę na host, z limitem stron,
+  głębokości i czasu całego przebiegu. Wartości można obniżyć, nie można podnieść
+  powyżej ustalonego sufitu.</p>
+
+  <h2>Dlaczego raport nie podaje oceny punktowej</h2>
+
+  <p>Ocena zbiorcza w skali od zera do stu wymaga wag przypisanych każdemu
+  rodzajowi usterki. Nikt nie umie tych wag uzasadnić, a ich efektem jest zachęta
+  do poprawiania wskaźnika zamiast strony. Zamiast tego raport podaje liczbę
+  ustaleń w podziale na wagę i wypisuje każde z nich osobno, razem z dowodem.</p>
+
+  <p>Konsekwencja jest praktyczna: dwa audyty tej samej strony da się porównać
+  regułą po regule i powiedzieć, co konkretnie zniknęło, a co doszło. Z liczby
+  zbiorczej nie da się wyciągnąć nic poza kierunkiem.</p>
+
+  <h2>Co reguła robi, gdy zabraknie jej danych</h2>
+
+  <p>Milczy i mówi, że milczy. Jeśli crawl został przerwany limitem stron, reguła
+  wykrywająca strony osierocone nie ma prawa głosu — „nikt tu nie linkuje"
+  znaczyłoby wtedy „nie doszliśmy", a to zupełnie co innego. Raport wypisuje
+  wszystkie reguły pominięte razem z powodem, bo cicho pominięta reguła daje
+  fałszywe poczucie porządku, a nie brak problemu.</p>
+
+  <h2>Stan prac i co dalej</h2>
+
+  <p>Gotowa jest warstwa danych z Search Console, crawler z regułami audytu,
+  wykrywanie treści wymagającej JavaScriptu, pomiar wydajności i raport
+  techniczny. Następny etap to pomiar widoczności w odpowiedziach modeli
+  językowych — z warstwą statystyczną, bo pojedynczy przebieg promptu jest
+  szumem, nie pomiarem.</p>
+
+  <p>Więcej o metodzie: <a href="/R/audyt-techniczny/">kolejność sprawdzeń w audycie</a>
+  oraz <a href="/R/widocznosc-w-ai/">widoczność w wyszukiwarkach AI</a>.</p>
+</main>
+
+<footer class="dolny">
+  <div class="szkielet">
+    <p><a href="/R/">Wróć na stronę główną</a></p>
+  </div>
+</footer>
+</body>
+</html>

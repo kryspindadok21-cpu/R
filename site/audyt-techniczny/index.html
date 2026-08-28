@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audyt techniczny: kolejność sprawdzeń</title>
+<meta name="description" content="Dlaczego audyt techniczny zaczyna się od indeksacji, a nie od długości tytułów, i co dokładnie sprawdzić w każdej z czterech warstw.">
+<link rel="canonical" href="https://kryspindadok21-cpu.github.io/R/audyt-techniczny/">
+<link rel="stylesheet" href="/R/styl.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Audyt techniczny: kolejność sprawdzeń">
+<meta property="og:description" content="Dlaczego audyt techniczny zaczyna się od indeksacji i co sprawdzić w każdej z czterech warstw.">
+<meta property="og:url" content="https://kryspindadok21-cpu.github.io/R/audyt-techniczny/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Audyt techniczny: kolejność sprawdzeń","datePublished":"2026-08-28","inLanguage":"pl","mainEntityOfPage":"https://kryspindadok21-cpu.github.io/R/audyt-techniczny/"}
+</script>
+</head>
+<body>
+<header class="gorny">
+  <div class="szkielet">
+    <a class="znak" href="/R/">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="9.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.4 12.6 L9.6 8.2 L12.4 13.4 L15.8 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Audyt i widoczność</span>
+    </a>
+    <nav class="glowna">
+      <a href="/R/audyt-techniczny/">Audyt techniczny</a>
+      <a href="/R/widocznosc-w-ai/">Widoczność w AI</a>
+      <a href="/R/o-projekcie/">O projekcie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="szkielet">
+  <h1>Audyt techniczny: kolejność sprawdzeń</h1>
+
+  <p class="wstep">Audyt techniczny sprawdza się w czterech warstwach po kolei:
+  indeksacja, potem struktura linkowania, potem treść, na końcu drobiazgi.
+  Kolejność nie jest kwestią gustu — każda warstwa zakłada, że poprzednia działa.</p>
+
+  <p class="data">Notatka z 28 sierpnia 2026</p>
+
+  <h2>Warstwa pierwsza: czy strona może trafić do indeksu</h2>
+
+  <p>To jest pytanie rozstrzygające. Strona, która zwraca błąd serwera, wyklucza
+  się dyrektywą <code>noindex</code> albo wskazuje adres kanoniczny prowadzący
+  na inny dokument, nie trafi do wyników niezależnie od tego, jak dobra jest
+  treść. Sprawdzenia w tej warstwie to statusy odpowiedzi, dyrektywy dla robotów,
+  adresy kanoniczne i łańcuchy przekierowań.</p>
+
+  <p>Szczególnie warto przyjrzeć się dwóm rzeczom, które łatwo przeoczyć.
+  Pierwsza to strona zablokowana w <code>robots.txt</code>, do której mimo to
+  prowadzą linki wewnętrzne — sygnał, że ktoś zablokował coś, czego blokować nie
+  zamierzał. Druga to adres kanoniczny wskazujący stronę wykluczoną z indeksu,
+  co skutecznie usuwa z wyników obie.</p>
+
+  <h2>Warstwa druga: struktura linkowania wewnętrznego</h2>
+
+  <p>Kiedy już wiadomo, że strony mogą być indeksowane, warto sprawdzić, czy
+  wyszukiwarka ma jak do nich dotrzeć. Strona osierocona — czyli taka, do której
+  nie prowadzi żaden link z serwisu — jest osiągalna wyłącznie przez mapę
+  witryny. To działa, ale słabo, a dla modeli językowych zwykle wcale.</p>
+
+  <p>Druga rzecz to głębokość. Strona oddalona o sześć kliknięć od strony głównej
+  jest praktycznie ukryta, nawet jeśli formalnie da się do niej dojść. Trzecia to
+  linki prowadzące przez przekierowania — każdy przeskok kosztuje budżet
+  crawlowania i rozmywa sygnał.</p>
+
+  <h2>Warstwa trzecia: treść i jej opis</h2>
+
+  <p>Dopiero tutaj wchodzą tytuły, opisy i nagłówki. Tytuł powyżej sześćdziesięciu
+  znaków bywa ucinany w wynikach — to nie kara, tylko utrata miejsca na komunikat.
+  Powtórzony tytuł na kilku stronach oznacza, że wyszukiwarka musi zgadywać, która
+  z nich odpowiada na pytanie.</p>
+
+  <p>Osobna kategoria to strony o bardzo ubogiej treści. Nie chodzi o arbitralny
+  próg liczby słów, tylko o pytanie, czy strona odpowiada na cokolwiek
+  samodzielnie. Jeśli nie, prawdopodobnie powinna zostać połączona z inną.</p>
+
+  <h2>Warstwa czwarta: dane strukturalne i drobiazgi</h2>
+
+  <p>Na końcu: poprawność danych strukturalnych, deklaracja kodowania i języka,
+  wymiary obrazów, teksty alternatywne, zasoby ładowane po HTTP na stronie
+  serwowanej po HTTPS. Każdy z tych punktów osobno jest drobiazgiem. Razem
+  decydują o tym, czy strona wygląda na zadbaną.</p>
+
+  <blockquote>Wynik audytu to lista ustaleń z adresem i zmierzoną wartością,
+  a nie ocena w skali od zera do stu. Liczba zbiorcza wymaga wag, których nikt
+  nie umie uzasadnić, i zachęca do poprawiania wskaźnika zamiast strony.</blockquote>
+
+  <p>O drugiej połowie problemu — widoczności dla modeli językowych — piszę
+  w notatce o <a href="/R/widocznosc-w-ai/">widoczności w wyszukiwarkach AI</a>.</p>
+</main>
+
+<footer class="dolny">
+  <div class="szkielet">
+    <p><a href="/R/">Wróć na stronę główną</a></p>
+  </div>
+</footer>
+</body>
+</html>

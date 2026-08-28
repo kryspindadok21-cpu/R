@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kryspindadok21-cpu.github.io/R/sitemap.xml

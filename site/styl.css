@@ -1,0 +1,95 @@
+/*
+ * Zero zasobow z sieci: fonty systemowe, brak bibliotek, brak sledzenia.
+ * Ta sama zasada, ktora obowiazuje raport generowany przez narzedzie.
+ */
+:root {
+  color-scheme: light dark;
+  --tlo: #fdfdfc;
+  --tekst: #1a1c1f;
+  --slabe: #5f6672;
+  --linia: #e3e5e8;
+  --akcent: #1a56b8;
+  --karta: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tlo: #101215;
+    --tekst: #e9ebee;
+    --slabe: #9aa2ad;
+    --linia: #262a30;
+    --akcent: #7aa7f0;
+    --karta: #171a1e;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--tlo);
+  color: var(--tekst);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+.szkielet { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem; }
+
+header.gorny {
+  border-bottom: 1px solid var(--linia);
+  padding: 1.1rem 0;
+  margin-bottom: 3rem;
+}
+header.gorny .szkielet { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+.znak { display: flex; align-items: center; gap: .55rem; text-decoration: none; color: var(--tekst); font-weight: 600; }
+.znak svg { display: block; }
+
+nav.glowna { margin-left: auto; display: flex; gap: 1.25rem; flex-wrap: wrap; }
+nav.glowna a { color: var(--slabe); text-decoration: none; font-size: .95rem; }
+nav.glowna a:hover, nav.glowna a:focus { color: var(--akcent); text-decoration: underline; }
+
+main { padding-bottom: 4rem; }
+
+h1 { font-size: 2rem; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 1rem; }
+h2 { font-size: 1.25rem; line-height: 1.3; margin: 2.75rem 0 .75rem; letter-spacing: -.01em; }
+h3 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+p { margin: 0 0 1.1rem; }
+
+.wstep { font-size: 1.15rem; color: var(--tekst); }
+.data { color: var(--slabe); font-size: .9rem; margin: -.5rem 0 2rem; }
+
+a { color: var(--akcent); }
+
+ul, ol { margin: 0 0 1.1rem; padding-left: 1.35rem; }
+li { margin-bottom: .45rem; }
+
+.karty { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; margin: 2rem 0; }
+.karta {
+  border: 1px solid var(--linia);
+  border-radius: .7rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--karta);
+}
+.karta h2 { margin: 0 0 .4rem; font-size: 1.05rem; }
+.karta p { margin: 0 0 .7rem; color: var(--slabe); font-size: .95rem; }
+.karta a { font-size: .95rem; }
+
+blockquote {
+  margin: 1.75rem 0;
+  padding: .1rem 0 .1rem 1.1rem;
+  border-left: 3px solid var(--linia);
+  color: var(--slabe);
+}
+
+footer.dolny {
+  border-top: 1px solid var(--linia);
+  padding: 1.75rem 0 3rem;
+  color: var(--slabe);
+  font-size: .9rem;
+}
+footer.dolny a { color: var(--slabe); }
+
+@media (max-width: 30rem) {
+  h1 { font-size: 1.6rem; }
+  body { font-size: 16px; }
+}

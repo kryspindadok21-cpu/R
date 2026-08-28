@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audyt techniczny i widoczność w wyszukiwarkach AI</title>
+<meta name="description" content="Notatki z budowy narzędzia, które sprawdza stan techniczny strony i mierzy, czy jej treść jest w ogóle widoczna dla modeli AI.">
+<link rel="canonical" href="https://kryspindadok21-cpu.github.io/R/">
+<link rel="stylesheet" href="/R/styl.css">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Audyt techniczny i widoczność w wyszukiwarkach AI">
+<meta property="og:description" content="Notatki z budowy narzędzia, które sprawdza stan techniczny strony i mierzy jej widoczność dla modeli AI.">
+<meta property="og:url" content="https://kryspindadok21-cpu.github.io/R/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Audyt techniczny i widoczność w AI","url":"https://kryspindadok21-cpu.github.io/R/","inLanguage":"pl"}
+</script>
+</head>
+<body>
+<header class="gorny">
+  <div class="szkielet">
+    <a class="znak" href="/R/">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="9.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.4 12.6 L9.6 8.2 L12.4 13.4 L15.8 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Audyt i widoczność</span>
+    </a>
+    <nav class="glowna">
+      <a href="/R/audyt-techniczny/">Audyt techniczny</a>
+      <a href="/R/widocznosc-w-ai/">Widoczność w AI</a>
+      <a href="/R/o-projekcie/">O projekcie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="szkielet">
+  <h1>Audyt techniczny i widoczność w wyszukiwarkach AI</h1>
+
+  <p class="wstep">Strona może być zbudowana bez zarzutu pod Google i jednocześnie
+  nie istnieć dla ChatGPT czy Perplexity. To dwa różne problemy, mierzone dwoma
+  różnymi sposobami — i o obu jest ta strona.</p>
+
+  <p>Zbieram tu notatki z budowy narzędzia, które robi jedno i drugie: przechodzi
+  stronę tak, jak zrobiłby to robot wyszukiwarki, wypisuje konkretne usterki
+  z adresem i zmierzoną wartością, a potem sprawdza, ile z treści zostaje, gdy
+  odetnie się JavaScript. Bez ocen w skali punktowej, bez wskaźników, których nie
+  da się sprawdzić palcem.</p>
+
+  <div class="karty">
+    <div class="karta">
+      <h2>Od czego zacząć porządki</h2>
+      <p>Kolejność sprawdzeń w audycie technicznym i powód, dla którego indeksacja
+      idzie przed wszystkim innym.</p>
+      <a href="/R/audyt-techniczny/">Przeczytaj o kolejności sprawdzeń</a>
+    </div>
+    <div class="karta">
+      <h2>Kiedy strona znika dla modeli</h2>
+      <p>Dlaczego treść doklejana JavaScriptem bywa niewidoczna dla części
+      crawlerów, z których korzystają modele językowe.</p>
+      <a href="/R/widocznosc-w-ai/">Przeczytaj o widoczności w AI</a>
+    </div>
+  </div>
+
+  <h2>Dlaczego audyt techniczny idzie pierwszy</h2>
+
+  <p>Każda praca nad treścią zakłada, że wyszukiwarka jest w stanie tę treść
+  odczytać i umieścić w indeksie. Jeśli strona zwraca błąd serwera, wyklucza się
+  dyrektywą <code>noindex</code> albo wskazuje adres kanoniczny prowadzący gdzie
+  indziej, to najlepszy tekst świata nie ma znaczenia. Dlatego lista usterek
+  zaczyna się od indeksacji, a nie od długości tytułów.</p>
+
+  <p>Druga rzecz, którą audyt rozstrzyga wcześnie, to struktura linkowania
+  wewnętrznego. Strona, do której nie prowadzi żaden link z serwisu, jest dla
+  wyszukiwarki dostępna wyłącznie przez mapę witryny — a dla modeli językowych
+  zwykle wcale.</p>
+
+  <h2>Czym różni się widoczność w modelach językowych</h2>
+
+  <p>Klasyczne pozycjonowanie mierzy miejsce w liście wyników. Widoczność w AI
+  mierzy coś innego: czy w odpowiedzi na konkretne pytanie model w ogóle wspomni
+  o danym źródle. To rozróżnienie ma praktyczne konsekwencje dla tego, jak buduje
+  się stronę — fragment tekstu musi bronić się sam, bez reszty strony wokół.</p>
+
+  <p>Więcej o tym w notatce o <a href="/R/widocznosc-w-ai/">widoczności w wyszukiwarkach AI</a>,
+  a o samym narzędziu — na stronie <a href="/R/o-projekcie/">o projekcie</a>.</p>
+</main>
+
+<footer class="dolny">
+  <div class="szkielet">
+    <p>Strona testowa projektu. Kod źródłowy narzędzia leży w tym samym
+    repozytorium co ta strona.</p>
+  </div>
+</footer>
+</body>
+</html>
