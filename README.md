@@ -1,17 +1,39 @@
-# Platforma SEO/GEO — Faza 0
+# Platforma SEO/GEO
 
-Narzędzie wiersza poleceń, które pobiera dane z Google Search Console do lokalnej
-bazy SQLite, sprawdza ich poprawność i generuje statyczny raport HTML.
+Narzędzie wiersza poleceń, które:
 
-Faza 0 celowo robi jedną rzecz porządnie: **dane z GSC dla jednej strony, policzalne
-i weryfikowalne co do jednego kliknięcia**. Bez hostingu, bez płatnych usług, bez
-kont w zewnętrznych narzędziach.
+- pobiera dane z **Google Search Console** do lokalnej bazy SQLite i weryfikuje
+  ich poprawność co do jednego kliknięcia,
+- **przechodzi stronę** jak robot wyszukiwarki i sprawdza ją zestawem
+  **61 reguł audytu**,
+- **wykrywa treść, która istnieje dopiero po wykonaniu JavaScriptu** — czyli
+  jest niewidoczna dla części crawlerów, z których korzystają modele AI,
+- mierzy wydajność przez **PageSpeed Insights**,
+- składa to w **statyczny raport HTML**, w którym każde ustalenie ma adres
+  i zmierzoną wartość.
+
+Bez hostingu, bez płatnych usług, bez kont w zewnętrznych narzędziach.
+
+## Stan prac
+
+| Faza | Zakres | Stan |
+|---|---|---|
+| 0 | Fundament: dane z Search Console, baza, raport | kod gotowy; czeka na uprawnienie w GSC |
+| 1 | Crawler, audyt, renderowanie, PSI, raport techniczny | **ukończona** |
+| 2 | Pomiar widoczności w odpowiedziach modeli językowych | nie zaczęta |
+| 3 | Silnik treści | nie zaczęta |
+| 4 | Pętla agentowa — sama naprawia i mierzy efekt | nie zaczęta |
+| 5 | Panel webowy | nie zaczęta |
+
+Szczegóły i punkt wznowienia: tabela **STAN PRAC** w
+`docs/superpowers/plans/2026-08-28-faza-1-crawler-audyt.md`.
 
 ## Wymagania
 
 - Node 22 lub nowszy
 - pnpm (wersja z pola `packageManager` w `package.json`)
-- Konto Google z dostępem do property w Search Console
+- Konto Google z dostępem do property w Search Console (tylko dla poleceń `gsc`)
+- Chromium — **opcjonalnie**, wyłącznie dla `--render`
 
 ## Instalacja
 
@@ -20,109 +42,72 @@ pnpm install
 pnpm test        # musi być zielone przed pierwszym uruchomieniem
 ```
 
-## Konfiguracja dostępu do Search Console
-
-Dane pobiera **konto serwisowe** — jego token nie wygasa po tygodniu i nie wymaga
-weryfikacji aplikacji u Google.
-
-1. W Google Cloud Console: nowy projekt → włącz „Google Search Console API".
-2. Utwórz konto serwisowe i wygeneruj dla niego klucz JSON.
-3. Zapisz klucz **poza repozytorium**, np. `~/.seo/gsc.sa.json`, i ustaw `chmod 600`.
-4. W Search Console → Ustawienia → Użytkownicy i uprawnienia dodaj adres e-mail
-   konta serwisowego. Zacznij od poziomu „Ograniczony"; jeśli API zwróci `403`,
-   podnieś do „Pełny".
-5. Wskaż plik klucza: `export SEO_GSC_KEY_FILE=~/.seo/gsc.sa.json`.
-
-Klucz nigdy nie trafia do repozytorium — pilnuje tego `pnpm check:secrets`, a
-`.gitignore` odrzuca `*.sa.json` i katalog `credentials/`.
-
 ## Polecenia
 
 ```bash
-seo init                                        # baza + migracje
-seo gsc sync   --site sc-domain:twojastrona.pl  # pobranie danych
-seo gsc verify --site sc-domain:twojastrona.pl --date 2026-03-07
-seo gsc smoke  --site sc-domain:twojastrona.pl  # jedno prawdziwe wywołanie API
-seo report     --site sc-domain:twojastrona.pl --out raport.html
+seo init                              # baza i migracje
+seo gsc sync   --site <uri>           # dane z Search Console
+seo gsc verify --site <uri> --date <YYYY-MM-DD>
+seo crawl      --site <uri> [--render N]
+seo audit      --site <uri>
+seo psi        --site <uri> [--limit N]
+seo report     --site <uri> [--audit]
 ```
 
-Dopóki pakiet nie jest zbudowany, każde polecenie uruchamiasz przez
-`pnpm exec tsx apps/cli/src/bin.ts <polecenie>`.
+Pełna lista flag: `seo help`.
 
-`--site` przyjmuje identyfikator property dokładnie w formacie z Search Console:
-`sc-domain:twojastrona.pl` dla właściwości domenowej albo `https://twojastrona.pl/`
-dla właściwości z prefiksem URL.
+## Architektura
 
-Domyślny zakres synchronizacji to 90 dni kończące się **3 dni przed dzisiaj** —
-świeższe dni w Search Console są niekompletne i zmieniają się jeszcze przez kilka dni.
+Monorepo pnpm + Turborepo. Warstwy nie mieszają się i pilnuje tego
+`scripts/check-deps.ts`:
 
-### Weryfikacja danych
-
-`seo gsc verify` drukuje liczby do ręcznego porównania z interfejsem Search Console.
-Kliknięcia muszą zgadzać się **co do jednego**. Różnica między sumą dzienną a sumą
-po hasłach to dane, które Google celowo ukrywa dla ochrony prywatności wyszukujących
-— narzędzie ją mierzy i pokazuje, zamiast udawać, że jej nie ma.
-
-## Zmienne środowiskowe
-
-| Zmienna | Znaczenie | Domyślnie |
+| Pakiet | Rola | Wejście/wyjście |
 |---|---|---|
-| `SEO_DB_PATH` | ścieżka pliku bazy | `~/.seo/seo.db` |
-| `SEO_GSC_KEY_FILE` | klucz JSON konta serwisowego | brak (polecenia `gsc` nie zadziałają) |
-| `SEO_TENANT` | identyfikator tenanta | `local` |
+| `core` | URL, daty, ULID, zakres tenanta | **zero** |
+| `parse` | HTML → `PageFacts` | **zero** |
+| `rules` | silnik reguł i 61 reguł audytu | **zero** |
+| `crawler` | `robots.txt`, mapy, kolejka, graf linków | **zero** — źródło stron wstrzykiwane |
+| `report` | generowanie raportów HTML | **zero** |
+| `db` | jedyne wejście do bazy | SQLite |
+| `providers` | jedyne wyjście na zewnątrz | sieć |
+| `apps/cli` | skleja warstwy | — |
 
-## Układ repozytorium
+Silnik, który zaimportuje warstwę wejścia/wyjścia, przestaje być silnikiem —
+i test to wyłapie.
 
-| Pakiet | Odpowiedzialność |
-|---|---|
-| `packages/core` | czyste funkcje: normalizacja URL, ULID, zakres tenanta, arytmetyka dat, uzgodnienie |
-| `packages/db` | jedyne wejście do bazy; każda funkcja wymaga `TenantScope` |
-| `packages/providers` | jedyne wyjście na zewnątrz; każde wywołanie trafia do tabeli `provider_call` |
-| `packages/report` | czysty silnik HTML — dostaje dane, zwraca tekst |
-| `apps/cli` | skleja warstwy w polecenia |
+## Zasady, które nie są kwestią gustu
 
-Reguł pilnuje `pnpm check:deps`: czyste silniki nie mogą importować wejścia/wyjścia,
-bazy dotyka wyłącznie `packages/db`, do sieci wychodzi wyłącznie `packages/providers`.
+- **Koszt 0 zł.** Żadnej zależności wymagającej płatnego konta.
+- **Zero oceny zbiorczej 0–100.** Liczba, której nie da się sprawdzić, zachęca
+  do poprawiania wskaźnika zamiast strony. Liczymy ustalenia według wagi.
+- **Reguła bez danych milczy i melduje, że milczy.** Crawl ucięty limitem
+  odbiera prawo głosu regułom serwisowym — „nikt tu nie linkuje" znaczyłoby
+  wtedy „nie doszliśmy".
+- **Crawler nie podszywa się pod przeglądarkę** i respektuje `robots.txt`,
+  łącznie z prośbą o wolniejsze tempo. Nieosiągalny `robots.txt` zatrzymuje crawl.
+- **Testy przechodzą bez sieci i bez przeglądarki.**
+- **Dane terenowe i laboratoryjne z PSI nigdy nie są mieszane** w jednej liczbie.
 
-## Dobór umiejętności pod zadanie (plugin `dobor-narzedzi`)
+## Strona testowa
 
-Repozytorium wiezie piętnaście umiejętności w `.agents/skills` — wczytanie
-wszystkich to około 48 tys. tokenów samych `SKILL.md`. Plugin dobiera te, które
-pasują do konkretnego zadania, i pilnuje budżetu:
+`site/` — statyczna strona publikowana na GitHub Pages, żeby narzędzie miało
+prawdziwy serwis do przejścia. Szczegóły: `site/README.md`.
 
-```bash
-pnpm skills:index                                   # przelicz katalog i koszty
-pnpm skills:pick "test się wywala, znajdź przyczynę" # dobierz umiejętności
-```
+## Skille dla agenta
 
-W Claude Code, z katalogu nadrzędnego wobec repozytorium:
-
-```
-/plugin marketplace add ./R
-/plugin install dobor-narzedzi@seo-platform
-/skille chcę dodać dane strukturalne do stron produktów
-```
-
-Szczegóły działania i ograniczenia: `plugins/dobor-narzedzi/README.md`.
-Katalog `skills-index.json` jest wersjonowany, a test pilnuje, żeby nie
-rozjechał się z zawartością `.agents/skills`.
-
-## Bramka jakości
+`.agents/skills` wiezie piętnaście umiejętności; `.claude/skills` to dowiązania
+do nich. Wczytanie wszystkich naraz to około 48 tysięcy tokenów, więc plugin
+`dobor-narzedzi` wybiera tylko pasujące do zadania:
 
 ```bash
-pnpm typecheck && pnpm test && pnpm test:tz-east && pnpm test:tz-west \
-  && pnpm check:deps && pnpm check:secrets
+pnpm -s skills:pick "opis zadania"
+pnpm -s skills:index    # po zmianie katalogu .agents/skills
 ```
 
-Testy w trzech strefach czasowych są obowiązkowe: daty z Search Console są tekstem
-w kalendarzu `America/Los_Angeles` i nigdy nie wolno ich przepuszczać przez `new Date()`.
-Różnica wyników między strefami oznacza, że gdzieś w ścieżce danych powstaje `Date`.
+## Kontrole
 
-Żaden test nie sięga do sieci. Jedynym poleceniem wykonującym prawdziwe wywołanie
-API jest `seo gsc smoke` — świadomie nieobecne w CI.
-
-## Dokumentacja
-
-- Specyfikacja: `docs/superpowers/specs/2026-08-27-faza-0-fundament-design.md`
-- Plan wykonawczy i stan prac: `docs/superpowers/plans/2026-08-27-faza-0-fundament.md`
-- Analiza rynku i plan platformy: `docs/analiza-seo-geo-i-plan-budowy.md`
+```bash
+pnpm typecheck
+pnpm check:deps      # reguły warstw
+pnpm check:secrets   # skan sekretów
+```
