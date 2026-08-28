@@ -12,7 +12,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 
 | Zadanie | Stan | Commit |
 |---|---|---|
-| 1. `packages/parse` — HTML → `PageFacts` | nie zaczęte | — |
+| 1. `packages/parse` — HTML → `PageFacts` | ukończone, 234 testy zielone łącznie | `00b12bf` |
 | 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | nie zaczęte | — |
 | 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | nie zaczęte | — |
 | 4. `packages/crawler` — `robots.txt` + mapy witryny | nie zaczęte | — |
@@ -23,7 +23,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 9. `apps/cli` — `seo crawl` | nie zaczęte | — |
 | 10. `apps/cli` — `seo audit` | nie zaczęte | — |
 | 11. `packages/report` — raport audytu | nie zaczęte | — |
-| 12. Renderowanie i diff surowy↔wyrenderowany (D16) | nie zaczęte | — |
+| 12. Renderowanie i diff surowy↔wyrenderowany (D16) | **częściowo** — `diffRenderedFacts` gotowy i przetestowany; został `RenderProvider` na Playwrighcie | `00b12bf` |
 | 13. PageSpeed Insights (D21) | nie zaczęte | — |
 | 14. `check-deps`, CI, odbiór na własnej stronie | nie zaczęte | — |
 
@@ -31,7 +31,16 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 potem pierwsze zadanie ze stanem innym niż „ukończone".
 
 **Odstępstwa od planu odnotowane w trakcie:**
-- (brak)
+- `parse5` ma jedną zależność przechodnią (`entities`, MIT), nie zero jak zakładał D13.
+  Nadal bez wejścia/wyjścia, więc decyzja zostaje w mocy.
+- Czysta połowa Zadania 12 (`diffRenderedFacts`) wykonana razem z Zadaniem 1 —
+  reguła `ai.js-required-for-content` z Zadania 3 potrzebuje jej jako wejścia.
+- Akumulatory w `parsePage` siedzą w jednym obiekcie, nie w osobnych `let`.
+  TypeScript zawęża `let` przypisywany wyłącznie w domknięciu do typu wartości
+  początkowej; pole obiektu zachowuje typ zadeklarowany.
+- Ponad plan: `scripts/check-deps.ts` egzekwuje konwencję `*.test-helper.ts` —
+  taki plik wolno wyłączyć z reguł warstw, ale importować go może wyłącznie test.
+  Bez tej drugiej połowy byłoby to obejście reguły, a nie wyjątek od niej.
 
 ---
 
