@@ -32,10 +32,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # `enablement: true` wlacza Pages przez API, jesli nie sa jeszcze wlaczone.
+      # Bez `enablement: true` — token workflow nie ma prawa **wlaczyc** Pages
+      # (API zwraca „Resource not accessible by integration"). Wlacza je raz
+      # wlasciciel repozytorium: Settings → Pages → Source: GitHub Actions.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:

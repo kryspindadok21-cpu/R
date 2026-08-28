@@ -23,6 +23,15 @@ Bez tego crawl i audyt da się sprawdzić wyłącznie na atrapach.
 Katalog wypycha workflow `.github/workflows/strona.yml` przy każdej zmianie
 w `site/`. Nic nie trzeba budować — to czysty HTML i jeden arkusz stylów.
 
+**Jednorazowe włączenie po stronie właściciela repozytorium.** Token workflow
+nie ma prawa włączyć Pages (API odpowiada `Resource not accessible by
+integration`), więc trzeba to zrobić ręcznie raz:
+
+1. `Settings` → `Pages` → `Source`: **GitHub Actions**.
+2. Jeśli wdrożenie zostanie odrzucone z powodu gałęzi, ustaw gałąź roboczą jako
+   domyślną (`Settings` → `General` → `Default branch`) albo dopuść ją
+   w `Settings` → `Environments` → `github-pages`.
+
 ## Zasady, których ta strona pilnuje sama na sobie
 
 Zero zasobów z sieci: fonty systemowe, brak bibliotek, brak śledzenia.
