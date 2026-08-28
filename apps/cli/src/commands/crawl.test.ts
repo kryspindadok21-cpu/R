@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { tenantScope } from '@seo/core'
 import type { Clock } from '@seo/crawler'
 import { type Db, closeDatabase, crawlRepos, repos } from '@seo/db'
-import { createSiteFetchProvider } from '@seo/providers'
+import { RenderUnavailableError, createSiteFetchProvider } from '@seo/providers'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { dbLedger } from '../ledger.js'
 import { runAudit } from './audit.js'
@@ -238,6 +238,61 @@ describe('seo crawl — na prawdziwym serwerze', () => {
 
     expect(result.robotsState).toBe('unreachable')
     expect(result.pagesFetched).toBe(0)
+  })
+})
+
+describe('seo crawl — renderowanie niedostępne', () => {
+  it('brak przeglądarki nie unieważnia udanego crawla', async () => {
+    const result = await runCrawlCommand(
+      {
+        db, scope, provider: providerFor(), clock: instantClock,
+        renderProvider: () => ({
+          id: 'render' as const,
+          renderPage: async () => { throw new RenderUnavailableError('atrapa: brak przeglądarki') },
+          close: async () => {},
+        }),
+      },
+      { siteUrl: base, limits: { delayMs: 500 }, renderSample: 3 },
+    )
+
+    // Strony sa w bazie, przebieg jest udany i nieuciety — mimo braku przegladarki.
+    expect(result.pagesFetched).toBeGreaterThanOrEqual(4)
+    expect(result.truncated).toBe(false)
+    expect(result.rendered).toBe(0)
+    expect(result.renderUnavailable).toContain('Renderowanie jest niedostepne')
+
+    const run = crawlRepos(db, scope).read.getCrawlRun(runIdOf(result))
+    expect(run?.ok).toBe(1)
+    expect(run?.truncated).toBe(0)
+  })
+
+  it('audyt po takim crawlu nadal widzi cały serwis', async () => {
+    await runCrawlCommand(
+      {
+        db, scope, provider: providerFor(), clock: instantClock,
+        renderProvider: () => ({
+          id: 'render' as const,
+          renderPage: async () => { throw new RenderUnavailableError('atrapa') },
+          close: async () => {},
+        }),
+      },
+      { siteUrl: base, limits: { delayMs: 500 }, renderSample: 3 },
+    )
+    const audyt = runAudit(db, scope, { siteUrl: base })
+    expect(audyt.capabilities).toContain('complete-crawl')
+  })
+
+  it('bez flagi --render przeglądarka nie jest w ogóle dotykana', async () => {
+    let utworzona = false
+    const result = await runCrawlCommand(
+      {
+        db, scope, provider: providerFor(), clock: instantClock,
+        renderProvider: () => { utworzona = true; throw new Error('nie powinno się wydarzyć') },
+      },
+      { siteUrl: base, limits: { delayMs: 500 } },
+    )
+    expect(utworzona).toBe(false)
+    expect(result.renderUnavailable).toBeNull()
   })
 })
 

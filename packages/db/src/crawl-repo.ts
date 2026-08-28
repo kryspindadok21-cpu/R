@@ -367,6 +367,22 @@ export function crawlRepos(db: Db, scope: TenantScope) {
       }).onConflictDoNothing().run()
     },
 
+    /** Dopisuje wynik renderowania do zapisanej juz strony (D16). */
+    setRenderDiff: (siteId: string, runId: string, url: string, diff: RenderDiff): void => {
+      db.update(s.crawlPage)
+        .set({ rendered: 1, renderDiff: JSON.stringify(diff) })
+        .where(and(
+          eq(s.crawlPage.tenantId, t),
+          eq(s.crawlPage.crawlRunId, runId),
+          eq(s.crawlPage.urlId, upsertUrl(siteId, url)),
+        )).run()
+    },
+
+    markRenderSample: (runId: string, rendered: number): void => {
+      db.update(s.crawlRun).set({ renderSample: rendered })
+        .where(and(eq(s.crawlRun.tenantId, t), eq(s.crawlRun.id, runId))).run()
+    },
+
     upsertUrl: (siteId: string, raw: string): string => upsertUrl(siteId, raw),
   }
 

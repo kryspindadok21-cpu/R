@@ -3,8 +3,8 @@ import { parseArgs } from 'node:util'
 import { GSC_SOURCE_TIMEZONE, defaultSyncRange, tenantScope } from '@seo/core'
 import { closeDatabase } from '@seo/db'
 import {
-  GSC_MAX_ROW_LIMIT, createGscProvider, createServiceAccountTokenSource,
-  createSiteFetchProvider,
+  GSC_MAX_ROW_LIMIT, RenderUnavailableError, createGscProvider,
+  createRenderProvider, createServiceAccountTokenSource, createSiteFetchProvider,
 } from '@seo/providers'
 import { runAuditReport } from './commands/audit-report.js'
 import { runAudit } from './commands/audit.js'
@@ -24,6 +24,7 @@ const USAGE = `seo — platforma SEO/GEO
   seo gsc verify --site <uri>  --date YYYY-MM-DD
   seo gsc smoke  --site <uri>  jedno prawdziwe wywolanie API (poza CI)
   seo crawl      --site <uri> [--max-pages N] [--max-depth N] [--delay MS] [--dry-run]
+                             [--render N]  wyrenderuj N stron i porownaj z surowym HTML
   seo audit      --site <uri> [--run <id>]
   seo report     --site <uri> [--out sciezka.html]
   seo report     --site <uri> --audit [--out sciezka.html]   raport techniczny z crawla
@@ -36,6 +37,7 @@ Zmienne srodowiskowe:
   SEO_DB_PATH        sciezka pliku bazy (domyslnie ~/.seo/seo.db)
   SEO_GSC_KEY_FILE   sciezka klucza JSON konta serwisowego
   SEO_TENANT         identyfikator tenanta (domyslnie "local")
+  SEO_CHROMIUM_PATH  sciezka do binarki przegladarki dla --render (opcjonalna)
 `
 
 interface Flags {
@@ -50,6 +52,7 @@ interface Flags {
   delay?: string | undefined
   'dry-run'?: boolean | undefined
   audit?: boolean | undefined
+  render?: string | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -67,6 +70,7 @@ function parseFlags(args: readonly string[]): Flags {
       delay: { type: 'string' },
       'dry-run': { type: 'boolean' },
       audit: { type: 'boolean' },
+      render: { type: 'string' },
     },
     allowPositionals: true,
   })
@@ -189,9 +193,26 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
         ? {} : { delayMs: optionalNumber(flags.delay, 'delay') as number }),
     }
 
+    const renderCount = optionalNumber(flags.render, 'render') ?? 0
+
     const result = await runCrawlCommand(
-      { db, scope, provider, clock: systemClock },
-      { siteUrl, limits: requested, dryRun: flags['dry-run'] === true },
+      {
+        db,
+        scope,
+        provider,
+        clock: systemClock,
+        renderProvider: () => createRenderProvider({
+          ledger: dbLedger(db, scope),
+          now: () => Date.now(),
+          executablePath: process.env.SEO_CHROMIUM_PATH,
+        }),
+      },
+      {
+        siteUrl,
+        limits: requested,
+        dryRun: flags['dry-run'] === true,
+        renderSample: renderCount,
+      },
     )
 
     for (const adjustment of result.adjustments) {
@@ -231,11 +252,26 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
       `Pominiete przez robots.txt:  ${result.blockedByRobots}\n` +
       `Zadania HTTP:                ${result.requests}\n` +
       `Czas:                        ${Math.round(result.durationMs / 1000)} s\n` +
+      (result.rendered > 0
+        ? `Strony wyrenderowane:        ${result.rendered}` +
+          `${result.renderFailed > 0 ? ` (nieudane: ${result.renderFailed})` : ''}\n`
+        : '') +
+      (result.requiringJs.length > 0
+        ? `Tresc wymaga JavaScriptu:    ${result.requiringJs.length} ` +
+          `— te strony sa niewidoczne dla crawlerow AI bez JS\n`
+        : '') +
       (result.truncated
         ? `Crawl uciety:                ${result.truncationReason ?? 'limit'} ` +
           `— reguly serwisowe zamilkna w audycie\n`
         : ''),
     )
+
+    // Crawl sie udal i jest w bazie; renderowania nie bylo. Kod wyjscia jest
+    // niezerowy, bo uzytkownik poprosil o --render i tego nie dostal.
+    if (result.renderUnavailable !== null) {
+      process.stderr.write(`\n${result.renderUnavailable}\n`)
+      return 1
+    }
     return 0
   } finally {
     closeDatabase(db)
@@ -364,6 +400,12 @@ export async function main(argv: readonly string[]): Promise<number> {
     process.stderr.write(`Nieznane polecenie: ${command}${sub ? ` ${sub}` : ''}\n\n${USAGE}`)
     return 1
   } catch (error) {
+    // Brak przegladarki to blad konfiguracji uzytkownika, nie awaria programu —
+    // komunikat mowi wprost, co zrobic, i nie zasypuje sladem stosu.
+    if (error instanceof RenderUnavailableError) {
+      process.stderr.write(`${error.message}\n`)
+      return 1
+    }
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`)
     return 1
   }

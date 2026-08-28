@@ -4,7 +4,11 @@ import {
   clampLimits, parseSitemap, runCrawl,
 } from '@seo/crawler'
 import { type Db, crawlRepos, repos } from '@seo/db'
-import { type SiteFetchOptions, type SiteFetchProvider, fetchRobots } from '@seo/providers'
+import {
+  RenderUnavailableError, type RenderProvider, type SiteFetchOptions,
+  type SiteFetchProvider, fetchRobots,
+} from '@seo/providers'
+import { renderSample } from './render.js'
 
 /**
  * `seo crawl` — sklejenie warstw. Cala logika decyzyjna siedzi w @seo/crawler,
@@ -14,11 +18,20 @@ import { type SiteFetchOptions, type SiteFetchProvider, fetchRobots } from '@seo
 /** Ile map witryny pobieramy z indeksu. Wiecej to zwykle mapy generowane maszynowo. */
 export const MAX_SITEMAPS = 10
 
+/**
+ * Ile czekac po zaladowaniu dokumentu, zanim odczytamy wyrenderowany HTML.
+ * Za krotko — zlapiemy pusty szkielet i oskarzymy strone niesluszne. Za dlugo —
+ * probka dziesieciu stron zajmuje minute zamiast kilku sekund.
+ */
+export const RENDER_SETTLE_MS = 1500
+
 export interface CrawlDeps {
   readonly db: Db
   readonly scope: TenantScope
   readonly provider: SiteFetchProvider
   readonly clock: Clock
+  /** Tworzony leniwie: bez `--render` przegladarka nie jest w ogole potrzebna. */
+  readonly renderProvider?: (() => RenderProvider) | undefined
 }
 
 export interface CrawlCommandOptions {
@@ -26,6 +39,8 @@ export interface CrawlCommandOptions {
   readonly limits?: Partial<CrawlLimits> | undefined
   /** Sprawdza robots.txt i mapy, ale nie pobiera ani jednej strony. */
   readonly dryRun?: boolean | undefined
+  /** Ile stron wyrenderowac po crawlu. 0 znaczy: bez przegladarki (D16). */
+  readonly renderSample?: number | undefined
 }
 
 export interface CrawlCommandResult {
@@ -43,6 +58,15 @@ export interface CrawlCommandResult {
   readonly durationMs: number
   readonly adjustments: readonly LimitAdjustment[]
   readonly limits: CrawlLimits
+  readonly rendered: number
+  readonly renderFailed: number
+  /** Adresy, ktorych tresc istnieje dopiero po wykonaniu JavaScriptu. */
+  readonly requiringJs: readonly string[]
+  /**
+   * Komunikat, gdy renderowania nie dalo sie uruchomic. Nie jest wyjatkiem:
+   * brak przegladarki nie moze uniewaznic udanego crawla, ktory juz jest w bazie.
+   */
+  readonly renderUnavailable: string | null
 }
 
 /**
@@ -123,7 +147,8 @@ export async function runCrawlCommand(
       pagesFetched: 0, pagesFailed: 0, blockedByRobots: 0,
       robotsState: robots.state, sitemapUrls,
       truncated: false, truncationReason: null, requests: 0, durationMs: 0,
-      adjustments, limits,
+      adjustments, limits, rendered: 0, renderFailed: 0, requiringJs: [],
+      renderUnavailable: null,
     }
   }
 
@@ -172,6 +197,35 @@ export async function runCrawlCommand(
       isInternal: link.isInternal,
     })))
 
+    const wantsRender = (options.renderSample ?? 0) > 0
+    let render = { rendered: 0, failed: 0, requiringJs: [] as readonly string[] }
+    let renderUnavailable: string | null = null
+
+    if (wantsRender && deps.renderProvider !== undefined) {
+      try {
+        render = await renderSample(
+          { db, scope, provider: deps.renderProvider() },
+          {
+            siteId: site.id,
+            runId,
+            pages: result.pages,
+            limit: options.renderSample ?? 0,
+            options: {
+              timeoutMs: limits.requestTimeoutMs,
+              userAgent: USER_AGENT,
+              settleMs: RENDER_SETTLE_MS,
+            },
+          },
+        )
+      } catch (error) {
+        // Brak przegladarki to problem konfiguracji, nie wynik crawla. Strony
+        // sa juz w bazie i maja pozostac uzyteczne — inaczej `--render` bez
+        // Chromium kasowalby cala prace, ktora sie udala.
+        if (!(error instanceof RenderUnavailableError)) throw error
+        renderUnavailable = error.message
+      }
+    }
+
     const pagesFailed = result.pages.filter((p) => p.status === null).length
     crawlRepo.write.finishCrawlRun(runId, {
       pagesFetched: result.pages.length,
@@ -196,6 +250,10 @@ export async function runCrawlCommand(
       durationMs: result.finishedAt - result.startedAt,
       adjustments,
       limits,
+      rendered: render.rendered,
+      renderFailed: render.failed,
+      requiringJs: render.requiringJs,
+      renderUnavailable,
     }
   } catch (error) {
     // Przerwany crawl zostaje w bazie oznaczony jako nieudany. Wiersz bez `ok`

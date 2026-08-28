@@ -17,3 +17,7 @@ export { fetchRobots, type RobotsFetchResult, type RobotsState } from './site/ro
 export type {
   SiteFetchCapability, SiteFetchDeps, SiteFetchOptions, SiteFetchProvider, SiteResponse,
 } from './site/types.js'
+export {
+  RenderUnavailableError, createRenderProvider, type RenderDeps,
+} from './render/playwright.js'
+export type { RenderOptions, RenderProvider, RenderedPage } from './render/types.js'

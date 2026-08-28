@@ -23,7 +23,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 9. `apps/cli` — `seo crawl` | ukończone, AC1/AC2/AC3 zielone, uruchomione na żywo | `eee3592` |
 | 10. `apps/cli` — `seo audit` | ukończone, AC7 zielone; 586 testów zielonych łącznie | `eee3592` |
 | 11. `packages/report` — raport audytu | ukończone, AC10 zielone, **kamień milowy Fazy 1 osiągnięty**; 612 testów zielonych | `3cb0a31` |
-| 12. Renderowanie i diff surowy↔wyrenderowany (D16) | **częściowo** — `diffRenderedFacts` gotowy i przetestowany; został `RenderProvider` na Playwrighcie | `c7c8ef1` |
+| 12. Renderowanie i diff surowy↔wyrenderowany (D16) | ukończone, AC9 zielone, sprawdzone na prawdziwym Chromium; 628 testów zielonych | `c7c8ef1`, `PENDING12` |
 | 13. PageSpeed Insights (D21) | nie zaczęte | — |
 | 14. `check-deps`, CI, odbiór na własnej stronie | nie zaczęte | — |
 
@@ -63,6 +63,16 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Crawler nie idzie za linkiem `nofollow` ani ze strony z `<meta robots nofollow>`,
   ale **krawędź zapisuje** — graf ma pokazywać, co autor strony zrobił, a nie
   tylko to, dokąd doszedł crawler.
+- Zależność to `playwright-core`, nie `playwright`. Ten drugi ściąga w postinstall
+  ~150 MB przeglądarki przy każdym `pnpm install`, także w CI, gdzie żadna
+  przeglądarka nie jest potrzebna. Przeglądarkę pobiera właściciel, raz, świadomie.
+- Ścieżkę do przeglądarki da się wskazać przez `SEO_CHROMIUM_PATH`. Powód nie jest
+  teoretyczny: w tym środowisku stoi Chromium build 1194, a Playwright 1.58 szuka
+  1234. Bez tej flagi renderowanie byłoby nie do uruchomienia.
+- **Naprawiony błąd znaleziony przy uruchomieniu na żywo:** brak przeglądarki
+  unieważniał udany crawl — przebieg lądował w bazie jako nieudany i ucięty, więc
+  audyt tracił reguły serwisowe. Teraz crawl zostaje udany, komunikat idzie na
+  stderr, a kod wyjścia to 1, bo użytkownik prosił o `--render` i tego nie dostał.
 - Raport audytu to **osobny dokument**, nie sekcja w raporcie SEO. Powód: audyt
   musi działać bez danych z Search Console, a jeden dokument o dwóch źródłach
   danych zmuszałby do crawla przed raportem GSC i odwrotnie. Styl jest wspólny
