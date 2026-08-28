@@ -14,7 +14,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 |---|---|---|
 | 1. `packages/parse` — HTML → `PageFacts` | ukończone, 234 testy zielone łącznie | `c7c8ef1` |
 | 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | ukończone, 286 testów zielonych łącznie | `3deedf8` |
-| 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | ukończone, **52 reguły**, 364 testy zielone łącznie | `PENDING3` |
+| 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | ukończone, **52 reguły**, 364 testy zielone łącznie | `914b63f` |
 | 4. `packages/crawler` — `robots.txt` + mapy witryny | nie zaczęte | — |
 | 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | nie zaczęte | — |
 | 6. `packages/crawler` — graf linków wewnętrznych | nie zaczęte | — |
