@@ -19,7 +19,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | ukończone, AC2/AC3/AC4 zielone | `0057a19` |
 | 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `0057a19` |
 | 7. `packages/providers` — grzeczny pobieracz stron | ukończone, AC5 zielone, 478 testów łącznie | `564022f` |
-| 8. `packages/db` — migracja `0002` + repozytoria crawla | nie zaczęte | — |
+| 8. `packages/db` — migracja `0002` + repozytoria crawla | ukończone, 530 testów zielonych łącznie | `783e689` |
 | 9. `apps/cli` — `seo crawl` | nie zaczęte | — |
 | 10. `apps/cli` — `seo audit` | nie zaczęte | — |
 | 11. `packages/report` — raport audytu | nie zaczęte | — |
