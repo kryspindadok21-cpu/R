@@ -20,8 +20,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `0057a19` |
 | 7. `packages/providers` — grzeczny pobieracz stron | ukończone, AC5 zielone, 478 testów łącznie | `564022f` |
 | 8. `packages/db` — migracja `0002` + repozytoria crawla | ukończone, 530 testów zielonych łącznie | `783e689` |
-| 9. `apps/cli` — `seo crawl` | ukończone, AC1/AC2/AC3 zielone, uruchomione na żywo | `PENDING9` |
-| 10. `apps/cli` — `seo audit` | ukończone, AC7 zielone; 586 testów zielonych łącznie | `PENDING9` |
+| 9. `apps/cli` — `seo crawl` | ukończone, AC1/AC2/AC3 zielone, uruchomione na żywo | `eee3592` |
+| 10. `apps/cli` — `seo audit` | ukończone, AC7 zielone; 586 testów zielonych łącznie | `eee3592` |
 | 11. `packages/report` — raport audytu | nie zaczęte | — |
 | 12. Renderowanie i diff surowy↔wyrenderowany (D16) | **częściowo** — `diffRenderedFacts` gotowy i przetestowany; został `RenderProvider` na Playwrighcie | `c7c8ef1` |
 | 13. PageSpeed Insights (D21) | nie zaczęte | — |
