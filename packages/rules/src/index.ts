@@ -1,7 +1,7 @@
 export { auditSite, type AuditResult, type RuleCount } from './audit.js'
 export { mergeResults, runRules, type RuleRunResult } from './engine.js'
 export { DEFAULT_THRESHOLDS, type Thresholds } from './thresholds.js'
-export { groupBy, indexByUrl, isIndexable, sameUrl, urlKey } from './helpers.js'
+export { groupBy, indexByUrl, indexWithRedirects, isIndexable, sameUrl, urlKey } from './helpers.js'
 export {
   SEVERITY_ORDER, finding,
   type AutofixSpec, type Capability, type EvidenceValue, type Finding, type GraphFacts,

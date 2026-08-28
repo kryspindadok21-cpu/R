@@ -84,6 +84,24 @@ export function indexByUrl(pages: readonly PageInput[]): Map<string, PageInput> 
   return index
 }
 
+/**
+ * Ta sama mapa, ale odnajduje strone takze po adresie, z ktorego przyszlo
+ * przekierowanie. Crawler zapisuje strone pod adresem koncowym, wiec bez tego
+ * link do `/stara` nie trafilby w wiersz zapisany jako `/nowa` — a to jest
+ * dokladnie ten link, o ktorym chcemy powiedziec, ze idzie przez przeskok.
+ */
+export function indexWithRedirects(pages: readonly PageInput[]): Map<string, PageInput> {
+  const index = indexByUrl(pages)
+  for (const page of pages) {
+    for (const source of page.http.redirectChain) {
+      const key = urlKey(source)
+      // Adres koncowy ma pierwszenstwo — nie nadpisujemy go wpisem posrednim.
+      if (!index.has(key)) index.set(key, page)
+    }
+  }
+  return index
+}
+
 /** Grupuje strony po wartosci tekstowej — podstawa regul o duplikatach. */
 export function groupBy(
   pages: readonly PageInput[],

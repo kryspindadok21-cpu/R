@@ -14,7 +14,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 |---|---|---|
 | 1. `packages/parse` — HTML → `PageFacts` | ukończone, 234 testy zielone łącznie | `c7c8ef1` |
 | 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | ukończone, 286 testów zielonych łącznie | `3deedf8` |
-| 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | nie zaczęte | — |
+| 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | ukończone, **52 reguły**, 364 testy zielone łącznie | `PENDING3` |
 | 4. `packages/crawler` — `robots.txt` + mapy witryny | nie zaczęte | — |
 | 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | nie zaczęte | — |
 | 6. `packages/crawler` — graf linków wewnętrznych | nie zaczęte | — |
@@ -38,6 +38,16 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Akumulatory w `parsePage` siedzą w jednym obiekcie, nie w osobnych `let`.
   TypeScript zawęża `let` przypisywany wyłącznie w domknięciu do typu wartości
   początkowej; pole obiektu zachowuje typ zadeklarowany.
+- Reguł wyszło **52**, nie 40 — paczki rozrosły się o `http.fetch-failed`,
+  `jsonld.empty-type` i `link.to-redirect`. Żadna nie jest domysłem: każda ma
+  test dodatni i ujemny.
+- Zamiast `image.oversized` i `image.empty-alt-on-content` z planu weszły
+  `image.missing-src` i `image.alt-too-long`. Powód: crawler pobiera wyłącznie
+  dokumenty HTML (D15), więc wagi obrazu nie znamy, a puste `alt` jest poprawnym
+  oznaczeniem obrazu dekoracyjnego — karanie za nie byłoby fałszywym alarmem.
+- Reguły serwisowe odnajdują stronę także po adresie sprzed przekierowania
+  (`indexWithRedirects`). Crawler zapisuje stronę pod adresem końcowym, więc bez
+  tego link do `/stara` nie trafiłby w wiersz zapisany jako `/nowa`.
 - Reguła `canonical.points-elsewhere` **zgłasza** różnicę w ukośniku końcowym.
   D4 Fazy 0 celowo trzyma `/strona` i `/strona/` jako osobne adresy „do czasu, aż
   crawler wykaże przekierowanie" — czyli dokładnie do Fazy 1. Zgłoszenie jest
