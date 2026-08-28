@@ -6,6 +6,7 @@ import {
   GSC_MAX_ROW_LIMIT, createGscProvider, createServiceAccountTokenSource,
   createSiteFetchProvider,
 } from '@seo/providers'
+import { runAuditReport } from './commands/audit-report.js'
 import { runAudit } from './commands/audit.js'
 import { runCrawlCommand, systemClock } from './commands/crawl.js'
 import { openInitialized, runInit } from './commands/init.js'
@@ -25,6 +26,7 @@ const USAGE = `seo — platforma SEO/GEO
   seo crawl      --site <uri> [--max-pages N] [--max-depth N] [--delay MS] [--dry-run]
   seo audit      --site <uri> [--run <id>]
   seo report     --site <uri> [--out sciezka.html]
+  seo report     --site <uri> --audit [--out sciezka.html]   raport techniczny z crawla
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -47,6 +49,7 @@ interface Flags {
   'max-depth'?: string | undefined
   delay?: string | undefined
   'dry-run'?: boolean | undefined
+  audit?: boolean | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -63,6 +66,7 @@ function parseFlags(args: readonly string[]): Flags {
       'max-depth': { type: 'string' },
       delay: { type: 'string' },
       'dry-run': { type: 'boolean' },
+      audit: { type: 'boolean' },
     },
     allowPositionals: true,
   })
@@ -296,6 +300,21 @@ function runReportCommand(config: Config, args: readonly string[]): number {
   const { db } = openInitialized(config)
 
   try {
+    if (flags.audit === true) {
+      const result = runAuditReport(db, tenantScope(config.tenantId), {
+        siteUrl,
+        outPath: flags.out ?? 'raport-audyt.html',
+        generatedAt: generatedAtLabel(new Date()),
+        runId: flags.run,
+      })
+      process.stdout.write(
+        `Raport:                      ${result.outPath}\n` +
+        `Ustalenia w raporcie:        ${result.findings}\n` +
+        (result.truncatedList ? 'Lista ucieta do 500 pozycji — pelna jest w bazie.\n' : ''),
+      )
+      return 0
+    }
+
     const result = runReport(db, tenantScope(config.tenantId), {
       siteUrl,
       from: flags.from ?? range.from,

@@ -136,6 +136,10 @@ importers:
         version: 26.4.0
 
   packages/report:
+    dependencies:
+      '@seo/rules':
+        specifier: workspace:*
+        version: link:../rules
     devDependencies:
       '@types/node':
         specifier: ^26.4.0
