@@ -5,10 +5,10 @@ kosztuje kontekst w każdej rozmowie.
 
 ## Zacznij tutaj
 
-1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-27-faza-0-fundament.md`
-   — mówi, co zrobione i gdzie wznowić. Plan ma ~3000 linii, **nigdy nie czytaj
-   go w całości**; sekcje znajdź przez `grep -n '^### Zadanie'` i czytaj zakresami
-   (`sed -n '880,1212p'`).
+1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-28-faza-1-crawler-audyt.md`
+   — mówi, co zrobione i gdzie wznowić. Faza 0 jest zamknięta po stronie kodu;
+   jej plan (`2026-08-27-faza-0-fundament.md`, ~3000 linii) czytaj **tylko zakresami**
+   przez `grep -n '^### Zadanie'`, nigdy w całości.
 2. **Preferencje właściciela** — sekcja na dole tego pliku.
 3. Dobór umiejętności: `pnpm -s skills:pick "opis zadania"` (plugin `dobor-narzedzi`).
 
@@ -30,7 +30,12 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się:
   przyjmujące `TenantScope`. Tylko tutaj `drizzle-orm` i `better-sqlite3`.
 - `packages/providers` — **jedyne** wyjście na zewnątrz. Każde wywołanie API
   ląduje w tabeli `provider_call`. Tylko tutaj `google-auth-library` i sieć.
-- `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`, `report`.
+- `packages/parse` — HTML → `PageFacts` (`parse5`). **Zero wejścia/wyjścia.**
+- `packages/rules` — silnik reguł audytu i paczki reguł. **Zero wejścia/wyjścia.**
+- `packages/crawler` — `robots.txt`, mapy, kolejka, graf linków. Czysty; źródło
+  stron dostaje **wstrzyknięte** interfejsem `PageSource` (D12).
+- `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`,
+  `crawl`, `audit`, `psi`, `report`.
 
 Reguły zależności egzekwuje `scripts/check-deps.ts` — nie obchodź ich, popraw projekt.
 
@@ -45,6 +50,13 @@ pnpm check:secrets     # skan sekretów
 pnpm -s skills:pick "opis zadania"
 pnpm -s skills:index   # po zmianie katalogu .agents/skills
 ```
+
+## Bezpieczniki crawlera (D15)
+
+Wartości w kodzie, nie w konfiguracji. Flaga może zejść w dół, nigdy powyżej sufitu:
+1 żądanie/s na host, 500 stron, głębokość 5, timeout 15 s, 5 MB na odpowiedź,
+15 min na crawl. `User-Agent` jawny i możliwy do zablokowania — **nigdy nie
+podszywamy się pod przeglądarkę.**
 
 ## Ograniczenia twarde
 
@@ -113,6 +125,11 @@ osobowych.** Jeśli lista rośnie ponad ~20 punktów, scal pokrewne zamiast dopi
   skoryguje, dopisz wniosek tutaj, zanim zniknie razem z rozmową.
 
 ### Decyzje trwałe
+
+- **Zakup domen odłożony na sam koniec** (2026-08-28). Do tego czasu pracujemy
+  wyłącznie na tym, co darmowe — żadnej pracy nad domeną, hostingiem ani stroną
+  wizerunkową. Nazwa poniżej zostaje zapisana jako ustalenie, ale **nie jest
+  tematem do dalszej pracy**, dopóki właściciel sam do niego nie wróci.
 
 - **Marka: `mentiometry`, domena `mentiometry.com`** (decyzja 2026-08-27).
   Od łac. *mentio* — „wzmianka" — plus *-metria*, pomiar. Nazwa opisuje produkt
