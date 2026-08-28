@@ -106,6 +106,9 @@ importers:
       '@seo/core':
         specifier: workspace:*
         version: link:../core
+      '@seo/crawler':
+        specifier: workspace:*
+        version: link:../crawler
       google-auth-library:
         specifier: ^11.0.2
         version: 11.0.2

@@ -18,7 +18,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 4. `packages/crawler` — `robots.txt` + mapy witryny | ukończone | `0057a19` |
 | 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | ukończone, AC2/AC3/AC4 zielone | `0057a19` |
 | 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `0057a19` |
-| 7. `packages/providers` — grzeczny pobieracz stron | nie zaczęte | — |
+| 7. `packages/providers` — grzeczny pobieracz stron | ukończone, AC5 zielone, 478 testów łącznie | `PENDING7` |
 | 8. `packages/db` — migracja `0002` + repozytoria crawla | nie zaczęte | — |
 | 9. `apps/cli` — `seo crawl` | nie zaczęte | — |
 | 10. `apps/cli` — `seo audit` | nie zaczęte | — |
@@ -38,6 +38,15 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Akumulatory w `parsePage` siedzą w jednym obiekcie, nie w osobnych `let`.
   TypeScript zawęża `let` przypisywany wyłącznie w domknięciu do typu wartości
   początkowej; pole obiektu zachowuje typ zadeklarowany.
+- `packages/providers` zależy od `@seo/crawler` (typy + `parseRobotsTxt`).
+  To odwrócenie zależności, nie cykl: interfejs `PageSource` definiuje ten, kto
+  go używa (crawler), a implementuje ten, kto ma wejście/wyjście (providers).
+- Pobieracz **nie rzuca wyjątkiem przy błędzie sieci** — timeout i przekroczony
+  rozmiar wracają jako odpowiedź bez statusu. Strona, której nie da się pobrać,
+  jest ustaleniem audytu (`http.fetch-failed`), a nie powodem do przerwania crawla.
+- `ok` w `provider_call` znaczy „udało się porozmawiać z serwerem": 404 i 500 są
+  `ok`, timeout nie jest. `quota_units` liczy faktyczne żądania HTTP, więc łańcuch
+  przekierowań kosztuje tyle, ile naprawdę kosztował.
 - Rozpakowywanie map `.gz` nie jest w `packages/crawler`, tylko w pobieraczu.
   Czysty silnik nie może dotknąć `node:zlib`, a `parseSitemap` i tak dostaje tekst.
 - Crawler nie idzie za linkiem `nofollow` ani ze strony z `<meta robots nofollow>`,

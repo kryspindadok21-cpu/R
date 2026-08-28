@@ -17,6 +17,7 @@
   "dependencies": {
     "@seo/core": "workspace:*",
     "google-auth-library": "^11.0.2",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "@seo/crawler": "workspace:*"
   }
 }
