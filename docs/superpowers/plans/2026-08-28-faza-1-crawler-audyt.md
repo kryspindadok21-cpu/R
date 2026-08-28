@@ -20,8 +20,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 6. `packages/crawler` — graf linków wewnętrznych | ukończone, AC8 zielone; 455 testów zielonych łącznie | `0057a19` |
 | 7. `packages/providers` — grzeczny pobieracz stron | ukończone, AC5 zielone, 478 testów łącznie | `564022f` |
 | 8. `packages/db` — migracja `0002` + repozytoria crawla | ukończone, 530 testów zielonych łącznie | `783e689` |
-| 9. `apps/cli` — `seo crawl` | nie zaczęte | — |
-| 10. `apps/cli` — `seo audit` | nie zaczęte | — |
+| 9. `apps/cli` — `seo crawl` | ukończone, AC1/AC2/AC3 zielone, uruchomione na żywo | `PENDING9` |
+| 10. `apps/cli` — `seo audit` | ukończone, AC7 zielone; 586 testów zielonych łącznie | `PENDING9` |
 | 11. `packages/report` — raport audytu | nie zaczęte | — |
 | 12. Renderowanie i diff surowy↔wyrenderowany (D16) | **częściowo** — `diffRenderedFacts` gotowy i przetestowany; został `RenderProvider` na Playwrighcie | `c7c8ef1` |
 | 13. PageSpeed Insights (D21) | nie zaczęte | — |
@@ -63,6 +63,11 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Crawler nie idzie za linkiem `nofollow` ani ze strony z `<meta robots nofollow>`,
   ale **krawędź zapisuje** — graf ma pokazywać, co autor strony zrobił, a nie
   tylko to, dokąd doszedł crawler.
+- `seo crawl` i `seo audit` uruchomione na żywo na serwerze demo: 5 stron,
+  1 pominięta przez `robots.txt`, 29 ustaleń, 1 reguła pominięta z powodu braku
+  renderowania. Ścieżka od żądania HTTP do listy ustaleń działa od końca do końca.
+- Audyt **nie dotyka sieci** — czyta wyłącznie zapisany crawl. Dzięki temu da się
+  go powtórzyć po zmianie reguł albo progów bez ponownego obciążania serwera.
 - **Przegląd zgodności z założeniami (2026-08-28).** Porównanie z kryterium odbioru
   z `analiza-seo-geo-i-plan-budowy.md` („pokrycie audytu Screaming Frog ≥80%")
   wykazało 9 brakujących reguł. Dopisane: `canonical.multiple`,
