@@ -13,7 +13,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | Zadanie | Stan | Commit |
 |---|---|---|
 | 1. `packages/parse` — HTML → `PageFacts` | ukończone, 234 testy zielone łącznie | `c7c8ef1` |
-| 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | nie zaczęte | — |
+| 2. `packages/rules` — silnik + paczka reguł indeksacji i treści | ukończone, 286 testów zielonych łącznie | `PENDING2` |
 | 3. `packages/rules` — paczka reguł linków, obrazów, danych strukturalnych | nie zaczęte | — |
 | 4. `packages/crawler` — `robots.txt` + mapy witryny | nie zaczęte | — |
 | 5. `packages/crawler` — kolejka, bezpieczniki, przebieg crawla | nie zaczęte | — |
@@ -38,6 +38,10 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
 - Akumulatory w `parsePage` siedzą w jednym obiekcie, nie w osobnych `let`.
   TypeScript zawęża `let` przypisywany wyłącznie w domknięciu do typu wartości
   początkowej; pole obiektu zachowuje typ zadeklarowany.
+- Reguła `canonical.points-elsewhere` **zgłasza** różnicę w ukośniku końcowym.
+  D4 Fazy 0 celowo trzyma `/strona` i `/strona/` jako osobne adresy „do czasu, aż
+  crawler wykaże przekierowanie" — czyli dokładnie do Fazy 1. Zgłoszenie jest
+  poprawne: albo canonical jest zły, albo brakuje przekierowania.
 - Ponad plan: `scripts/check-deps.ts` egzekwuje konwencję `*.test-helper.ts` —
   taki plik wolno wyłączyć z reguł warstw, ale importować go może wyłącznie test.
   Bez tej drugiej połowy byłoby to obejście reguły, a nie wyjątek od niej.

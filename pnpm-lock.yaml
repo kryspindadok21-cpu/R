@@ -110,6 +110,19 @@ importers:
         specifier: ^26.4.0
         version: 26.4.0
 
+  packages/rules:
+    dependencies:
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@seo/parse':
+        specifier: workspace:*
+        version: link:../parse
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
 packages:
 
   '@esbuild/aix-ppc64@0.28.2':
