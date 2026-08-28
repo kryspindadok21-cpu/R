@@ -127,10 +127,13 @@ describe('content.thin i lang.missing', () => {
 describe('duplikaty w skali serwisu', () => {
   const a = pageFromHtml(HEALTHY_HTML, 'https://przyklad.test/a')
   const b = pageFromHtml(HEALTHY_HTML, 'https://przyklad.test/b')
+  // Rozna musi byc takze tresc, nie tylko tytul i opis — inaczej strona `c` jest
+  // duplikatem tresci wzgledem `a` i `b`, i regula content.duplicate ma racje.
   const c = pageFromHtml(
     HEALTHY_HTML
       .replace(/<title>.*?<\/title>/, '<title>Inny tytuł tej strony testowej</title>')
-      .replace(/content="Opis[^"]*"/, 'content="Zupełnie inny opis, wystarczająco długi, żeby nie wpaść w regułę zbyt krótkiego opisu."'),
+      .replace(/content="Opis[^"]*"/, 'content="Zupełnie inny opis, wystarczająco długi, żeby nie wpaść w regułę zbyt krótkiego opisu."')
+      .replace(/Zdanie wypełniające treść[^<]*/, 'Zupełnie inna treść tej strony, powtórzona wiele razy, żeby przekroczyć próg duplikatu. '.repeat(12)),
     'https://przyklad.test/c',
   )
 
@@ -155,6 +158,7 @@ describe('duplikaty w skali serwisu', () => {
     const partial = ctx({ capabilities: new Set(['page-facts']) })
     const result = auditSite(site([a, b]), partial, SITE_ONLY)
     expect(result.findings).toEqual([])
-    expect(result.skipped.map((s) => s.ruleId)).toEqual(['description.duplicate', 'title.duplicate'])
+    expect(result.skipped.map((s) => s.ruleId))
+      .toEqual(['content.duplicate', 'description.duplicate', 'title.duplicate'])
   })
 })

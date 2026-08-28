@@ -29,6 +29,14 @@ export interface Thresholds {
   readonly answerUpfrontMinWords: number
   /** Ponizej tylu znakow naglowek nie niesie wlasnego kontekstu dla fragmentu. */
   readonly standaloneHeadingMinLength: number
+  /** Dlugosc sciezki adresu, powyzej ktorej adres jest trudny do udostepnienia. */
+  readonly urlMaxLength: number
+  /**
+   * Minimalna liczba slow, zeby uznac dwie strony za duplikat tresci. Ponizej
+   * tego progu „identyczna tresc" znaczy zwykle „obie strony sa puste", a to
+   * jest inny problem i inna regula.
+   */
+  readonly duplicateContentMinWords: number
 }
 
 export const DEFAULT_THRESHOLDS: Thresholds = {
@@ -44,4 +52,6 @@ export const DEFAULT_THRESHOLDS: Thresholds = {
   heavyHtmlBytes: 500_000,
   answerUpfrontMinWords: 12,
   standaloneHeadingMinLength: 12,
+  urlMaxLength: 115,
+  duplicateContentMinWords: 50,
 }

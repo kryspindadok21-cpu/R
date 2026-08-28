@@ -29,15 +29,24 @@ importers:
       '@seo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@seo/crawler':
+        specifier: workspace:*
+        version: link:../../packages/crawler
       '@seo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@seo/parse':
+        specifier: workspace:*
+        version: link:../../packages/parse
       '@seo/providers':
         specifier: workspace:*
         version: link:../../packages/providers
       '@seo/report':
         specifier: workspace:*
         version: link:../../packages/report
+      '@seo/rules':
+        specifier: workspace:*
+        version: link:../../packages/rules
     devDependencies:
       '@types/node':
         specifier: ^26.4.0

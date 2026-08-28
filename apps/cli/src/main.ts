@@ -4,7 +4,10 @@ import { GSC_SOURCE_TIMEZONE, defaultSyncRange, tenantScope } from '@seo/core'
 import { closeDatabase } from '@seo/db'
 import {
   GSC_MAX_ROW_LIMIT, createGscProvider, createServiceAccountTokenSource,
+  createSiteFetchProvider,
 } from '@seo/providers'
+import { runAudit } from './commands/audit.js'
+import { runCrawlCommand, systemClock } from './commands/crawl.js'
 import { openInitialized, runInit } from './commands/init.js'
 import { runReport } from './commands/report.js'
 import { runSync } from './commands/sync.js'
@@ -13,13 +16,19 @@ import type { Config } from './config.js'
 import { loadConfig } from './config.js'
 import { dbLedger } from './ledger.js'
 
-const USAGE = `seo — platforma SEO/GEO (Faza 0)
+const USAGE = `seo — platforma SEO/GEO
 
   seo init                     utworz baze i zastosuj migracje
   seo gsc sync   --site <uri> [--from YYYY-MM-DD] [--to YYYY-MM-DD]
   seo gsc verify --site <uri>  --date YYYY-MM-DD
   seo gsc smoke  --site <uri>  jedno prawdziwe wywolanie API (poza CI)
+  seo crawl      --site <uri> [--max-pages N] [--max-depth N] [--delay MS] [--dry-run]
+  seo audit      --site <uri> [--run <id>]
   seo report     --site <uri> [--out sciezka.html]
+
+Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
+500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
+sufitu — wartosc ponad sufit zostanie przycieta z komunikatem.
 
 Zmienne srodowiskowe:
   SEO_DB_PATH        sciezka pliku bazy (domyslnie ~/.seo/seo.db)
@@ -33,6 +42,11 @@ interface Flags {
   to?: string | undefined
   date?: string | undefined
   out?: string | undefined
+  run?: string | undefined
+  'max-pages'?: string | undefined
+  'max-depth'?: string | undefined
+  delay?: string | undefined
+  'dry-run'?: boolean | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -44,6 +58,11 @@ function parseFlags(args: readonly string[]): Flags {
       to: { type: 'string' },
       date: { type: 'string' },
       out: { type: 'string' },
+      run: { type: 'string' },
+      'max-pages': { type: 'string' },
+      'max-depth': { type: 'string' },
+      delay: { type: 'string' },
+      'dry-run': { type: 'boolean' },
     },
     allowPositionals: true,
   })
@@ -137,6 +156,131 @@ async function runGsc(config: Config, sub: string | undefined, args: readonly st
   }
 }
 
+function optionalNumber(value: string | undefined, name: string): number | undefined {
+  if (value === undefined) return undefined
+  const parsed = Number.parseInt(value, 10)
+  if (!Number.isFinite(parsed)) throw new Error(`Flaga --${name} wymaga liczby, otrzymano "${value}"`)
+  return parsed
+}
+
+async function runCrawlCommandLine(config: Config, args: readonly string[]): Promise<number> {
+  const flags = parseFlags(args)
+  const siteUrl = requireFlag(flags.site, 'site')
+  const scope = tenantScope(config.tenantId)
+  const { db } = openInitialized(config)
+
+  try {
+    const provider = createSiteFetchProvider({
+      fetchFn: globalThis.fetch,
+      ledger: dbLedger(db, scope),
+      now: () => Date.now(),
+    })
+
+    const requested = {
+      ...(optionalNumber(flags['max-pages'], 'max-pages') === undefined
+        ? {} : { maxPages: optionalNumber(flags['max-pages'], 'max-pages') as number }),
+      ...(optionalNumber(flags['max-depth'], 'max-depth') === undefined
+        ? {} : { maxDepth: optionalNumber(flags['max-depth'], 'max-depth') as number }),
+      ...(optionalNumber(flags.delay, 'delay') === undefined
+        ? {} : { delayMs: optionalNumber(flags.delay, 'delay') as number }),
+    }
+
+    const result = await runCrawlCommand(
+      { db, scope, provider, clock: systemClock },
+      { siteUrl, limits: requested, dryRun: flags['dry-run'] === true },
+    )
+
+    for (const adjustment of result.adjustments) {
+      process.stderr.write(
+        `Uwaga: --${adjustment.limit} ${adjustment.requested} przekracza sufit, ` +
+        `uzyto ${adjustment.applied}\n`,
+      )
+    }
+
+    if (result.robotsState === 'unreachable') {
+      process.stdout.write(
+        `robots.txt:                  nieosiagalny — crawl wstrzymany\n` +
+        `Nic nie zostalo pobrane. To celowe: nieosiagalny robots.txt znaczy zakaz,\n` +
+        `zeby nie obciazac serwera, ktory ma klopot.\n`,
+      )
+      return 0
+    }
+
+    if (result.runId === null) {
+      process.stdout.write(
+        `Proba na sucho — nic nie zostalo pobrane.\n` +
+        `Adres startowy:              ${result.startUrl}\n` +
+        `robots.txt:                  ${result.robotsState}\n` +
+        `Adresy z mapy witryny:       ${result.sitemapUrls.length}\n` +
+        `Limit stron:                 ${result.limits.maxPages}\n` +
+        `Odstep miedzy zadaniami:     ${result.limits.delayMs} ms\n`,
+      )
+      return 0
+    }
+
+    process.stdout.write(
+      `Adres startowy:              ${result.startUrl}\n` +
+      `robots.txt:                  ${result.robotsState}\n` +
+      `Adresy z mapy witryny:       ${result.sitemapUrls.length}\n` +
+      `Strony pobrane:              ${result.pagesFetched}\n` +
+      `Strony nieudane:             ${result.pagesFailed}\n` +
+      `Pominiete przez robots.txt:  ${result.blockedByRobots}\n` +
+      `Zadania HTTP:                ${result.requests}\n` +
+      `Czas:                        ${Math.round(result.durationMs / 1000)} s\n` +
+      (result.truncated
+        ? `Crawl uciety:                ${result.truncationReason ?? 'limit'} ` +
+          `— reguly serwisowe zamilkna w audycie\n`
+        : ''),
+    )
+    return 0
+  } finally {
+    closeDatabase(db)
+  }
+}
+
+function runAuditCommand(config: Config, args: readonly string[]): number {
+  const flags = parseFlags(args)
+  const siteUrl = requireFlag(flags.site, 'site')
+  const { db } = openInitialized(config)
+
+  try {
+    const result = runAudit(db, tenantScope(config.tenantId), {
+      siteUrl,
+      runId: flags.run,
+    })
+
+    const counts = result.countsBySeverity
+    process.stdout.write(
+      `Strony w audycie:            ${result.pagesAudited}\n` +
+      `Ustalenia lacznie:           ${result.totalFindings}\n` +
+      `  blokujace:                 ${counts.blocker}\n` +
+      `  wysokie:                   ${counts.high}\n` +
+      `  srednie:                   ${counts.medium}\n` +
+      `  niskie:                    ${counts.low}\n` +
+      `  informacyjne:              ${counts.info}\n`,
+    )
+
+    if (result.topRules.length > 0) {
+      process.stdout.write('\nNajczestsze ustalenia:\n')
+      for (const rule of result.topRules) {
+        process.stdout.write(`  ${String(rule.count).padStart(4)} × ${rule.ruleId} — ${rule.title}\n`)
+      }
+    }
+
+    // Pominiete reguly pokazujemy wprost: cichy brak reguly to falszywe
+    // poczucie porzadku, a nie brak problemu.
+    if (result.skipped.length > 0) {
+      process.stdout.write(
+        `\nRegul pominietych: ${result.skipped.length} ` +
+        `(brakuje: ${[...new Set(result.skipped.flatMap((s) => s.missing))].join(', ')})\n`,
+      )
+    }
+    return 0
+  } finally {
+    closeDatabase(db)
+  }
+}
+
 /**
  * Moment wygenerowania raportu — jedyne miejsce, gdzie wolno formatowac czas
  * lokalnie, bo dotyczy chwili uruchomienia, a nie dat z Search Console (D3).
@@ -191,6 +335,10 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
 
     if (command === 'gsc') return await runGsc(config, sub, argv.slice(2))
+
+    if (command === 'crawl') return await runCrawlCommandLine(config, argv.slice(1))
+
+    if (command === 'audit') return runAuditCommand(config, argv.slice(1))
 
     if (command === 'report') return runReportCommand(config, argv.slice(1))
 

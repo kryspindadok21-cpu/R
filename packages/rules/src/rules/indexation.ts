@@ -192,9 +192,79 @@ const redirectLoop: PageRule = pageRule(
   },
 )
 
+// --- Uzupelnienie do parytetu z audytem Screaming Frog ------------------------
+
+const canonicalMultiple: PageRule = htmlRule(
+  {
+    id: 'canonical.multiple',
+    category: 'indexation',
+    severity: 'high',
+    title: 'Więcej niż jeden adres kanoniczny',
+  },
+  (facts, page) =>
+    facts.canonicalCount > 1
+      ? [finding(canonicalMultiple, page.url, {
+          'liczba znaczników': facts.canonicalCount,
+          'pierwszy': facts.canonicalResolved ?? facts.canonicalRaw ?? '',
+        }, {
+          kind: 'manual',
+          hint: 'Zostaw jeden <link rel="canonical">. Przy dwóch Google ignoruje oba.',
+        })]
+      : [],
+)
+
+const metaRefreshPresent: PageRule = htmlRule(
+  {
+    id: 'redirect.meta-refresh',
+    category: 'indexation',
+    severity: 'medium',
+    title: 'Przekierowanie przez meta refresh',
+  },
+  (facts, page) =>
+    facts.metaRefresh === null
+      ? []
+      : [finding(metaRefreshPresent, page.url, { 'zawartość': facts.metaRefresh }, {
+          kind: 'manual',
+          hint: 'Zamień na przekierowanie 301 po stronie serwera — meta refresh nie przenosi sygnałów.',
+        })],
+)
+
+const canonicalToNonIndexable: SiteRule = siteRule(
+  {
+    id: 'canonical.to-non-indexable',
+    category: 'indexation',
+    severity: 'high',
+    title: 'Adres kanoniczny wskazuje stronę, która nie może być zaindeksowana',
+    requires: ['page-facts', 'http-response', 'complete-crawl'],
+  },
+  (site) => {
+    const index = indexByUrl(site.pages)
+    const out = []
+    for (const page of site.pages) {
+      const target = page.facts?.canonicalResolved
+      if (!target || sameUrl(target, page.url)) continue
+      const targetPage = index.get(urlKey(target))
+      if (!targetPage) continue
+
+      const status = targetPage.http.status
+      const noindex = targetPage.facts?.metaRobots.noindex === true
+      if (status !== null && status < 400 && !noindex) continue
+
+      out.push(finding(canonicalToNonIndexable, page.url, {
+        'kanoniczny': target,
+        'powód': noindex ? 'cel ma noindex' : `cel zwraca status ${status ?? 'brak odpowiedzi'}`,
+      }))
+    }
+    return out
+  },
+)
+
 export const INDEXATION_PAGE_RULES: readonly PageRule[] = [
-  noindexPresent, canonicalMissing, canonicalPointsElsewhere,
+  noindexPresent, canonicalMissing, canonicalPointsElsewhere, canonicalMultiple,
+  metaRefreshPresent,
   status4xx, status5xx, fetchFailed, redirectChainTooLong, redirectLoop,
 ]
 
-export const INDEXATION_SITE_RULES: readonly SiteRule[] = [canonicalChain, robotsBlockedButLinked]
+export const INDEXATION_SITE_RULES: readonly SiteRule[] = [
+  canonicalChain, canonicalToNonIndexable, robotsBlockedButLinked,
+]

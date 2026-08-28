@@ -16,6 +16,9 @@
     "@seo/core": "workspace:*",
     "@seo/db": "workspace:*",
     "@seo/providers": "workspace:*",
-    "@seo/report": "workspace:*"
+    "@seo/report": "workspace:*",
+    "@seo/crawler": "workspace:*",
+    "@seo/rules": "workspace:*",
+    "@seo/parse": "workspace:*"
   }
 }

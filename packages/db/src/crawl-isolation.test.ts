@@ -32,7 +32,7 @@ function seeded() {
     const r = crawlRepos(db, scope)
     const runId = r.write.startCrawlRun(site.id, {
       maxPages: 500, maxDepth: 5, delayMs: 1000, renderSample: 0,
-      robotsState: 'ok', userAgent: `agent-${marker}`,
+      robotsState: 'ok', userAgent: `agent-${marker}`, sitemapUrls: [`https://${host}.example/sitemap.xml`],
     })
 
     const pageUrl = `https://${host}.example/`
@@ -193,7 +193,7 @@ describe('zapis i odczyt crawla', () => {
     const r = crawlRepos(db, A)
     const drugi = r.write.startCrawlRun(own.siteId, {
       maxPages: 10, maxDepth: 2, delayMs: 1000, renderSample: 0,
-      robotsState: 'ok', userAgent: 'agent',
+      robotsState: 'ok', userAgent: 'agent', sitemapUrls: [],
     })
     r.write.insertCrawlPages(own.siteId, drugi, [{
       url: 'https://a.example/', depth: 0, httpStatus: 200, contentType: 'text/html',

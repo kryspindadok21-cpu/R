@@ -20,6 +20,7 @@ export interface CrawlRunInput {
   readonly renderSample: number
   readonly robotsState: 'ok' | 'missing' | 'unreachable'
   readonly userAgent: string
+  readonly sitemapUrls: readonly string[]
 }
 
 export interface CrawlRunFinish {
@@ -169,7 +170,17 @@ export function crawlRepos(db: Db, scope: TenantScope) {
         .orderBy(asc(s.crawlPage.depth), asc(s.url.urlNormalized)).all(),
 
     listPageLinks: (runId: string) =>
-      db.select().from(s.pageLink)
+      db.select({
+        id: s.pageLink.id,
+        fromUrl: s.url.urlRaw,
+        fromUrlId: s.pageLink.fromUrlId,
+        toUrlId: s.pageLink.toUrlId,
+        toUrl: s.pageLink.toUrl,
+        rel: s.pageLink.rel,
+        anchorText: s.pageLink.anchorText,
+        isInternal: s.pageLink.isInternal,
+      }).from(s.pageLink)
+        .innerJoin(s.url, eq(s.url.id, s.pageLink.fromUrlId))
         .where(and(eq(s.pageLink.tenantId, t), eq(s.pageLink.crawlRunId, runId)))
         .orderBy(asc(s.pageLink.id)).all(),
 
@@ -251,6 +262,7 @@ export function crawlRepos(db: Db, scope: TenantScope) {
         maxPages: input.maxPages, maxDepth: input.maxDepth, delayMs: input.delayMs,
         renderSample: input.renderSample, robotsState: input.robotsState,
         truncated: 0, userAgent: input.userAgent,
+        sitemapUrls: JSON.stringify(input.sitemapUrls),
       }).run()
       return id
     },
@@ -372,9 +384,18 @@ export function renderDiffOf(row: { readonly renderDiff: string | null }): Rende
   return parseRenderDiffJson(row.renderDiff)
 }
 
+/** Lista adresow z mapy witryny zapisana przy przebiegu crawla. */
+export function sitemapUrlsOf(row: { readonly sitemapUrls: string }): string[] {
+  return parseStringArray(row.sitemapUrls)
+}
+
 export function redirectChainOf(row: { readonly redirectChain: string }): string[] {
+  return parseStringArray(row.redirectChain)
+}
+
+function parseStringArray(json: string): string[] {
   try {
-    const parsed: unknown = JSON.parse(row.redirectChain)
+    const parsed: unknown = JSON.parse(json)
     return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === 'string') : []
   } catch {
     return []

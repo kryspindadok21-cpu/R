@@ -150,6 +150,40 @@ describe('parsePage — odpornosc', () => {
     expect(facts.links.filter((l) => l.resolved !== null)).toHaveLength(1)
   })
 
+  it('zbiera zasoby strony razem z ich rodzajem', () => {
+    const html = '<html><head><link rel="stylesheet" href="/s.css">'
+      + '<script src="http://przyklad.test/a.js"></script></head>'
+      + '<body><img src="/i.png" alt="x"><iframe src="/ramka"></iframe>'
+      + '<video src="/f.mp4"></video></body></html>'
+    const facts = parsePage(html, { url: 'https://przyklad.test/' })
+
+    expect(facts.resources.map((r) => r.kind).sort())
+      .toEqual(['iframe', 'image', 'media', 'script', 'stylesheet'])
+    expect(facts.resources.find((r) => r.kind === 'script')?.resolved)
+      .toBe('http://przyklad.test/a.js')
+  })
+
+  it('liczy canonicale, bo dwa znaczą, że Google zignoruje oba', () => {
+    const html = '<html><head><link rel="canonical" href="/a">'
+      + '<link rel="canonical" href="/b"></head><body></body></html>'
+    const facts = parsePage(html, { url: 'https://przyklad.test/' })
+
+    expect(facts.canonicalCount).toBe(2)
+    expect(facts.canonicalResolved).toBe('https://przyklad.test/a')
+  })
+
+  it('czyta meta refresh — przekierowanie, którego nie widać w HTTP', () => {
+    const html = '<html><head><meta http-equiv="refresh" content="0;url=/gdzie-indziej">'
+      + '</head><body></body></html>'
+    expect(parsePage(html, { url: 'https://przyklad.test/' }).metaRefresh)
+      .toBe('0;url=/gdzie-indziej')
+  })
+
+  it('strona bez meta refresh ma tam null', () => {
+    expect(parsePage('<html><body>x</body></html>', { url: 'https://przyklad.test/' }).metaRefresh)
+      .toBeNull()
+  })
+
   it('fragment odpada z adresu — kotwica to ta sama strona', () => {
     const facts = parsePage('<a href="/cel#sekcja">X</a>', { url: 'https://przyklad.test/' })
     expect(facts.links[0]?.resolved).toBe('https://przyklad.test/cel')

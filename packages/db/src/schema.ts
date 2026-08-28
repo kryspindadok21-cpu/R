@@ -123,6 +123,7 @@ export const crawlRun = sqliteTable('crawl_run', {
   truncated: integer('truncated').notNull(),
   truncationReason: text('truncation_reason'),
   userAgent: text('user_agent').notNull(),
+  sitemapUrls: text('sitemap_urls').notNull(),
 })
 
 export const crawlPage = sqliteTable('crawl_page', {

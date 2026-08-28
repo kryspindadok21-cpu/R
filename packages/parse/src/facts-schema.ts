@@ -58,6 +58,12 @@ const HreflangSchema = z.object({
   resolved: z.string().nullable(),
 })
 
+const ResourceSchema = z.object({
+  kind: z.enum(['script', 'stylesheet', 'image', 'iframe', 'media', 'preload']),
+  url: z.string(),
+  resolved: z.string().nullable(),
+})
+
 export const PageFactsSchema = z.object({
   url: z.string(),
   title: z.string().nullable(),
@@ -68,6 +74,8 @@ export const PageFactsSchema = z.object({
   metaRobots: MetaRobotsSchema,
   canonicalRaw: z.string().nullable(),
   canonicalResolved: z.string().nullable(),
+  canonicalCount: z.number(),
+  metaRefresh: z.string().nullable(),
   lang: z.string().nullable(),
   charset: z.string().nullable(),
   viewport: z.string().nullable(),
@@ -81,6 +89,7 @@ export const PageFactsSchema = z.object({
   openGraph: z.record(z.string(), z.string()),
   twitterCard: z.record(z.string(), z.string()),
   hreflang: z.array(HreflangSchema),
+  resources: z.array(ResourceSchema),
   text: z.string(),
   wordCount: z.number(),
   textToHtmlRatio: z.number(),

@@ -116,8 +116,135 @@ const tooHeavy: PageRule = htmlRule(
       : [],
 )
 
+// --- Uzupelnienie do parytetu z audytem Screaming Frog ------------------------
+
+const mixedContent: PageRule = htmlRule(
+  {
+    id: 'security.mixed-content',
+    category: 'technical',
+    severity: 'high',
+    title: 'Strona po HTTPS ładuje zasoby po HTTP',
+  },
+  (facts, page) => {
+    if (!page.url.startsWith('https://')) return []
+    const insecure = facts.resources.filter((r) => r.resolved?.startsWith('http://') === true)
+    if (insecure.length === 0) return []
+    return [finding(mixedContent, page.url, {
+      'liczba zasobów': insecure.length,
+      'rodzaje': [...new Set(insecure.map((r) => r.kind))].sort().join(', '),
+      'pierwszy': insecure[0]?.resolved ?? '',
+    }, {
+      kind: 'manual',
+      hint: 'Podmień adresy zasobów na https. Przeglądarki blokują skrypty i style po http.',
+    })]
+  },
+)
+
+const hreflangMissingSelf: PageRule = htmlRule(
+  {
+    id: 'hreflang.missing-self',
+    category: 'technical',
+    severity: 'low',
+    title: 'Zestaw hreflang bez odnośnika do siebie samego',
+  },
+  (facts, page) => {
+    if (facts.hreflang.length === 0) return []
+    const pointsToSelf = facts.hreflang.some((h) => sameUrl(h.resolved, page.url))
+    if (pointsToSelf) return []
+    return [finding(hreflangMissingSelf, page.url, {
+      'wersji językowych': facts.hreflang.length,
+      'kody': facts.hreflang.map((h) => h.lang).join(', '),
+    })]
+  },
+)
+
+/**
+ * Higiena adresu. Kazdy z tych problemow jest drobny osobno, ale razem robia
+ * adresy, ktorych nie da sie wkleic w rozmowie ani porownac miedzy soba.
+ */
+const urlProblematic: PageRule = pageRule(
+  {
+    id: 'url.problematic',
+    category: 'technical',
+    severity: 'low',
+    title: 'Adres strony utrudnia udostępnianie i porównywanie',
+    requires: ['http-response'],
+  },
+  (page, ctx) => {
+    let path: string
+    try {
+      path = decodeURI(new URL(page.url).pathname)
+    } catch {
+      return []
+    }
+
+    const problems: string[] = []
+    if (/[A-Z]/.test(path)) problems.push('wielkie litery')
+    if (path.includes('_')) problems.push('podkreślenia zamiast myślników')
+    if (/\s/.test(path)) problems.push('spacje')
+    if (path.length > ctx.thresholds.urlMaxLength) problems.push(`ścieżka dłuższa niż ${ctx.thresholds.urlMaxLength} znaków`)
+
+    if (problems.length === 0) return []
+    return [finding(urlProblematic, page.url, {
+      'problemy': problems.join(', '),
+      'długość ścieżki': path.length,
+    })]
+  },
+)
+
+const sitemapMissingPage: SiteRule = siteRule(
+  {
+    id: 'sitemap.missing-page',
+    category: 'technical',
+    severity: 'low',
+    title: 'Strony indeksowalne spoza mapy witryny',
+    requires: ['sitemap', 'complete-crawl'],
+  },
+  (site) => {
+    const inSitemap = new Set(site.sitemapUrls.map(urlKey))
+    const missing = site.pages.filter(
+      (page) => page.http.status === 200
+        && page.facts !== null
+        && !page.facts.metaRobots.noindex
+        && !inSitemap.has(urlKey(page.url)),
+    )
+    if (missing.length === 0) return []
+    // Jedno ustalenie zbiorcze, nie jedno na strone: przy 300 stronach lista
+    // per strona zasypalaby raport i schowala rzeczy wazniejsze.
+    return [finding(sitemapMissingPage, null, {
+      'liczba stron': missing.length,
+      'przykłady': missing.slice(0, 3).map((p) => p.url).join(', '),
+    })]
+  },
+)
+
+const sitemapNonIndexableUrl: SiteRule = siteRule(
+  {
+    id: 'sitemap.non-indexable-url',
+    category: 'technical',
+    severity: 'medium',
+    title: 'Mapa witryny wskazuje stronę wykluczoną z indeksu',
+    requires: ['sitemap', 'page-facts'],
+  },
+  (site) => {
+    const index = indexWithRedirects(site.pages)
+    const out = []
+    for (const url of site.sitemapUrls) {
+      const page = index.get(urlKey(url))
+      if (!page?.facts?.metaRobots.noindex) continue
+      out.push(finding(sitemapNonIndexableUrl, url, {
+        'dyrektywa': page.facts.metaRobots.raw ?? 'noindex',
+      }))
+    }
+    return out
+  },
+)
+
 export const TECHNICAL_PAGE_RULES: readonly PageRule[] = [
-  viewportMissing, charsetMissing, hreflangInvalidCode, slowResponse, tooHeavy,
+  viewportMissing, charsetMissing, hreflangInvalidCode, hreflangMissingSelf,
+  mixedContent, urlProblematic, slowResponse, tooHeavy,
 ]
 
-export const TECHNICAL_SITE_RULES: readonly SiteRule[] = [hreflangMissingReturn, sitemapDeadUrl]
+export const TECHNICAL_SITE_RULES: readonly SiteRule[] = [
+  hreflangMissingReturn, sitemapDeadUrl, sitemapMissingPage, sitemapNonIndexableUrl,
+]

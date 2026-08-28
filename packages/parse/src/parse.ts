@@ -4,6 +4,7 @@ import {
 } from './dom.js'
 import type {
   HeadingFact, HreflangFact, ImageFact, JsonLdFact, LinkFact, LinkRel, MetaRobots, PageFacts,
+  ResourceFact, ResourceKind,
 } from './facts.js'
 import { countWords, visibleText } from './text.js'
 
@@ -136,6 +137,12 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
   const images: ImageFact[] = []
   const jsonLd: JsonLdFact[] = []
   const hreflang: HreflangFact[] = []
+  const resources: ResourceFact[] = []
+
+  const addResource = (kind: ResourceKind, raw: string | undefined): void => {
+    if (raw === undefined || raw.trim().length === 0) return
+    resources.push({ kind, url: raw, resolved: resolveUrl(raw, options.url) })
+  }
   const openGraph: Record<string, string> = {}
   const twitterCard: Record<string, string> = {}
 
@@ -150,6 +157,8 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
     charset: null as string | null,
     viewport: null as string | null,
     metaDescription: null as string | null,
+    canonicalCount: 0,
+    metaRefresh: null as string | null,
     scriptCount: 0,
     inlineScriptCount: 0,
     stylesheetCount: 0,
@@ -191,6 +200,9 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
         }
         if (name === 'description' && content !== undefined) acc.metaDescription ??= content
         if (name === 'viewport' && content !== undefined) acc.viewport ??= content
+        if (attr(node, 'http-equiv')?.toLowerCase() === 'refresh' && content !== undefined) {
+          acc.metaRefresh ??= content
+        }
         if (property?.startsWith('og:') && content !== undefined) openGraph[property] ??= content
         if (name?.startsWith('twitter:') && content !== undefined) twitterCard[name] ??= content
         break
@@ -200,8 +212,9 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
         const rel = relTokensOf(node)
         const href = attr(node, 'href')
         if (href === undefined) break
-        if (rel.includes('canonical')) acc.canonicalRaw ??= href
-        if (rel.includes('stylesheet')) acc.stylesheetCount += 1
+        if (rel.includes('canonical')) { acc.canonicalCount += 1; acc.canonicalRaw ??= href }
+        if (rel.includes('stylesheet')) { acc.stylesheetCount += 1; addResource('stylesheet', href) }
+        if (rel.includes('preload') || rel.includes('prefetch')) addResource('preload', href)
         if (rel.includes('alternate')) {
           const code = attr(node, 'hreflang')
           if (code !== undefined) {
@@ -215,7 +228,9 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
         const type = attr(node, 'type')?.toLowerCase()
         if (type === 'application/ld+json') { jsonLd.push(parseJsonLd(node)); break }
         acc.scriptCount += 1
-        if (attr(node, 'src') === undefined) acc.inlineScriptCount += 1
+        const src = attr(node, 'src')
+        if (src === undefined) acc.inlineScriptCount += 1
+        else addResource('script', src)
         break
       }
 
@@ -225,6 +240,14 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
 
       case 'iframe':
         acc.iframeCount += 1
+        addResource('iframe', attr(node, 'src'))
+        break
+
+      case 'video':
+      case 'audio':
+      case 'source':
+      case 'embed':
+        addResource('media', attr(node, 'src'))
         break
 
       case 'noscript':
@@ -262,6 +285,7 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
           loading: attr(node, 'loading') ?? null,
           documentIndex: acc.imageIndex,
         })
+        addResource('image', src ?? undefined)
         acc.imageIndex += 1
         break
       }
@@ -315,6 +339,8 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
     canonicalRaw: acc.canonicalRaw,
     canonicalResolved:
       acc.canonicalRaw === null ? null : resolveUrl(acc.canonicalRaw, options.url),
+    canonicalCount: acc.canonicalCount,
+    metaRefresh: acc.metaRefresh,
     lang: acc.lang,
     charset: acc.charset,
     viewport: acc.viewport,
@@ -328,6 +354,7 @@ export function parsePage(html: string, options: ParseOptions): PageFacts {
     openGraph,
     twitterCard,
     hreflang,
+    resources,
     text,
     wordCount: countWords(text),
     textToHtmlRatio: htmlBytes === 0 ? 0 : new TextEncoder().encode(text).length / htmlBytes,

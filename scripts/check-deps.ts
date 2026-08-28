@@ -5,14 +5,24 @@ export interface Violation { readonly file: string; readonly specifier: string; 
 
 const IO_MODULES = [/^node:fs$/, /^node:http/, /^node:https$/, /^node:net$/, /^node:dns$/, /^node:child_process$/, /^undici$/, /^better-sqlite3$/, /^drizzle-orm/, /^google-auth-library$/, /^playwright/]
 
+/**
+ * Pakiety warstwy wejscia/wyjscia. Silnik, ktory je zaimportuje, przestaje byc
+ * silnikiem — to jest reguła z §Czesc 6 analizy („silniki nigdy nie zaleza od db,
+ * http, jobs, providers"), a nie tylko zakaz konkretnych modulow npm. Bez tej
+ * linii regula istniala w dokumencie, ale nikt jej nie pilnowal.
+ */
+const IO_PACKAGES = [/^@seo\/db$/, /^@seo\/providers$/]
+
+const PURE_ENGINE = [...IO_MODULES, ...IO_PACKAGES]
+
 const RULES: readonly { prefix: string; forbidden: readonly RegExp[]; rule: string }[] = [
-  { prefix: 'packages/core',    forbidden: IO_MODULES, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
-  { prefix: 'packages/report',  forbidden: IO_MODULES, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
-  { prefix: 'packages/parse',   forbidden: IO_MODULES, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
-  { prefix: 'packages/rules',   forbidden: IO_MODULES, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
-  { prefix: 'packages/crawler', forbidden: IO_MODULES, rule: 'crawler dostaje zrodlo stron wstrzykniete (D12)' },
-  { prefix: 'packages/providers', forbidden: [/^drizzle-orm/, /^better-sqlite3$/], rule: 'tylko packages/db dotyka bazy' },
-  { prefix: 'packages/db', forbidden: [/^google-auth-library$/, /^undici$/, /^node:http/], rule: 'tylko packages/providers wychodzi na zewnatrz' },
+  { prefix: 'packages/core',    forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
+  { prefix: 'packages/report',  forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
+  { prefix: 'packages/parse',   forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
+  { prefix: 'packages/rules',   forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
+  { prefix: 'packages/crawler', forbidden: PURE_ENGINE, rule: 'crawler dostaje zrodlo stron wstrzykniete (D12)' },
+  { prefix: 'packages/providers', forbidden: [/^drizzle-orm/, /^better-sqlite3$/, /^@seo\/db$/], rule: 'tylko packages/db dotyka bazy' },
+  { prefix: 'packages/db', forbidden: [/^google-auth-library$/, /^undici$/, /^node:http/, /^@seo\/providers$/], rule: 'tylko packages/providers wychodzi na zewnatrz' },
 ]
 
 const IMPORT_PATTERN = /(?:^|[^\w$])(?:import|export)[\s\S]{0,200}?from\s*['"]([^'"]+)['"]|(?:^|[^\w$])(?:import|require)\s*\(\s*['"]([^'"]+)['"]\s*\)/g

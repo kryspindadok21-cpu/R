@@ -53,6 +53,15 @@ export interface JsonLdFact {
   readonly types: readonly string[]
 }
 
+/** Zasob ladowany przez strone. Potrzebny do wykrycia tresci mieszanej (http na https). */
+export type ResourceKind = 'script' | 'stylesheet' | 'image' | 'iframe' | 'media' | 'preload'
+
+export interface ResourceFact {
+  readonly kind: ResourceKind
+  readonly url: string
+  readonly resolved: string | null
+}
+
 export interface HreflangFact {
   readonly lang: string
   readonly href: string
@@ -70,6 +79,10 @@ export interface PageFacts {
   readonly metaRobots: MetaRobots
   readonly canonicalRaw: string | null
   readonly canonicalResolved: string | null
+  /** Wiecej niz jeden canonical to sprzecznosc — Google ignoruje wtedy wszystkie. */
+  readonly canonicalCount: number
+  /** Zawartosc `<meta http-equiv="refresh">`; przekierowanie, ktorego nie widac w HTTP. */
+  readonly metaRefresh: string | null
   readonly lang: string | null
   readonly charset: string | null
   readonly viewport: string | null
@@ -84,6 +97,7 @@ export interface PageFacts {
   readonly openGraph: Readonly<Record<string, string>>
   readonly twitterCard: Readonly<Record<string, string>>
   readonly hreflang: readonly HreflangFact[]
+  readonly resources: readonly ResourceFact[]
   readonly text: string
   readonly wordCount: number
   /** Udzial tekstu w bajtach dokumentu. Niski przy stronie zlozonej z samego JS. */

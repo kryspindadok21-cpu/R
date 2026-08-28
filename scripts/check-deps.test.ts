@@ -38,6 +38,33 @@ describe('checkDependencyRules', () => {
     expect(checkDependencyRules(dir)).toHaveLength(1)
   })
 
+  // To jest regula z §Czesc 6 analizy, nie tylko zakaz modulow npm: silnik,
+  // ktory zaimportuje warstwe wejscia/wyjscia, przestaje byc silnikiem.
+  it('zglasza import @seo/db w czystym silniku', () => {
+    dir = fakeRepo({ 'packages/rules/src/a.ts': "import { repos } from '@seo/db'\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('zglasza import @seo/providers w crawlerze', () => {
+    dir = fakeRepo({ 'packages/crawler/src/a.ts': "import { x } from '@seo/providers'\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('zglasza import @seo/db w packages/providers', () => {
+    dir = fakeRepo({ 'packages/providers/src/a.ts': "import { repos } from '@seo/db'\n" })
+    expect(checkDependencyRules(dir)).toHaveLength(1)
+  })
+
+  it('przepuszcza import czystego silnika przez warstwe wejscia/wyjscia', () => {
+    dir = fakeRepo({ 'packages/db/src/a.ts': "import { parsePage } from '@seo/parse'\n" })
+    expect(checkDependencyRules(dir)).toEqual([])
+  })
+
+  it('przepuszcza import czystego silnika przez inny czysty silnik', () => {
+    dir = fakeRepo({ 'packages/rules/src/a.ts': "import { parsePage } from '@seo/parse'\n" })
+    expect(checkDependencyRules(dir)).toEqual([])
+  })
+
   it('pozwala better-sqlite3 w packages/db', () => {
     dir = fakeRepo({ 'packages/db/src/a.ts': "import Database from 'better-sqlite3'\n" })
     expect(checkDependencyRules(dir)).toEqual([])

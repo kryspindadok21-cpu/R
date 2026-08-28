@@ -10,7 +10,7 @@ export {
 } from './dom.js'
 export type {
   HeadingFact, HreflangFact, ImageFact, JsonLdFact, LinkFact, LinkRel,
-  MetaRobots, PageFacts,
+  MetaRobots, PageFacts, ResourceFact, ResourceKind,
 } from './facts.js'
 export {
   PageFactsSchema, RenderDiffSchema, parsePageFactsJson, parseRenderDiffJson,

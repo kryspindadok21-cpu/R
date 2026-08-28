@@ -21,7 +21,10 @@ CREATE TABLE crawl_run (
   -- 1, gdy crawl uciel jakikolwiek limit. Wtedy reguly serwisowe milkna (D17).
   truncated      INTEGER NOT NULL DEFAULT 0,
   truncation_reason TEXT,
-  user_agent     TEXT NOT NULL
+  user_agent     TEXT NOT NULL,
+  -- Pelna lista adresow z mapy witryny, takze tych nieodwiedzonych. Regula
+  -- `sitemap.dead-url` potrzebuje ich wszystkich, a nie tylko tych z crawla.
+  sitemap_urls   TEXT NOT NULL DEFAULT '[]'
 );
 CREATE INDEX crawl_run_tenant_site_idx ON crawl_run (tenant_id, site_id, started_at);
 

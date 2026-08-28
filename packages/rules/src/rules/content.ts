@@ -180,4 +180,37 @@ export const CONTENT_PAGE_RULES: readonly PageRule[] = [
   h1Missing, h1Multiple, headingOrderJump, contentThin, langMissing,
 ]
 
-export const CONTENT_SITE_RULES: readonly SiteRule[] = [titleDuplicate, descriptionDuplicate]
+
+const contentDuplicate: SiteRule = siteRule(
+  {
+    id: 'content.duplicate',
+    category: 'content',
+    severity: 'medium',
+    title: 'Identyczna treść na wielu stronach',
+    requires: ['page-facts', 'complete-crawl'],
+  },
+  (site, ctx) => {
+    // Porownujemy tekst widoczny, nie HTML: dwie strony z tym samym artykulem
+    // w innym szablonie sa duplikatem dla wyszukiwarki, mimo roznego zrodla.
+    const candidates = site.pages.filter(
+      (page) => isIndexable(page)
+        && (page.facts?.wordCount ?? 0) >= ctx.thresholds.duplicateContentMinWords,
+    )
+    const groups = groupBy(candidates, (page) => page.facts?.text ?? null)
+    const out = []
+    for (const [text, pages] of groups) {
+      if (pages.length < 2) continue
+      out.push(finding(contentDuplicate, null, {
+        'liczba stron': pages.length,
+        'liczba słów': pages[0]?.facts?.wordCount ?? 0,
+        'początek treści': text.slice(0, 80),
+        'przykłady': pages.slice(0, 3).map((p) => p.url).join(', '),
+      }, { kind: 'manual', hint: 'Skonsoliduj strony albo wskaż jedną jako kanoniczną.' }))
+    }
+    return out
+  },
+)
+
+export const CONTENT_SITE_RULES: readonly SiteRule[] = [
+  titleDuplicate, descriptionDuplicate, contentDuplicate,
+]

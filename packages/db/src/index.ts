@@ -6,7 +6,7 @@ export {
   type ReconciliationInput, type Repos,
 } from './repo.js'
 export {
-  crawlRepos, factsOf, noindexReasonOf, redirectChainOf, renderDiffOf,
+  crawlRepos, factsOf, noindexReasonOf, redirectChainOf, renderDiffOf, sitemapUrlsOf,
   type CrawlPageInput, type CrawlRepos, type CrawlRunFinish, type CrawlRunInput,
   type FindingInput, type PageLinkInput, type PsiMeasurementInput, type SkippedRuleInput,
 } from './crawl-repo.js'
