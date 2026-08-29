@@ -25,7 +25,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 11. `packages/report` — raport audytu | ukończone, AC10 zielone, **kamień milowy Fazy 1 osiągnięty**; 612 testów zielonych | `3cb0a31` |
 | 12. Renderowanie i diff surowy↔wyrenderowany (D16) | ukończone, AC9 zielone, sprawdzone na prawdziwym Chromium; 628 testów zielonych | `c7c8ef1`, `b5a5c13` |
 | 13. PageSpeed Insights (D21) | ukończone, sekcja w raporcie; 651 testów zielonych | `f185904` |
-| 14. `check-deps`, CI, dokumentacja, odbiór | **ukończone** — pełna ścieżka przeszła na żywej stronie przez HTTPS: 4 strony, 0 ustaleń blokujących, wysokich i średnich | `f185904`, `PENDINGP2` |
+| 14. `check-deps`, CI, dokumentacja, odbiór | **ukończone** — pełna ścieżka przeszła na żywej stronie przez HTTPS: 4 strony, 0 ustaleń blokujących, wysokich i średnich | `f185904`, `76f9bfc` |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
