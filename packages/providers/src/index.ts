@@ -18,7 +18,7 @@ export type {
   SiteFetchCapability, SiteFetchDeps, SiteFetchOptions, SiteFetchProvider, SiteResponse,
 } from './site/types.js'
 export {
-  RenderUnavailableError, createRenderProvider, type RenderDeps,
+  RenderUnavailableError, createRenderProvider, proxyFromEnv, type RenderDeps,
 } from './render/playwright.js'
 export type { RenderOptions, RenderProvider, RenderedPage } from './render/types.js'
 export {

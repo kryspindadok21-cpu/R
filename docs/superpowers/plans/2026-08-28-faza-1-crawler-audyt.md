@@ -25,7 +25,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 11. `packages/report` — raport audytu | ukończone, AC10 zielone, **kamień milowy Fazy 1 osiągnięty**; 612 testów zielonych | `3cb0a31` |
 | 12. Renderowanie i diff surowy↔wyrenderowany (D16) | ukończone, AC9 zielone, sprawdzone na prawdziwym Chromium; 628 testów zielonych | `c7c8ef1`, `b5a5c13` |
 | 13. PageSpeed Insights (D21) | ukończone, sekcja w raporcie; 651 testów zielonych | `f185904` |
-| 14. `check-deps`, CI, dokumentacja | ukończone; **odbiór na własnej stronie właściciela czeka na niego** | `f185904` |
+| 14. `check-deps`, CI, dokumentacja, odbiór | **ukończone** — pełna ścieżka przeszła na żywej stronie przez HTTPS: 4 strony, 0 ustaleń blokujących, wysokich i średnich | `f185904`, `PENDINGP2` |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
@@ -70,6 +70,22 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
   Zakres to teraz host **plus ścieżka bazowa** property, z granicą na segmencie
   ścieżki — `/projekt` nie obejmuje `/projekt-kogos-innego`. Adresy poza zakresem
   są liczone i pokazywane, nie znikają po cichu.
+- **Odbiór wykonany** na `https://kryspindadok21-cpu.github.io/R/` — własnej stronie
+  właściciela na GitHub Pages. Cztery strony, mapa witryny znaleziona pod prefiksem
+  property, zero ustaleń cięższych niż `low`. Jedyne cztery to `url.problematic`
+  od wielkiej litery w nazwie repozytorium.
+- **Renderowania nie dało się zweryfikować przez HTTPS z tego środowiska.** Proxy
+  piaskownicy zrywa tunel Chromium w połowie wymiany TLS (`ws_closed_mid_exchange`,
+  kod 1006) — `curl` i `fetch` przechodzą, przeglądarka nie. Mechanizm jest
+  udowodniony lokalnie: na stronie CSR poprawnie wykrył treść wymagającą JS.
+  Na maszynie bez takiego pośrednika zadziała.
+- Ujawnione przy tym **dwie realne luki, obie naprawione**: renderer nie przekazywał
+  Chromium ustawień proxy (Node dziedziczy je sam, przeglądarka nie — objaw mylący,
+  bo wygląda na awarię strony), a CLI **milczał, gdy wszystkie próby renderowania
+  zawiodły**. Cisza przy samych porażkach wygląda jak sukces.
+- Flaga wyłączająca sprawdzanie certyfikatów została wprowadzona i **usunięta** —
+  niczego nie naprawiła, a osłabiała bezpieczeństwo. Reguła wymyślona przy biurku
+  jest hipotezą, także gdy wymyśli ją asystent.
 - PSI rozdziela **dane terenowe** (CrUX, od prawdziwych użytkowników — tylko one
   liczą się w Core Web Vitals) od **laboratoryjnych** (Lighthouse). Nie są mieszane
   w jednej liczbie; to najczęstsze oszustwo narzędzi wydajnościowych.

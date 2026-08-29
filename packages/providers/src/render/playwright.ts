@@ -41,6 +41,26 @@ export interface RenderDeps {
    * niz sugeruje dokumentacja.
    */
   readonly executablePath?: string | undefined
+  /**
+   * Serwer posredniczacy, np. `http://127.0.0.1:8080`. Node bierze go ze
+   * zmiennych srodowiskowych sam, Chromium **nie** — bez tego przegladarka
+   * w sieci firmowej albo w kontenerze konczy na ERR_CONNECTION_RESET,
+   * podczas gdy zwykly crawl dziala. Objaw mylacy, wiec obslugujemy to wprost.
+   */
+  readonly proxyServer?: string | undefined
+  /** Hosty omijajace proxy, w formacie `NO_PROXY`. */
+  readonly proxyBypass?: string | undefined
+}
+
+/** Czyta ustawienia proxy ze zmiennych srodowiskowych, w obu wielkosciach liter. */
+export function proxyFromEnv(env: NodeJS.ProcessEnv): {
+  server: string | undefined
+  bypass: string | undefined
+} {
+  return {
+    server: env.HTTPS_PROXY ?? env.https_proxy ?? env.HTTP_PROXY ?? env.http_proxy,
+    bypass: env.NO_PROXY ?? env.no_proxy,
+  }
 }
 
 /** Minimalny ksztalt Playwrighta, ktorego uzywamy. Trzyma leniwy import w typach. */
@@ -61,8 +81,14 @@ interface ResponseLike {
   status(): number
 }
 
+interface LaunchOptions {
+  headless: true
+  executablePath?: string
+  proxy?: { server: string; bypass?: string }
+}
+
 interface ChromiumLike {
-  launch(options: { headless: true; executablePath?: string }): Promise<BrowserLike>
+  launch(options: LaunchOptions): Promise<BrowserLike>
 }
 
 async function loadChromium(): Promise<ChromiumLike> {
@@ -82,12 +108,15 @@ export function createRenderProvider(deps: RenderDeps): RenderProvider {
   const ensureBrowser = async (): Promise<BrowserLike> => {
     if (browser !== null) return browser
     const chromium = await loadChromium()
+    const options: LaunchOptions = { headless: true }
+    if (deps.executablePath !== undefined) options.executablePath = deps.executablePath
+    if (deps.proxyServer !== undefined) {
+      options.proxy = deps.proxyBypass === undefined
+        ? { server: deps.proxyServer }
+        : { server: deps.proxyServer, bypass: deps.proxyBypass }
+    }
     try {
-      browser = await chromium.launch(
-        deps.executablePath === undefined
-          ? { headless: true }
-          : { headless: true, executablePath: deps.executablePath },
-      )
+      browser = await chromium.launch(options)
     } catch (error) {
       throw new RenderUnavailableError(
         error instanceof Error ? error.message.split('\n')[0] ?? error.message : String(error),

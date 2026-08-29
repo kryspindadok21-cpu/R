@@ -5,7 +5,7 @@ import { closeDatabase } from '@seo/db'
 import {
   GSC_MAX_ROW_LIMIT, RenderUnavailableError, createGscProvider, createPsiProvider,
   createRenderProvider, createServiceAccountTokenSource, createSiteFetchProvider,
-  type PsiStrategy,
+  proxyFromEnv, type PsiStrategy,
 } from '@seo/providers'
 import { runPsi } from './commands/psi.js'
 import { runAuditReport } from './commands/audit-report.js'
@@ -42,6 +42,7 @@ Zmienne srodowiskowe:
   SEO_TENANT         identyfikator tenanta (domyslnie "local")
   SEO_CHROMIUM_PATH  sciezka do binarki przegladarki dla --render (opcjonalna)
   SEO_PSI_KEY        klucz PageSpeed Insights (opcjonalny, podnosi limit)
+  HTTPS_PROXY        serwer posredniczacy — przekazywany takze do przegladarki
 `
 
 interface Flags {
@@ -209,11 +210,17 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
         scope,
         provider,
         clock: systemClock,
-        renderProvider: () => createRenderProvider({
-          ledger: dbLedger(db, scope),
-          now: () => Date.now(),
-          executablePath: process.env.SEO_CHROMIUM_PATH,
-        }),
+        renderProvider: () => {
+          // Chromium nie dziedziczy proxy ze zmiennych srodowiskowych tak jak Node.
+          const proxy = proxyFromEnv(process.env)
+          return createRenderProvider({
+            ledger: dbLedger(db, scope),
+            now: () => Date.now(),
+            executablePath: process.env.SEO_CHROMIUM_PATH,
+            proxyServer: proxy.server,
+            proxyBypass: proxy.bypass,
+          })
+        },
       },
       {
         siteUrl,
@@ -267,6 +274,11 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
       (result.rendered > 0
         ? `Strony wyrenderowane:        ${result.rendered}` +
           `${result.renderFailed > 0 ? ` (nieudane: ${result.renderFailed})` : ''}\n`
+        : '') +
+      // Cisza przy samych porazkach wygladalaby jak sukces. Nie wolno.
+      (result.rendered === 0 && result.renderFailed > 0
+        ? `Renderowanie nieudane:       ${result.renderFailed} stron ` +
+          `— powod w tabeli provider_call\n`
         : '') +
       (result.requiringJs.length > 0
         ? `Tresc wymaga JavaScriptu:    ${result.requiringJs.length} ` +
