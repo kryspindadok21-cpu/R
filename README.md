@@ -28,6 +28,12 @@ Bez hostingu, bez płatnych usług, bez kont w zewnętrznych narzędziach.
 Szczegóły i punkt wznowienia: tabela **STAN PRAC** w
 `docs/superpowers/plans/2026-08-28-faza-1-crawler-audyt.md`.
 
+## Uruchomienie na własnym komputerze
+
+Renderowanie w Chromium, dane z Search Console i PageSpeed Insights da się
+sprawdzić wyłącznie poza piaskownicą — instrukcja krok po kroku:
+`docs/uruchomienie-na-komputerze.md`.
+
 ## Wymagania
 
 - Node 22 lub nowszy
