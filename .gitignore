@@ -1,0 +1,3 @@
+.claude/debate-logs/
+node_modules/
+*.log
