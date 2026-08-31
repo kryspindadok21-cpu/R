@@ -1,3 +1,5 @@
 export * from './did.js'
 export * from './opportunity.js'
 export * from './control-group.js'
+export * from './policy.js'
+export * from './board.js'

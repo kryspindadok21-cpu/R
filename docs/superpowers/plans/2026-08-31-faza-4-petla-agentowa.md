@@ -13,8 +13,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 |---|---|---|
 | 1. Specyfikacja Fazy 4 (D45–D54) | ukończone | — |
 | 2. `packages/agent` — różnica w różnicach i werdykty (D48–D51) | ukończone, AC5/AC8 zielone; 1051 testów zielonych łącznie | `0f7cf58` |
-| 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | ukończone, AC1/AC2/AC6 zielone; 1087 testów zielonych łącznie | — |
-| 4. `packages/agent` — silnik polityk i wyłączniki (D47, D52) | niezaczęte | — |
+| 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | ukończone, AC1/AC2/AC6 zielone; 1087 testów zielonych łącznie | `11eabcf` |
+| 4. `packages/agent` — silnik polityk, wyłączniki i tablica zadań | ukończone, AC3/AC4/AC9/AC10 zielone; 1119 testów zielonych | — |
 | 5. `packages/db` — migracja `0005` + repozytoria agenta | niezaczęte | — |
 | 6. `apps/cli` — `seo agent plan`, `board`, `verdicts` | niezaczęte | — |
 | 7. `packages/report` — tablica zadań i werdykty | niezaczęte | — |
@@ -94,3 +94,27 @@ w ogóle istnieją.
 - **Odległość między stronami normalizowana logarytmicznie.** Ruch ma rozkład
   skrajnie skośny: różnica 10 → 100 wyświetleń znaczy więcej niż 10 000 → 10 090,
   choć w liczbach bezwzględnych jest identyczna.
+- **⚠️ Odstępstwo od tabeli bezpieczników: wymiana linków to `never`, nie
+  `approve`.** Tabela mówi „zawsze zatwierdzenie", ale dwie strony dalej ta sama
+  analiza nazywa to link scheme z **bezpośrednim ryzykiem kary manualnej** i jedyną
+  funkcją, która zatruje wiarygodność wszystkiego innego. Te dwa zdania nie mogą
+  być prawdziwe naraz. Akcja, której nie wolno wykonać nigdy, nie powinna dać się
+  zatwierdzić jednym kliknięciem o drugiej w nocy. Outreach zostaje na `approve`.
+  Spec poprawiony.
+- **Wyłącznik bije politykę, także `approve`.** Pierwsza wersja blokowała tylko
+  `auto` — a to znaczyłoby, że hamulec regresji da się ominąć klikając
+  „zatwierdź". Wyłącznik, który da się ominąć zatwierdzeniem, jest ostrzeżeniem,
+  nie wyłącznikiem. Są na to dwa osobne testy.
+- **Wyłączniki dotyczą wyłącznie akcji zapisujących do strony.** Crawl i audyt
+  mają chodzić także wtedy, gdy ruch leci w dół — to wtedy są najbardziej
+  potrzebne. `writesSite` jest polem definicji akcji, nie zgadywane z nazwy.
+- **Brak ruchu w zeszłym tygodniu nie liczy się jako spadek o 100%.** Dzielenie
+  przez zero dałoby nieskończoność i zablokowałoby nowy serwis na zawsze — czyli
+  dokładnie ten, który dopiero zaczyna publikować.
+- **`proposed` jest osobnym stanem tablicy**, poprzedzającym `needs-you`. D46
+  mówi, że planer emituje wyłącznie wnioski; bez tego stanu „wniosek" i „czeka
+  na zgodę" byłyby tym samym, a to dwie różne rzeczy: pierwsza jest wynikiem
+  arytmetyki, druga decyzją, że warto o to pytać.
+- **Odrzucenie przez człowieka też jest werdyktem.** `needs-you → done` jest
+  dozwolone, o ile werdykt jest niepusty — „odrzucone przez właściciela" liczy
+  się tak samo jak „nie da się zmierzyć".

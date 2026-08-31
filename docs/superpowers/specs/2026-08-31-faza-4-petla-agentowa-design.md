@@ -90,6 +90,16 @@ polityk. Domyślne `approve` znaczyłoby, że nieznana akcja trafia przed oczy
 właściciela z sugestią, że ktoś ją przemyślał. Domyślne `never` znaczy, że ktoś
 musi ją świadomie włączyć.
 
+> **Odstępstwo od tabeli bezpieczników (2026-08-31).** Tabela w analizie stawia
+> **wymianę linków** na `approve` („zawsze zatwierdzenie"). Dwie strony dalej ta
+> sama analiza ostrzega, że to jest link scheme z **bezpośrednim ryzykiem kary
+> manualnej** i jedyna funkcja z całej listy, która zatruje wiarygodność
+> wszystkiego innego. Te dwa zdania nie mogą być prawdziwe naraz. Akcja, której
+> nie wolno wykonać nigdy, nie powinna dać się zatwierdzić jednym kliknięciem
+> o drugiej w nocy — więc `link-exchange` ma politykę **`never`**. Prospecting
+> i pisanie outreachu zostają na `approve`: to ta sama robota bez ekspozycji na
+> karę.
+
 ### D48 — Bez grupy kontrolnej nie ma pomiaru, tylko odmowa
 
 **Decyzja:** różnica w różnicach wymaga grupy kontrolnej o rozmiarze co najmniej
