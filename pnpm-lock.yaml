@@ -126,6 +126,19 @@ importers:
         specifier: ^26.4.0
         version: 26.4.0
 
+  packages/keywords:
+    dependencies:
+      '@seo/content':
+        specifier: workspace:*
+        version: link:../content
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
   packages/parse:
     dependencies:
       '@seo/core':

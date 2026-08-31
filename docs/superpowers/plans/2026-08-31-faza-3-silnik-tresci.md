@@ -12,8 +12,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | Zadanie | Stan | Commit |
 |---|---|---|
 | 1. Specyfikacja Fazy 3 (D33–D44) | ukończone | — |
-| 2. `packages/keywords` — klastrowanie i pokrycie tematu | niezaczęte | — |
-| 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | — |
+| 2. `packages/keywords` — klastrowanie i pokrycie tematu | ukończone, AC1/AC2/AC5 zielone; 913 testów zielonych łącznie | — |
+| 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | `fab4527` |
 | 4. `packages/content` — generator briefów i linkowanie wewnętrzne | niezaczęte | — |
 | 5. `packages/db` — migracja `0004` + repozytoria treści | niezaczęte | — |
 | 6. `packages/providers` — generowanie draftu i adapter `git-pr` | niezaczęte | — |
@@ -63,3 +63,26 @@ za to z darmowym rollbackiem.
   w wykrywaniu wzmianek w Fazie 2.
 - **Wszystkie niepowodzenia zbierane naraz**, nie pierwsze. Redaktor poprawiający
   draft ma zobaczyć całą listę od razu, zamiast wracać trzy razy.
+- **Metoda zapasowa nazywa się `lexical-overlap`, nie `gsc-cooccurrence`.**
+  D33 zakładało wspólne wystąpienia fraz na tych samych naszych stronach, ale
+  `gsc_query_daily` nie ma wymiaru `page` — nie wiemy, która strona odebrała
+  wyświetlenia dla której frazy. Metoda jest więc czysto leksykalna i tak się
+  nazywa. Spec poprawiony. Dopisanie wymiaru `page` do synchronizacji GSC to
+  osobna, wąska robota po stronie Fazy 0.
+- **Klastrowanie idzie schematem piasta-szprychy, nie składowymi spójnymi.**
+  Przy składowych fraza A łączy się z B, B z C, C z D — i A ląduje w jednym
+  klastrze z D, choć nie dzielą ani jednego adresu. To jest znany sposób, w jaki
+  klastrowanie SERP produkuje jeden klaster obejmujący pół serwisu. Jest na to
+  osobny test.
+- **Klaster jednoelementowy z migawką ma `sharedUrls: 0`, bez migawki `null`.**
+  „Nie dzieli adresów z nikim" i „nie wiemy, jakie ma adresy" to dwie różne
+  informacje i raport musi je rozróżniać.
+- **Pokrycie ważone wyświetleniami, nie liczbą fraz.** Fraza z 400 wyświetleniami
+  i fraza z 2 to nie to samo zobowiązanie. Liczenie „ile fraz na ilu" dałoby
+  stronie zaliczenie za pokrycie ogona przy zignorowaniu frazy niosącej ruch.
+- **`create` nigdy nie jest bez powodu.** Gdy nikt go nie poda, powstaje powód
+  domyślny, który mówi, która strona była najbliżej i o ile nie sięgnęła progu.
+  Za pół roku ma się dać sprawdzić, czy decyzja była dobra.
+- **Próg pokrycia 0,6 jest zgadnięty i jest to napisane w kodzie.** W przeciwieństwie
+  do 0,85 przy oryginalności, ta liczba nie ma źródła — pierwszy przebieg na
+  własnej stronie ma ją poprawić.

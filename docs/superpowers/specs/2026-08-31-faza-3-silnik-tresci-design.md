@@ -59,9 +59,18 @@ budżet na `serper` albo `dataforseo`.
 
 **Konsekwencja:** silnik klastrowania przyjmuje migawki SERP **jako wejście**
 (czysta funkcja, zero sieci) i jest gotowy w dniu, w którym pojawi się dostawca.
-Do tego czasu działa metoda zapasowa — wspólne wystąpienia fraz na tych samych
-naszych stronach z Search Console plus podobieństwo leksykalne — oznaczona jako
-`gsc-cooccurrence`, nigdy podana jako to samo co `serp-overlap`.
+Do tego czasu działa metoda zapasowa, oznaczona jako `lexical-overlap`, nigdy
+podana jako to samo co `serp-overlap`.
+
+> **Poprawka po implementacji (2026-08-31).** Pierwsza wersja tego akapitu
+> mówiła o metodzie `gsc-cooccurrence` opartej na wspólnych wystąpieniach fraz
+> na tych samych naszych stronach. **Takich danych nie zbieramy** —
+> `gsc_query_daily` niesie wymiar `query`, ale nie `page`, więc nie wiadomo,
+> która strona odebrała wyświetlenia dla której frazy. Metoda zapasowa jest
+> więc czysto leksykalna i tak się nazywa. Dopisanie wymiaru `page` do synchronizacji
+> GSC jest osobną, wąską robotą po stronie Fazy 0 i dopiero ona odblokuje
+> `gsc-cooccurrence`. Nazwanie słabszej metody nazwą mocniejszej byłoby dokładnie
+> tym, przed czym broni ta decyzja.
 
 **Uzasadnienie:** cicha podmiana metody jest gorsza niż jej brak. Klient, który
 dostaje „klastry" i nie wie, że powstały z podobieństwa napisów, podejmie na tej
