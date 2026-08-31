@@ -10,6 +10,7 @@ import {
 import {
   runGeoEntity, runGeoPrompts, runGeoReport, runGeoRun,
 } from './commands/geo.js'
+import { runLlmsTxt } from './commands/llms-txt.js'
 import { runPsi } from './commands/psi.js'
 import { runAuditReport } from './commands/audit-report.js'
 import { runAudit } from './commands/audit.js'
@@ -38,6 +39,7 @@ const USAGE = `seo — platforma SEO/GEO
   seo geo entity  --site <uri> --name "Marka" [--variants a,b] [--exclusions c] [--own]
   seo geo run     --site <uri> [--runs N] [--grounded] [--set nazwa]
   seo geo report  --site <uri> [--out sciezka.html]
+  seo llms-txt   --site <uri> [--out llms.txt] [--name "Nazwa"] [--opis "Opis"]
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -79,6 +81,7 @@ interface Flags {
   own?: boolean | undefined
   runs?: string | undefined
   grounded?: boolean | undefined
+  opis?: string | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -109,6 +112,7 @@ function parseFlags(args: readonly string[]): Flags {
       own: { type: 'boolean' },
       runs: { type: 'string' },
       grounded: { type: 'boolean' },
+      opis: { type: 'string' },
     },
     allowPositionals: true,
   })
@@ -638,6 +642,30 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (command === 'report') return runReportCommand(config, argv.slice(1))
 
     if (command === 'geo') return await runGeoCommand(config, sub, argv.slice(2))
+
+    if (command === 'llms-txt') {
+      const flags = parseFlags(argv.slice(1))
+      const { db } = openInitialized(config)
+      try {
+        const result = runLlmsTxt(db, tenantScope(config.tenantId), {
+          siteUrl: requireFlag(flags.site, 'site'),
+          outPath: flags.out ?? 'llms.txt',
+          siteName: flags.name,
+          description: flags.opis,
+        })
+        process.stdout.write(
+          `Plik:                        ${result.outPath}\n` +
+          `Strony w pliku:              ${result.pages}\n` +
+          `Strony pominiete:            ${result.skippedPages}\n` +
+          'Pominieto strony z noindex i te, ktore nie odpowiedzialy statusem 200.\n' +
+          'Zaden duzy dostawca nie zobowiazal sie czytac llms.txt — ten plik nie\n' +
+          'zastapi dostepnosci tresci bez JS ani samodzielnosci fragmentow.\n',
+        )
+        return 0
+      } finally {
+        closeDatabase(db)
+      }
+    }
 
     process.stderr.write(`Nieznane polecenie: ${command}${sub ? ` ${sub}` : ''}\n\n${USAGE}`)
     return 1

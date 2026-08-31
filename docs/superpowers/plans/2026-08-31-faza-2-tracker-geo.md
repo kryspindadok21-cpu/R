@@ -19,8 +19,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 5. `packages/db` — migracja `0003` + repozytoria GEO | ukończone, izolacja najemców zielona; 762 testy zielone łącznie | `7905917` |
 | 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | ukończone, AC7/AC8/AC9 zielone; 779 testów zielonych łącznie | `8923340` |
 | 7. `apps/cli` — `seo geo prompts`, `seo geo entity`, `seo geo run` | ukończone, uruchomione na żywo; 797 testów zielonych łącznie | `2551c21` |
-| 8. `packages/report` — raport GEO + `seo geo report` | ukończone; 826 testów zielonych łącznie | — |
-| 9. `apps/cli` — `seo llms-txt` (D31) | niezaczęte | — |
+| 8. `packages/report` — raport GEO + `seo geo report` | ukończone; 826 testów zielonych łącznie | `fc8ba11` |
+| 9. `apps/cli` — `seo llms-txt` (D31) | **generator ukończony**, reguła audytu świadomie odłożona (niżej); 840 testów zielonych | — |
 | 10. Odbiór na własnej stronie | niezaczęte | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
@@ -161,3 +161,18 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
 - **Raport nie ma jednej liczby „widoczności w AI".** Każdy silnik to osobny
   wiersz, bo model z groundingiem i model bez to dwa procesy. Cytowania też są
   rozdzielone na źródła i nie sumują się.
+- **Generator `llms.txt` bierze dane z zapisanego crawla, nie z nowego pobrania.**
+  Strony, które już znamy, mają tytuł, opis i informację o indeksowalności.
+  Drugie przejście po stronie tylko po to, żeby złożyć plik, byłoby ruchem
+  sieciowym bez nowej informacji.
+- **Reguła audytu „brak `llms.txt`" świadomie nie powstała.** Żeby ją napisać
+  uczciwie, crawler musiałby dodatkowo pobrać `{root}/llms.txt` i zapisać stan
+  w nowej kolumnie — migracja, zmiana crawlera i nowa zdolność w silniku reguł.
+  D31 mówi wprost, że wysiłek ma iść w czynniki strukturalne, nie tutaj, więc
+  ta praca jest odłożona, a nie zrobiona po łebkach. **Nie ma reguły, która
+  udaje, że sprawdza plik, a naprawdę sprawdza tylko, czy crawl na niego trafił** —
+  to byłaby dokładnie ta cicha nieprawda, przed którą broni D17.
+- Do pliku nie trafiają strony z `noindex`. Wpisanie tam adresu, który sam
+  własnym nagłówkiem prosi o nieindeksowanie, byłoby sprzecznością.
+- Sprawdzone na żywo na `kryspindadok21-cpu.github.io/R/`: 4 strony, cztery
+  sekcje wg pierwszego segmentu ścieżki, opisy z `meta description`.
