@@ -87,6 +87,7 @@ export type ComparisonRefusal =
   | 'brak-wspolnych-promptow'
   | 'rozny-zestaw-promptow'
   | 'rozny-silnik-lub-wersja'
+  | 'rozna-wersja-encji'
 
 export interface PairedSample {
   /** Identyfikator promptu — po nim laczymy pomiar wczesniejszy z pozniejszym. */
@@ -227,6 +228,12 @@ export interface MeasurementSet {
   readonly context: MeasurementContext
   /** Identyfikator zestawu promptow — zestaw jest bytem trwalym (D25). */
   readonly promptSetId: string
+  /**
+   * Wersja definicji encji, na ktorej liczono wzmianki (D29). Dopisanie wariantu
+   * przesuwa caly szereg czasowy, tak samo jak `NORMALIZER_VERSION` w D4 — wiec
+   * pomiary o roznej wersji nie sa porownywalne, choc wygladaja identycznie.
+   */
+  readonly entityVersion: number
   readonly measurements: readonly PromptMeasurement[]
 }
 
@@ -262,6 +269,16 @@ export function compareMeasurements(
       detail:
         `pomiary pochodza z ${describeContext(before.context)} i ${describeContext(after.context)}; ` +
         'zmiana wersji modelu albo trybu dostepu to adnotacja na wykresie, nie punkt w tej samej linii',
+    }
+  }
+
+  if (before.entityVersion !== after.entityVersion) {
+    return {
+      kind: 'odmowa',
+      reason: 'rozna-wersja-encji',
+      detail:
+        `definicja encji zmienila sie z wersji ${before.entityVersion} na ${after.entityVersion}; ` +
+        'inna lista wariantow to inny pomiar, nie inny wynik',
     }
   }
 

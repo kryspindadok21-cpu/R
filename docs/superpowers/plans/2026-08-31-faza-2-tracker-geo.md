@@ -12,9 +12,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 
 | Zadanie | Stan | Commit |
 |---|---|---|
-| 1. Specyfikacja Fazy 2 (D23–D31) | ukończone | — |
-| 2. `packages/geo` — warstwa statystyczna | ukończone, AC1/AC2/AC3/AC4/AC5 zielone; 687 testów zielonych łącznie | — |
-| 3. `packages/geo` — wykrywanie wzmianek i share of voice | niezaczęte | — |
+| 1. Specyfikacja Fazy 2 (D23–D31) | ukończone | `a0d8dda` |
+| 2. `packages/geo` — warstwa statystyczna | ukończone, AC1/AC2/AC3/AC4/AC5 zielone; 687 testów zielonych łącznie | `a0d8dda` |
+| 3. `packages/geo` — wykrywanie wzmianek i share of voice | ukończone, AC6 zielone; 710 testów zielonych łącznie | — |
 | 4. `packages/geo` — ekstrakcja cytowań i pozycja wzmianki | niezaczęte | — |
 | 5. `packages/db` — migracja `0003` + repozytoria GEO | niezaczęte | — |
 | 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | niezaczęte | — |
@@ -57,3 +57,24 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
 - `pairedComparison` przy jednym prompcie zwraca przedział o zerowej szerokości
   i `significant: false`. Bootstrap z jednej obserwacji zwróciłby przedział
   zerowej szerokości wyglądający jak precyzja — lepiej powiedzieć to wprost.
+- **Wersja definicji encji odmawia porównania.** D29 mówi, że zmiana wariantów
+  unieważnia porównywalność wstecz „tak samo jak `NORMALIZER_VERSION`", ale nie
+  wskazywała mechanizmu. `MeasurementSet` niesie więc `entityVersion`, a
+  `compareMeasurements` odmawia z powodem `rozna-wersja-encji`. Bez tego dopisanie
+  jednego wariantu przesuwałoby cały szereg czasowy po cichu.
+- **`\b` z JavaScriptu jest bezużyteczne dla polskiego.** Zna tylko
+  `[A-Za-z0-9_]`, więc `\bŻak\b` nie dopasuje frazy w zdaniu: spacja i „Ż" są
+  dla niego oba nie-słowne, czyli granicy tam nie ma. Granice liczymy
+  lookaroundem na `\p{L}\p{N}_` z flagą `u`.
+- **Nazwa główna w cudzej domenie liczy się jako wzmianka.** Kropka jest granicą
+  słowa, więc „mentiometry" w „mentiometry.community" to prawdziwe wystąpienie.
+  Uznanie, że akurat ta domena to nie my, jest polityką o konkretnym ciągu — i
+  zgodnie z D29 mieszka w liście wykluczeń, czyli w danych. Wariant domenowy
+  (`mentiometry.com`) zachowuje się poprawnie i wewnątrz dłuższej domeny **nie**
+  łapie się w ogóle.
+- **Share of voice liczy odpowiedzi ze wzmianką, nie wzmianki.** Marka wymieniona
+  w jednej odpowiedzi pięć razy nie jest pięciokrotnie bardziej widoczna. Zliczanie
+  wystąpień nagradzałoby gadatliwość modelu, a nie widoczność strony.
+- **Odmiany nie zgadujemy.** Automatyczny stemmer polskiego dokładałby własne
+  błędy do pomiaru, który ma te błędy wykrywać. Warianty są deklarowane —
+  „Mentiometrom" bez wpisu na liście nie liczy się i to jest zachowanie testowane.

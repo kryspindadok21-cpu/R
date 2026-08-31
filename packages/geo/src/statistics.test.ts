@@ -142,7 +142,8 @@ const zestaw = (
   promptSetId: string,
   measurements: readonly { promptId: string; hits: number; trials: number }[],
   context: MeasurementContext = { engine: 'gemini', modelVersion: '2.5-flash', accessMode: 'api' },
-): MeasurementSet => ({ context, promptSetId, measurements })
+  entityVersion = 1,
+): MeasurementSet => ({ context, promptSetId, entityVersion, measurements })
 
 describe('compareMeasurements', () => {
   const przed = zestaw('zestaw-a', [
@@ -210,6 +211,23 @@ describe('compareMeasurements', () => {
     expect(wynik.kind).toBe('odmowa')
     if (wynik.kind !== 'odmowa') return
     expect(wynik.reason).toBe('rozny-silnik-lub-wersja')
+  })
+
+  it('D29: odmawia, gdy definicja encji zmienila wersje', () => {
+    const po = zestaw(
+      'zestaw-a',
+      [
+        { promptId: 'p1', hits: 3, trials: 5 },
+        { promptId: 'p2', hits: 2, trials: 5 },
+        { promptId: 'p3', hits: 4, trials: 5 },
+      ],
+      { engine: 'gemini', modelVersion: '2.5-flash', accessMode: 'api' },
+      2,
+    )
+    const wynik = compareMeasurements(przed, po, { seed: 13 })
+    expect(wynik.kind).toBe('odmowa')
+    if (wynik.kind !== 'odmowa') return
+    expect(wynik.reason).toBe('rozna-wersja-encji')
   })
 
   it('odmawia, gdy jeden z pomiarow jest pusty', () => {
