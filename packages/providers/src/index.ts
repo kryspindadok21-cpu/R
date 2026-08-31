@@ -40,3 +40,13 @@ export {
 export type {
   AccessMode, EngineAnswer, EngineId, EnginePrompt, LlmEngineProvider, SkippedEngine,
 } from './llm/types.js'
+export {
+  CONTENT_SYSTEM_RULES, createContentProvider, type ContentGeneratorDeps,
+} from './content/generator.js'
+export type { ContentProvider, GeneratedDraft } from './content/types.js'
+export {
+  DefaultBranchError, DirtyWorktreeError, NothingToCommitError,
+  PathOutsideRepoError, UnknownDefaultBranchError,
+  createGitPrProvider, runGit,
+  type GitPrDeps, type GitPrProvider, type GitRunner, type PublishInput, type PublishResult,
+} from './content/git-pr.js'

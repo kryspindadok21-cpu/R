@@ -15,8 +15,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 2. `packages/keywords` — klastrowanie i pokrycie tematu | ukończone, AC1/AC2/AC5 zielone; 913 testów zielonych łącznie | `30a564a` |
 | 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | `fab4527` |
 | 4. `packages/content` — brief, linkowanie wewnętrzne, JSON-LD | ukończone, AC6/AC7 zielone; 947 testów zielonych łącznie | `8f96853` |
-| 5. `packages/db` — migracja `0004` + repozytoria treści | ukończone, AC4/AC8 zielone, izolacja najemców zielona; 979 testów zielonych | — |
-| 6. `packages/providers` — generowanie draftu i adapter `git-pr` | niezaczęte | — |
+| 5. `packages/db` — migracja `0004` + repozytoria treści | ukończone, AC4/AC8 zielone, izolacja najemców zielona; 979 testów zielonych | `d2bd8f7` |
+| 6. `packages/providers` — generowanie draftu i adapter `git-pr` | ukończone, AC9/AC10 zielone; 1004 testy zielone łącznie | — |
 | 7. `apps/cli` — `seo keywords cluster`, `seo brief` | niezaczęte | — |
 | 8. `apps/cli` — `seo draft`, `seo publish` | niezaczęte | — |
 | 9. Odbiór Fazy 3 na własnej stronie | niezaczęte | — |
@@ -132,3 +132,28 @@ za to z darmowym rollbackiem.
   do powiedzenia.
 - **`shared_urls` jako `NULL` vs `0` przeżywa zapis do bazy.** „Nie widzieliśmy
   SERP-a" i „widzieliśmy i nie dzieli nic" to dwie różne informacje.
+- **Znaleziony i naprawiony groźny błąd w ochronie gałęzi domyślnej.** Pierwsza
+  wersja `detectDefaultBranch` spadała na `rev-parse --abbrev-ref HEAD`, gdy
+  `origin/HEAD` nie istniało (a nie istnieje w repozytorium założonym przez
+  `git init` + `remote add`, tylko po `clone`). Skutek: **po pierwszej publikacji
+  gałęzią bieżącą jest gałąź z treścią, więc `main` przestawał być chroniony** —
+  dokładnie wtedy, gdy zabezpieczenie było najbardziej potrzebne. Złapał to test,
+  bo drugi `publish` na `main` przeszedł walidację i wywalił się dopiero na
+  `git commit`. Teraz zamiast zgadywać bierzemy `origin/HEAD` **oraz** te ze
+  zwyczajowych nazw (`main`, `master`), które w repozytorium naprawdę istnieją,
+  a przy zerowym wyniku **odmawiamy** zamiast zgadywać. Trzy testy regresyjne.
+- **„Nie ma czego commitować" to informacja, nie awaria.** Publikacja tej samej
+  treści drugi raz kończyła się surowym błędem gita z pustym `stderr`. Teraz
+  jest `NothingToCommitError` z wyjaśnieniem.
+- **Generator nie deklaruje unikalnych zasobów za człowieka.** Zgadywanie zasobu
+  z treści byłoby zgadywaniem, a D37 wymaga deklaracji, którą ktoś podpisał.
+  Draft bez zasobu odpada na bramce i tak ma być — jest na to test.
+- **Generowanie idzie tym samym adapterem, co pomiar widoczności.** Jeden adapter,
+  jeden rejestr wywołań, jedna droga na zewnątrz. Dopisanie drugiego kanału do
+  tych samych API skończyłoby się tym, że połowa wywołań omija `provider_call`.
+- **Publikacja nie zużywa limitu zewnętrznego API** (`quotaUnits: 0`), ale i tak
+  ma wiersz w rejestrze — także nieudana. To jedyne miejsce, gdzie widać, że
+  ktoś próbował commitować na gałąź produkcyjną.
+- **Testy adaptera chodzą po prawdziwym repozytorium git** w katalogu tymczasowym.
+  Atrapa wykonawcy dowiodłaby tylko, że składamy poprawne argumenty — a nie, że
+  git faktycznie robi to, czego oczekujemy. To dzięki temu wyszedł błąd wyżej.
