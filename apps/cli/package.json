@@ -22,6 +22,11 @@
     "@seo/parse": "workspace:*",
     "@seo/geo": "workspace:*",
     "@seo/content": "workspace:*",
-    "@seo/keywords": "workspace:*"
+    "@seo/keywords": "workspace:*",
+    "@seo/agent": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/bin.ts",
+    "./lib": "./src/lib.ts"
   }
 }

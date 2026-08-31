@@ -15,9 +15,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 2. `packages/agent` — różnica w różnicach i werdykty (D48–D51) | ukończone, AC5/AC8 zielone; 1051 testów zielonych łącznie | `0f7cf58` |
 | 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | ukończone, AC1/AC2/AC6 zielone; 1087 testów zielonych łącznie | `11eabcf` |
 | 4. `packages/agent` — silnik polityk, wyłączniki i tablica zadań | ukończone, AC3/AC4/AC9/AC10 zielone; 1119 testów zielonych | `704b21d` |
-| 5. `packages/db` — migracja `0005` + repozytoria agenta | ukończone, izolacja najemców zielona; 1143 testy zielone | — |
-| 6. `apps/cli` — `seo agent plan`, `board`, `verdicts` | niezaczęte | — |
-| 7. `packages/report` — tablica zadań i werdykty | niezaczęte | — |
+| 5. `packages/db` — migracja `0005` + repozytoria agenta | ukończone, izolacja najemców zielona; 1143 testy zielone | `ac40eaf` |
+| 6. `apps/cli` — `seo agent plan`, `board` | ukończone, uruchomione na żywo | — |
+| 7. **`apps/web` — panel w przeglądarce** (poza pierwotnym planem) | ukończone, 12 testów przez prawdziwy HTTP; 1155 testów zielonych | — |
 | 8. Odbiór Fazy 4 | niezaczęte | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
@@ -130,3 +130,29 @@ w ogóle istnieją.
 - **Bramka i jej powód są zapisane razem z zadaniem.** Zablokowana akcja zostaje
   w bazie z wyjaśnieniem, zamiast zniknąć — inaczej „nic się nie stało" wyglądałoby
   identycznie jak „wyłącznik zadziałał".
+- **Panel webowy powstał wcześniej niż sekcja agenta w raporcie HTML — świadomie.**
+  Właściciel poprosił wprost o możliwość wejścia na stronę, dodania witryny
+  i zobaczenia analizy. Raport agenta w pliku HTML byłby powtórzeniem tego, co
+  panel pokazuje na żywo, więc idzie po nim, a nie przed nim.
+- **Panel nie ma ani jednej nowej zależności.** Wbudowany `node:http` plus
+  istniejące pakiety. Narzędzie, które sprawdza niezależność stron od zewnętrznych
+  zasobów, samo ich nie wymaga — także w swoim własnym interfejsie.
+- **Nasłuch wyłącznie na `127.0.0.1`.** Panel uruchamia crawler na dowolny podany
+  adres i ma pełny dostęp do bazy; wystawienie go na sieć byłoby oddaniem obu
+  tych rzeczy komukolwiek w tej samej sieci. Jest to zapisane w kodzie i w README.
+- **Znaleziony i naprawiony błąd: crawl bez ani jednej pobranej strony raportował
+  „Gotowe".** Technicznie się kończył, więc kod szedł ścieżką sukcesu — a panel
+  mówił „gotowe" o czymś, czego użytkownik właśnie nie dostał. Teraz zerowy
+  wynik to błąd zadania z przyczyną pierwszego nieudanego pobrania. Złapał to
+  test z adresem na porcie 1.
+- **Zadanie chodzi w tle, strona odświeża się sama.** Crawler czeka sekundę
+  między żądaniami (D15), więc 25 stron to ponad pół minuty — synchroniczna
+  odpowiedź HTTP byłaby zakręconym kołem bez żadnej informacji.
+- **Rejestr zadań jest w pamięci i to jest świadome.** Stan trwały siedzi
+  w bazie; zadanie przerwane restartem panelu gubi pasek postępu, nie dane.
+- **`buildAuditReportData` wydzielone z `runAuditReport`.** Panel potrzebuje HTML-a
+  w odpowiedzi, nie ścieżki na dysku. Kopia tych sześćdziesięciu linii w drugim
+  miejscu rozjechałaby się przy pierwszej zmianie raportu — a wtedy raport
+  z przeglądarki mówiłby co innego niż raport z terminala.
+- **`apps/cli` ma teraz wejście biblioteczne (`@seo/cli/lib`).** Panel składa te
+  same warstwy co linia poleceń i musi wołać dokładnie te funkcje.

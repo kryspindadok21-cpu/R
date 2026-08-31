@@ -26,6 +26,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@seo/agent':
+        specifier: workspace:*
+        version: link:../../packages/agent
       '@seo/content':
         specifier: workspace:*
         version: link:../../packages/content
@@ -56,6 +59,31 @@ importers:
       '@seo/rules':
         specifier: workspace:*
         version: link:../../packages/rules
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
+  apps/web:
+    dependencies:
+      '@seo/agent':
+        specifier: workspace:*
+        version: link:../../packages/agent
+      '@seo/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@seo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@seo/providers':
+        specifier: workspace:*
+        version: link:../../packages/providers
+      '@seo/report':
+        specifier: workspace:*
+        version: link:../../packages/report
     devDependencies:
       '@types/node':
         specifier: ^26.4.0

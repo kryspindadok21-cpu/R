@@ -67,11 +67,25 @@ function parseMissing(json: string): string[] {
   }
 }
 
-export function runAuditReport(
+export interface AuditReportBuild {
+  readonly data: AuditReportData
+  readonly runId: string
+  readonly findings: number
+  readonly truncatedList: boolean
+}
+
+/**
+ * Sklada dane raportu **bez zapisu do pliku**.
+ *
+ * Wydzielone, bo panel webowy potrzebuje HTML-a w odpowiedzi, a nie sciezki
+ * na dysku. Kopia tych szescdziesieciu linii w drugim miejscu rozjechalaby sie
+ * przy pierwszej zmianie raportu.
+ */
+export function buildAuditReportData(
   db: Db,
   scope: TenantScope,
-  options: AuditReportOptions,
-): AuditReportResult {
+  options: Omit<AuditReportOptions, 'outPath'>,
+): AuditReportBuild {
   const site = repos(db, scope).read.findSiteByUri(options.siteUrl)
   if (!site) throw new NoCrawlError(options.siteUrl)
 
@@ -162,14 +176,27 @@ export function runAuditReport(
     skipped: skipped.map((s) => ({ ruleId: s.ruleId, missing: parseMissing(s.missing) })),
   }
 
-  const html = renderAuditReport(data)
-  mkdirSync(dirname(options.outPath), { recursive: true })
-  writeFileSync(options.outPath, html, 'utf8')
-
   return {
-    outPath: options.outPath,
+    data,
     runId: run.id,
     findings: findings.length,
     truncatedList: findings.length > FINDINGS_LIMIT,
+  }
+}
+
+export function runAuditReport(
+  db: Db,
+  scope: TenantScope,
+  options: AuditReportOptions,
+): AuditReportResult {
+  const build = buildAuditReportData(db, scope, options)
+  mkdirSync(dirname(options.outPath), { recursive: true })
+  writeFileSync(options.outPath, renderAuditReport(build.data), 'utf8')
+
+  return {
+    outPath: options.outPath,
+    runId: build.runId,
+    findings: build.findings,
+    truncatedList: build.truncatedList,
   }
 }

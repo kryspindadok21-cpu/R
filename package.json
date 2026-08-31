@@ -16,7 +16,8 @@
     "check:secrets": "tsx scripts/check-secrets.ts",
     "skills:index": "tsx scripts/skills-index.ts",
     "skills:pick": "tsx scripts/skills-pick.ts",
-    "typecheck:scripts": "tsc -p scripts/tsconfig.json"
+    "typecheck:scripts": "tsc -p scripts/tsconfig.json",
+    "panel": "tsx apps/web/src/bin.ts"
   },
   "devDependencies": {
     "@types/node": "^26.4.0",

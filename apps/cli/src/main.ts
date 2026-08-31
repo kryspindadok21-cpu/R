@@ -11,6 +11,7 @@ import {
 import {
   runGeoEntity, runGeoPrompts, runGeoReport, runGeoRun,
 } from './commands/geo.js'
+import { runAgentBoard, runAgentPlan } from './commands/agent.js'
 import {
   RateLimitedError, runBrief, runDraft, runKeywordsCluster, runPublish,
 } from './commands/content.js'
@@ -49,6 +50,8 @@ const USAGE = `seo — platforma SEO/GEO
   seo draft      --site <uri> --brief <id> --autor "Imie Nazwisko" --autor-url <adres>
                              --zasob rodzaj:opis:zrodlo
   seo publish    --site <uri> --draft <id> --repo <sciezka> [--canonical <adres>]
+  seo agent plan  --site <uri> [--limit N]   znajdz okazje i wystaw wnioski
+  seo agent board --site <uri>               tablica zadan agenta
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -833,6 +836,65 @@ export async function main(argv: readonly string[]): Promise<number> {
 
     if (command === 'brief' || command === 'draft' || command === 'publish') {
       return await runContentCommand(config, command, sub, argv.slice(1))
+    }
+
+    if (command === 'agent') {
+      const flags = parseFlags(argv.slice(2))
+      const scope = tenantScope(config.tenantId)
+      const { db } = openInitialized(config)
+      try {
+        const siteUrl = requireFlag(flags.site, 'site')
+
+        if (sub === 'plan') {
+          const result = runAgentPlan(db, scope, {
+            siteUrl, limit: flags.limit === undefined ? undefined : Number(flags.limit),
+          })
+          process.stdout.write(
+            `Okazje znalezione:           ${result.opportunities}\n` +
+            `Wnioski wystawione:          ${result.tasks.length}\n` +
+            `Zablokowane wylacznikiem:    ${result.blocked}\n` +
+            `Klikniecia tydzien/poprzedni:${result.breakers.clicksThisWeek} / ${result.breakers.clicksLastWeek}\n` +
+            `Strony zaindeksowane:        ${result.breakers.indexedPages}\n\n`,
+          )
+          for (const zadanie of result.tasks) {
+            const znacznik = zadanie.gate === 'auto'
+              ? 'auto'
+              : zadanie.gate === 'needs-approval' ? 'czeka na Ciebie' : 'ZABLOKOWANE'
+            process.stdout.write(
+              `[${znacznik}] ${zadanie.title}\n` +
+              `  wynik ${zadanie.score.toFixed(1)}, ` +
+              `${zadanie.measuredFactors}/5 czynnikow zmierzonych, akcja ${zadanie.actionKind}\n` +
+              (zadanie.gateReason === '' ? '' : `  ${zadanie.gateReason}\n`),
+            )
+          }
+          return 0
+        }
+
+        if (sub === 'board') {
+          const result = runAgentBoard(db, scope, { siteUrl })
+          const p = result.summary
+          process.stdout.write(
+            `Wnioski:                     ${p.proposed}\n` +
+            `Czeka na Ciebie:             ${p.needsYou}\n` +
+            `W trakcie:                   ${p.inFlight}\n` +
+            `W pomiarze:                  ${p.measuring}\n` +
+            `Zakonczone z werdyktem:      ${p.done}\n\n`,
+          )
+          for (const wiersz of result.rows) {
+            process.stdout.write(
+              `[${wiersz.state}] ${wiersz.title}\n` +
+              (wiersz.verdict === null ? '' : `  ${wiersz.verdict}\n`) +
+              (wiersz.gateReason === '' ? '' : `  ${wiersz.gateReason}\n`),
+            )
+          }
+          return 0
+        }
+
+        process.stderr.write(`Nieznane polecenie: agent ${sub ?? ''}\n\n${USAGE}`)
+        return 1
+      } finally {
+        closeDatabase(db)
+      }
     }
 
     if (command === 'llms-txt') {

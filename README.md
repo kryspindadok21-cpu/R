@@ -22,7 +22,7 @@ Bez hostingu, bez płatnych usług, bez kont w zewnętrznych narzędziach.
 | 1 | Crawler, audyt, renderowanie, PSI, raport techniczny | **ukończona** |
 | 2 | Pomiar widoczności w odpowiedziach modeli językowych | **ukończona** — czeka na darmowy klucz do silnika |
 | 3 | Silnik treści: klastry, briefy, drafty za bramkami, publikacja przez PR | **ukończona** — czeka na darmowy klucz do silnika |
-| 4 | Pętla agentowa — sama naprawia i mierzy efekt | nie zaczęta |
+| 4 | Pętla agentowa: scoring okazji, polityki, wyłączniki, pomiar DiD | **rdzeń ukończony** — scheduler i raport zostają |
 | 5 | Panel webowy | nie zaczęta |
 
 Szczegóły i punkt wznowienia: tabela **STAN PRAC** w
@@ -48,6 +48,25 @@ pnpm install
 pnpm test        # musi być zielone przed pierwszym uruchomieniem
 ```
 
+## Panel w przeglądarce
+
+Najprostszy sposób, żeby zobaczyć, jak to działa: wpisujesz adres, klikasz
+**Przeanalizuj**, dostajesz raport.
+
+```bash
+pnpm install
+pnpm panel        # http://127.0.0.1:4321
+```
+
+Panel nasłuchuje **wyłącznie na pętli zwrotnej**. To nie jest ostrożność na
+wyrost: uruchamia crawler na dowolny podany adres i ma pełny dostęp do bazy,
+więc wystawienie go na sieć byłoby oddaniem obu tych rzeczy komukolwiek w tej
+samej sieci. Port zmienia `SEO_PANEL_PORT`.
+
+Wszystko dzieje się na Twoim komputerze. Jedyny ruch na zewnątrz to pobranie
+stron, które sam wskazałeś — crawler czyta `robots.txt`, czeka sekundę między
+żądaniami i przedstawia się jawnie.
+
 ## Polecenia
 
 ```bash
@@ -68,6 +87,8 @@ seo brief      --site <uri> [--klaster <slug>]
 seo draft      --site <uri> --brief <id> --autor "Imie Nazwisko" --autor-url <adres>
                            --zasob own-data:opis:zrodlo
 seo publish    --site <uri> --draft <id> --repo <sciezka> [--canonical <adres>]
+seo agent plan  --site <uri>          # znajdz okazje i wystaw wnioski
+seo agent board --site <uri>          # tablica zadan agenta
 ```
 
 Pełna lista flag: `seo help`.
@@ -86,6 +107,8 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się i pilnuje tego
 | `geo` | statystyka, wzmianki, share of voice, cytowania | **zero** |
 | `keywords` | klastrowanie fraz, decyzja refresh vs create | **zero** |
 | `content` | bramki anty-slop, briefy, linkowanie, JSON-LD | **zero** |
+| `agent` | scoring okazji, DiD, polityki, wyłączniki | **zero** |
+| `apps/web` | panel lokalny | HTTP na pętli zwrotnej |
 | `report` | generowanie raportów HTML | **zero** |
 | `db` | jedyne wejście do bazy | SQLite |
 | `providers` | jedyne wyjście na zewnątrz | sieć |

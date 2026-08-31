@@ -1,0 +1,24 @@
+{
+  "name": "@seo/web",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "seo-panel": "./dist/bin.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "start": "tsx src/bin.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0"
+  },
+  "dependencies": {
+    "@seo/agent": "workspace:*",
+    "@seo/cli": "workspace:*",
+    "@seo/core": "workspace:*",
+    "@seo/db": "workspace:*",
+    "@seo/providers": "workspace:*",
+    "@seo/report": "workspace:*"
+  }
+}
