@@ -20,13 +20,13 @@ Bez hostingu, bez płatnych usług, bez kont w zewnętrznych narzędziach.
 |---|---|---|
 | 0 | Fundament: dane z Search Console, baza, raport | kod gotowy; czeka na uprawnienie w GSC |
 | 1 | Crawler, audyt, renderowanie, PSI, raport techniczny | **ukończona** |
-| 2 | Pomiar widoczności w odpowiedziach modeli językowych | nie zaczęta |
+| 2 | Pomiar widoczności w odpowiedziach modeli językowych | **ukończona** — czeka na darmowy klucz do silnika |
 | 3 | Silnik treści | nie zaczęta |
 | 4 | Pętla agentowa — sama naprawia i mierzy efekt | nie zaczęta |
 | 5 | Panel webowy | nie zaczęta |
 
 Szczegóły i punkt wznowienia: tabela **STAN PRAC** w
-`docs/superpowers/plans/2026-08-28-faza-1-crawler-audyt.md`.
+`docs/superpowers/plans/2026-08-31-faza-2-tracker-geo.md`.
 
 ## Uruchomienie na własnym komputerze
 
@@ -58,6 +58,11 @@ seo crawl      --site <uri> [--render N]
 seo audit      --site <uri>
 seo psi        --site <uri> [--limit N]
 seo report     --site <uri> [--audit]
+seo geo prompts --site <uri> --add "tresc pytania"
+seo geo entity  --site <uri> --name "Marka" --own
+seo geo run     --site <uri> [--runs N] [--grounded]
+seo geo report  --site <uri> [--out raport-geo.html]
+seo llms-txt   --site <uri> [--out llms.txt]
 ```
 
 Pełna lista flag: `seo help`.
@@ -73,6 +78,7 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się i pilnuje tego
 | `parse` | HTML → `PageFacts` | **zero** |
 | `rules` | silnik reguł i 61 reguł audytu | **zero** |
 | `crawler` | `robots.txt`, mapy, kolejka, graf linków | **zero** — źródło stron wstrzykiwane |
+| `geo` | statystyka, wzmianki, share of voice, cytowania | **zero** |
 | `report` | generowanie raportów HTML | **zero** |
 | `db` | jedyne wejście do bazy | SQLite |
 | `providers` | jedyne wyjście na zewnątrz | sieć |

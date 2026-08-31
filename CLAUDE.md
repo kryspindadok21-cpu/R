@@ -38,7 +38,8 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się:
 - `packages/geo` — statystyka trackera AI, wykrywanie wzmianek, share of voice.
   **Zero wejścia/wyjścia.**
 - `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`,
-  `crawl`, `audit`, `psi`, `report`, `report --audit`.
+  `crawl`, `audit`, `psi`, `report`, `report --audit`, `geo prompts`, `geo entity`,
+  `geo run`, `geo report`, `llms-txt`.
 
 Reguły zależności egzekwuje `scripts/check-deps.ts` — nie obchodź ich, popraw projekt.
 
@@ -92,6 +93,14 @@ Wynikają ze specyfikacji, nie z gustu. Łamanie ich to zmiana decyzji, nie deta
 - **Reguła bez spełnionych `requires` milczy i melduje się jako pominięta** (D17).
   Cicho pominięta reguła to fałszywe poczucie porządku, nie brak problemu.
 - **Dane terenowe i laboratoryjne z PSI nigdy nie są mieszane** w jednej liczbie.
+- **Żadna liczba z trackera AI bez przedziału ufności** (D24). Pojedynczy przebieg
+  promptu to próba Bernoulliego, nie pomiar.
+- **Istotność wymaga dwóch warunków naraz** (D26): przedział mija zero **i** zmiana
+  przekracza rozdzielczość pomiaru. Sam bootstrap nie widzi szumu wewnątrz promptu.
+- **Porównanie tylko w obrębie tej samej trójki** silnik/wersja modelu/tryb dostępu
+  (D27), tego samego zestawu promptów (D25) i tej samej wersji definicji encji (D29).
+  W przeciwnym razie **odmowa z powodem**, nigdy cicho policzona różnica.
+- **Cytowanie z groundingu i cytowanie z treści nigdy się nie sumują** (D32).
 
 ## Konwencje pracy
 

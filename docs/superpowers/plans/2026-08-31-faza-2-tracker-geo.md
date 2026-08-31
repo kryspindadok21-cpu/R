@@ -20,8 +20,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | ukończone, AC7/AC8/AC9 zielone; 779 testów zielonych łącznie | `8923340` |
 | 7. `apps/cli` — `seo geo prompts`, `seo geo entity`, `seo geo run` | ukończone, uruchomione na żywo; 797 testów zielonych łącznie | `2551c21` |
 | 8. `packages/report` — raport GEO + `seo geo report` | ukończone; 826 testów zielonych łącznie | `fc8ba11` |
-| 9. `apps/cli` — `seo llms-txt` (D31) | **generator ukończony**, reguła audytu świadomie odłożona (niżej); 840 testów zielonych | — |
-| 10. Odbiór na własnej stronie | niezaczęte | — |
+| 9. `apps/cli` — `seo llms-txt` (D31) | **generator ukończony**, reguła audytu świadomie odłożona (niżej); 840 testów zielonych | `74a6fa1` |
+| 10. Odbiór Fazy 2 | **ukończony w zakresie, jaki da się sprawdzić bez klucza** — cała ścieżka przez prawdziwy HTTP; 841 testów zielonych | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
@@ -176,3 +176,37 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
   własnym nagłówkiem prosi o nieindeksowanie, byłoby sprzecznością.
 - Sprawdzone na żywo na `kryspindadok21-cpu.github.io/R/`: 4 strony, cztery
   sekcje wg pierwszego segmentu ścieżki, opisy z `meta description`.
+
+## Odbiór Fazy 2 — co zostało sprawdzone, a co nie
+
+**Sprawdzone.** `apps/cli/src/geo-e2e.test.ts` przepuszcza całą ścieżkę przez
+**prawdziwy** `fetch` i prawdziwy serwer HTTP na pętli zwrotnej: dwa silniki
+(Gemini z groundingiem i adapter zgodny z OpenAI), 2 prompty × 2 przebiegi,
+zapis odpowiedzi, wzmianek i cytowań do bazy, osiem wierszy w `provider_call`,
+złożenie raportu HTML bez ani jednego zasobu z sieci. Nagłówki są sprawdzane
+po stronie serwera — `x-goog-api-key` dla Gemini, `Bearer` dla reszty — więc
+test dowodzi, że żądanie naprawdę się składa, a nie tylko że atrapa je przyjęła.
+
+Osobno, na żywej stronie `kryspindadok21-cpu.github.io/R/`: crawl 4 stron,
+wygenerowany `llms.txt` z czterema sekcjami i opisami z `meta description`,
+`seo geo run` bez kluczy meldujący trzy pominięte silniki i kończący się
+kodem 1.
+
+**Niesprawdzone i nie da się tego obejść w tej sesji.** Że prawdziwe API
+Gemini, Groq i OpenRouter odpowiadają dokładnie tak, jak zakładają schematy
+`zod` w adapterach. Do tego trzeba darmowego klucza — właściciel zakłada go
+w kilka minut i wtedy pierwszy prawdziwy przebieg to zweryfikuje. Ryzyko jest
+znane i ograniczone: schematy są tolerancyjne (wszystkie pola opcjonalne),
+więc rozjazd kończy się pustą odpowiedzią z powodem w rejestrze, a nie
+wywróconym przebiegiem.
+
+**Co właściciel może zrobić, żeby ruszyć pomiar** (wszystko darmowe):
+1. Klucz do jednego z silników — najprościej Groq (`SEO_GROQ_KEY`), 14 400
+   żądań dziennie.
+2. `seo geo prompts --site <adres> --add "pytanie"` — kilkadziesiąt pytań,
+   które klient naprawdę zadałby modelowi.
+3. `seo geo entity --site <adres> --name "Marka" --own` plus konkurenci
+   bez `--own`.
+4. `seo geo run --site <adres>`, potem `seo geo report --site <adres>`.
+
+Pierwszy przebieg nie da porównania — porównywać będzie z czym dopiero drugi.
