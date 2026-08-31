@@ -20,6 +20,7 @@ const RULES: readonly { prefix: string; forbidden: readonly RegExp[]; rule: stri
   { prefix: 'packages/report',  forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
   { prefix: 'packages/parse',   forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
   { prefix: 'packages/rules',   forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
+  { prefix: 'packages/geo',     forbidden: PURE_ENGINE, rule: 'czysty silnik nie moze dotykac wejscia/wyjscia' },
   { prefix: 'packages/crawler', forbidden: PURE_ENGINE, rule: 'crawler dostaje zrodlo stron wstrzykniete (D12)' },
   { prefix: 'packages/providers', forbidden: [/^drizzle-orm/, /^better-sqlite3$/, /^@seo\/db$/], rule: 'tylko packages/db dotyka bazy' },
   { prefix: 'packages/db', forbidden: [/^google-auth-library$/, /^undici$/, /^node:http/, /^@seo\/providers$/], rule: 'tylko packages/providers wychodzi na zewnatrz' },

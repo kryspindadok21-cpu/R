@@ -5,10 +5,11 @@ kosztuje kontekst w każdej rozmowie.
 
 ## Zacznij tutaj
 
-1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-28-faza-1-crawler-audyt.md`
-   — mówi, co zrobione i gdzie wznowić. Faza 0 jest zamknięta po stronie kodu;
-   jej plan (`2026-08-27-faza-0-fundament.md`, ~3000 linii) czytaj **tylko zakresami**
-   przez `grep -n '^### Zadanie'`, nigdy w całości.
+1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-31-faza-2-tracker-geo.md`
+   — mówi, co zrobione i gdzie wznowić. Fazy 0 i 1 są zamknięte po stronie kodu;
+   ich plany (`2026-08-27-faza-0-fundament.md` ~3000 linii,
+   `2026-08-28-faza-1-crawler-audyt.md`) czytaj **tylko zakresami** przez
+   `grep -n '^### Zadanie'`, nigdy w całości.
 2. **Preferencje właściciela** — sekcja na dole tego pliku.
 3. Dobór umiejętności: `pnpm -s skills:pick "opis zadania"` (plugin `dobor-narzedzi`).
 
@@ -34,6 +35,8 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się:
 - `packages/rules` — silnik reguł audytu i paczki reguł. **Zero wejścia/wyjścia.**
 - `packages/crawler` — `robots.txt`, mapy, kolejka, graf linków. Czysty; źródło
   stron dostaje **wstrzyknięte** interfejsem `PageSource` (D12).
+- `packages/geo` — statystyka trackera AI, wykrywanie wzmianek, share of voice.
+  **Zero wejścia/wyjścia.**
 - `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`,
   `crawl`, `audit`, `psi`, `report`, `report --audit`.
 
