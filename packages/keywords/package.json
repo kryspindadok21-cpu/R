@@ -15,7 +15,6 @@
     "@types/node": "^26.4.0"
   },
   "dependencies": {
-    "@seo/core": "workspace:*",
-    "@seo/content": "workspace:*"
+    "@seo/core": "workspace:*"
   }
 }

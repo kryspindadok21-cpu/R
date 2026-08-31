@@ -12,9 +12,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | Zadanie | Stan | Commit |
 |---|---|---|
 | 1. Specyfikacja Fazy 3 (D33–D44) | ukończone | — |
-| 2. `packages/keywords` — klastrowanie i pokrycie tematu | ukończone, AC1/AC2/AC5 zielone; 913 testów zielonych łącznie | — |
+| 2. `packages/keywords` — klastrowanie i pokrycie tematu | ukończone, AC1/AC2/AC5 zielone; 913 testów zielonych łącznie | `30a564a` |
 | 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | `fab4527` |
-| 4. `packages/content` — generator briefów i linkowanie wewnętrzne | niezaczęte | — |
+| 4. `packages/content` — brief, linkowanie wewnętrzne, JSON-LD | ukończone, AC6/AC7 zielone; 947 testów zielonych łącznie | — |
 | 5. `packages/db` — migracja `0004` + repozytoria treści | niezaczęte | — |
 | 6. `packages/providers` — generowanie draftu i adapter `git-pr` | niezaczęte | — |
 | 7. `apps/cli` — `seo keywords cluster`, `seo brief` | niezaczęte | — |
@@ -86,3 +86,24 @@ za to z darmowym rollbackiem.
 - **Próg pokrycia 0,6 jest zgadnięty i jest to napisane w kodzie.** W przeciwieństwie
   do 0,85 przy oryginalności, ta liczba nie ma źródła — pierwszy przebieg na
   własnej stronie ma ją poprawić.
+- **Kierunek zależności poprawiony: `content → keywords`, nie odwrotnie.**
+  Przy zakładaniu `packages/keywords` wpisałem mu zależność od `@seo/content`,
+  której nic nie używało. Brief potrzebuje typu `Cluster`, więc strzałka idzie
+  w drugą stronę — i tylko w jedną, bo inaczej byłby cykl.
+- **Linki wewnętrzne wybierają stronę o **mniejszej** liczbie linków przychodzących
+  przy zbliżonym dopasowaniu.** Link do strony głównej, która i tak ma ich setki,
+  nie zmienia nic; link do strony z dwoma zmienia jej pozycję w grafie. To jest
+  jedyny powód, dla którego warto wstawiać linki automatycznie.
+- **Naciągany link nie jest wstawiany wcale.** Poniżej 15% pokrycia słów klastra
+  sugestia nie powstaje — trzy słabe linki są gorsze niż jeden dobry.
+- **Brief jest jednym Markdownem dla promptu i dla pull requesta.** Rozjazd między
+  „co model wiedział" a „co pokazaliśmy w przeglądzie" jest sposobem na ukrycie
+  słabego briefu.
+- **Brief ostrzega, gdy klaster powstał metodą leksykalną.** Ostrzeżenie idzie
+  do tego samego Markdownu, więc widzi je i model, i recenzent.
+- **`buildArticleSchema` przyjmuje `ApprovedDraft`, nie `DraftInput`.** Nie da się
+  zbudować JSON-LD dla draftu, który nie przeszedł bramki autora — AC7 jest
+  spełnione przez typ, tak samo jak AC4.
+- **`<` w JSON-LD jest eskejpowane jako `\u003c`.** Parser HTML kończy blok
+  skryptu na `</script>` także wewnątrz ciągu znaków, więc tytuł zawierający
+  ten ciąg rozwaliłby stronę. Jest na to test.

@@ -60,6 +60,9 @@ importers:
       '@seo/core':
         specifier: workspace:*
         version: link:../core
+      '@seo/keywords':
+        specifier: workspace:*
+        version: link:../keywords
     devDependencies:
       '@types/node':
         specifier: ^26.4.0
@@ -128,9 +131,6 @@ importers:
 
   packages/keywords:
     dependencies:
-      '@seo/content':
-        specifier: workspace:*
-        version: link:../content
       '@seo/core':
         specifier: workspace:*
         version: link:../core
