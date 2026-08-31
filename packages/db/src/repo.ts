@@ -40,6 +40,33 @@ export function repos(db: Db, scope: TenantScope) {
         ))
         .orderBy(asc(s.gscDaily.date)).all(),
 
+    /**
+     * Frazy z pozycja — wejscie do klastrowania i briefow (Faza 3).
+     *
+     * Pozycja to srednia **wazona wyswietleniami**, bo tak liczy ja samo Search
+     * Console. Zwykla srednia arytmetyczna z dni dalaby temu samemu dniowi
+     * z dwoma wyswietleniami taka sama wage, co dniowi z dwoma tysiacami.
+     */
+    queriesWithPosition: (siteId: string, from: string, to: string, limit: number) =>
+      db.select({
+        query: s.gscQueryDaily.query,
+        clicks: sql<number>`sum(${s.gscQueryDaily.clicks})`.as('clicks'),
+        impressions: sql<number>`sum(${s.gscQueryDaily.impressions})`.as('impressions'),
+        position: sql<number>`
+          case when sum(${s.gscQueryDaily.impressions}) = 0 then 0
+          else sum(${s.gscQueryDaily.position} * ${s.gscQueryDaily.impressions})
+               / sum(${s.gscQueryDaily.impressions}) end
+        `.as('position'),
+      }).from(s.gscQueryDaily)
+        .where(and(
+          eq(s.gscQueryDaily.tenantId, t), eq(s.gscQueryDaily.siteId, siteId),
+          eq(s.gscQueryDaily.dataState, 'final'),
+          gte(s.gscQueryDaily.date, from), lte(s.gscQueryDaily.date, to),
+        ))
+        .groupBy(s.gscQueryDaily.query)
+        .orderBy(desc(sql`sum(${s.gscQueryDaily.impressions})`))
+        .limit(limit).all(),
+
     topQueries: (siteId: string, from: string, to: string, limit: number) =>
       db.select({
         query: s.gscQueryDaily.query,

@@ -5,11 +5,15 @@ import { closeDatabase } from '@seo/db'
 import {
   GSC_MAX_ROW_LIMIT, RenderUnavailableError, createGscProvider, createPsiProvider,
   createRenderProvider, createServiceAccountTokenSource, createSiteFetchProvider,
-  proxyFromEnv, selectEngines, type AccessMode, type PsiStrategy,
+  createContentProvider, createGitPrProvider, proxyFromEnv, selectEngines,
+  type AccessMode, type PsiStrategy,
 } from '@seo/providers'
 import {
   runGeoEntity, runGeoPrompts, runGeoReport, runGeoRun,
 } from './commands/geo.js'
+import {
+  RateLimitedError, runBrief, runDraft, runKeywordsCluster, runPublish,
+} from './commands/content.js'
 import { runLlmsTxt } from './commands/llms-txt.js'
 import { runPsi } from './commands/psi.js'
 import { runAuditReport } from './commands/audit-report.js'
@@ -40,6 +44,11 @@ const USAGE = `seo — platforma SEO/GEO
   seo geo run     --site <uri> [--runs N] [--grounded] [--set nazwa]
   seo geo report  --site <uri> [--out sciezka.html]
   seo llms-txt   --site <uri> [--out llms.txt] [--name "Nazwa"] [--opis "Opis"]
+  seo keywords cluster --site <uri> [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--limit N]
+  seo brief      --site <uri> [--klaster <slug>] [--powod "..."]
+  seo draft      --site <uri> --brief <id> --autor "Imie Nazwisko" --autor-url <adres>
+                             --zasob rodzaj:opis:zrodlo
+  seo publish    --site <uri> --draft <id> --repo <sciezka> [--canonical <adres>]
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -83,6 +92,15 @@ interface Flags {
   runs?: string | undefined
   grounded?: boolean | undefined
   opis?: string | undefined
+  klaster?: string | undefined
+  powod?: string | undefined
+  brief?: string | undefined
+  draft?: string | undefined
+  autor?: string | undefined
+  'autor-url'?: string | undefined
+  zasob?: string[] | undefined
+  repo?: string | undefined
+  canonical?: string | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -114,6 +132,15 @@ function parseFlags(args: readonly string[]): Flags {
       runs: { type: 'string' },
       grounded: { type: 'boolean' },
       opis: { type: 'string' },
+      klaster: { type: 'string' },
+      powod: { type: 'string' },
+      brief: { type: 'string' },
+      draft: { type: 'string' },
+      autor: { type: 'string' },
+      'autor-url': { type: 'string' },
+      zasob: { type: 'string', multiple: true },
+      repo: { type: 'string' },
+      canonical: { type: 'string' },
     },
     allowPositionals: true,
   })
@@ -612,6 +639,164 @@ async function runGeoCommand(
   }
 }
 
+/** `rodzaj:opis:zrodlo` — dwukropki w opisie i zrodle sa dozwolone. */
+function parseUniqueAsset(raw: string): {
+  kind: 'own-data' | 'first-hand-quote' | 'original-diagram' | 'expert-byline'
+  description: string
+  sourceText: string
+} {
+  const czesci = raw.split(':')
+  const kind = (czesci[0] ?? '').trim()
+  const dozwolone = ['own-data', 'first-hand-quote', 'original-diagram', 'expert-byline']
+  if (!dozwolone.includes(kind)) {
+    throw new Error(
+      `Nieznany rodzaj zasobu "${kind}". Dozwolone: ${dozwolone.join(', ')}. ` +
+      'Format: --zasob rodzaj:opis:zrodlo',
+    )
+  }
+  const reszta = czesci.slice(1).join(':')
+  const separator = reszta.lastIndexOf(':')
+  if (separator === -1) {
+    throw new Error(`Zasob "${raw}" nie ma zrodla. Format: --zasob rodzaj:opis:zrodlo`)
+  }
+  return {
+    kind: kind as 'own-data' | 'first-hand-quote' | 'original-diagram' | 'expert-byline',
+    description: reszta.slice(0, separator).trim(),
+    sourceText: reszta.slice(separator + 1).trim(),
+  }
+}
+
+async function runContentCommand(
+  config: Config,
+  command: string,
+  sub: string | undefined,
+  args: readonly string[],
+): Promise<number> {
+  const flags = parseFlags(args)
+  const scope = tenantScope(config.tenantId)
+  const { db } = openInitialized(config)
+
+  try {
+    if (command === 'keywords') {
+      if (sub !== 'cluster') {
+        process.stderr.write(`Nieznane polecenie: keywords ${sub ?? ''}\n\n${USAGE}`)
+        return 1
+      }
+      const siteUrl = requireFlag(flags.site, 'site')
+      const fallback = defaultSyncRange(new Date(), GSC_SOURCE_TIMEZONE)
+      const result = runKeywordsCluster(db, scope, {
+        siteUrl,
+        from: flags.from ?? fallback.from,
+        to: flags.to ?? fallback.to,
+        limit: flags.limit === undefined ? undefined : Number(flags.limit),
+      })
+      process.stdout.write(
+        `Zestaw klastrow:             ${result.clusterSetId || 'nie powstal'}\n` +
+        `Metoda:                      ${result.method}\n` +
+        `Klastry:                     ${result.clusters}\n` +
+        `Frazy:                       ${result.keywords}\n` +
+        (result.methodWarning === null ? '' : `\n${result.methodWarning}\n`),
+      )
+      return result.clusters === 0 ? 1 : 0
+    }
+
+    if (command === 'brief') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const result = runBrief(db, scope, {
+        siteUrl, clusterSlug: flags.klaster, createReason: flags.powod,
+      })
+      process.stdout.write(
+        `Brief:                       ${result.briefId}\n` +
+        `Klaster:                     ${result.clusterHead}\n` +
+        `Decyzja:                     ${result.decision === 'refresh' ? 'odswiez' : 'nowy artykul'}\n` +
+        (result.targetUrl === null ? '' : `Strona docelowa:             ${result.targetUrl}\n`) +
+        `Luki do pokrycia:            ${result.gaps}\n` +
+        `Linki wewnetrzne:            ${result.internalLinks}\n\n` +
+        `${result.markdown}\n`,
+      )
+      return 0
+    }
+
+    if (command === 'draft') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const { engines, skipped } = selectEngines({
+        fetchFn: globalThis.fetch,
+        ledger: dbLedger(db, scope),
+        now: () => Date.now(),
+        env: process.env,
+      })
+      const engine = engines[0]
+      if (engine === undefined) {
+        process.stderr.write(
+          'Zaden silnik nie jest dostepny — nie ma czym napisac draftu.\n' +
+          skipped.map((s) => `  ${s.id}: ${s.reason}\n`).join(''),
+        )
+        return 1
+      }
+
+      const zasoby = (flags.zasob ?? []).map(parseUniqueAsset)
+      const result = await runDraft(db, scope, createContentProvider({ engine }), {
+        siteUrl,
+        briefId: requireFlag(flags.brief, 'brief'),
+        author: {
+          name: requireFlag(flags.autor, 'autor'),
+          sameAs: requireFlag(flags['autor-url'], 'autor-url'),
+        },
+        uniqueAssets: zasoby.map((z) => ({
+          kind: z.kind, description: z.description, source: z.sourceText,
+        })),
+      })
+
+      process.stdout.write(
+        `Draft:                       ${result.draftId}\n` +
+        `Tytul:                       ${result.title || '(brak)'}\n` +
+        `Silnik:                      ${result.engine} (${result.modelVersion})\n` +
+        `Bramki:                      ${result.approved ? 'przeszly' : 'ODRZUCONY'}\n` +
+        (result.closestMatch === null
+          ? ''
+          : `Najblizszy tekst:            ${result.closestMatch}\n`),
+      )
+      if (!result.approved) {
+        process.stderr.write(
+          '\nDraft nie przeszedl bramek:\n' +
+          result.failures.map((f) => `  [${f.gate}] ${f.reason}\n`).join(''),
+        )
+        return 1
+      }
+      return 0
+    }
+
+    if (command === 'publish') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const gitPr = createGitPrProvider({
+        repoDir: requireFlag(flags.repo, 'repo'),
+        ledger: dbLedger(db, scope),
+        now: () => Date.now(),
+      })
+      const result = await runPublish(db, scope, gitPr, {
+        siteUrl,
+        draftId: requireFlag(flags.draft, 'draft'),
+        repoDir: requireFlag(flags.repo, 'repo'),
+        canonicalUrl: flags.canonical,
+      })
+      process.stdout.write(
+        `Publikacja:                  ${result.publicationId}\n` +
+        `Galaz:                       ${result.branch}\n` +
+        `Plik:                        ${result.filePath}\n` +
+        `Commit:                      ${result.commit.slice(0, 12)}\n` +
+        `Tempo:                       ${result.rate.reason}\n\n` +
+        `${result.nextStep}\n`,
+      )
+      return 0
+    }
+
+    process.stderr.write(`Nieznane polecenie: ${command}\n\n${USAGE}`)
+    return 1
+  } finally {
+    closeDatabase(db)
+  }
+}
+
 export async function main(argv: readonly string[]): Promise<number> {
   const [command, sub] = argv
 
@@ -644,6 +829,12 @@ export async function main(argv: readonly string[]): Promise<number> {
 
     if (command === 'geo') return await runGeoCommand(config, sub, argv.slice(2))
 
+    if (command === 'keywords') return await runContentCommand(config, command, sub, argv.slice(2))
+
+    if (command === 'brief' || command === 'draft' || command === 'publish') {
+      return await runContentCommand(config, command, sub, argv.slice(1))
+    }
+
     if (command === 'llms-txt') {
       const flags = parseFlags(argv.slice(1))
       const { db } = openInitialized(config)
@@ -673,6 +864,15 @@ export async function main(argv: readonly string[]): Promise<number> {
   } catch (error) {
     // Brak przegladarki to blad konfiguracji uzytkownika, nie awaria programu —
     // komunikat mowi wprost, co zrobic, i nie zasypuje sladem stosu.
+    if (error instanceof RateLimitedError) {
+      // Wylacznik zadzialal zgodnie z projektem — to nie jest awaria programu.
+      process.stderr.write(
+        `${error.message}\n` +
+        'To jest jeden z trzech wylacznikow, ktore maja dzialac wtedy, gdy wszystko\n' +
+        'inne zawiedzie. Poczekaj albo przejrzyj, co juz zostalo opublikowane.\n',
+      )
+      return 1
+    }
     if (error instanceof RenderUnavailableError) {
       process.stderr.write(`${error.message}\n`)
       return 1

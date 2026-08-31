@@ -36,6 +36,21 @@ export interface Author {
   readonly sameAs: string
 }
 
+declare const sprawdzony: unique symbol
+
+/**
+ * Autor, ktory przeszedl bramke D39.
+ *
+ * Osobny typ, a nie czesc `ApprovedDraft`, bo `buildArticleSchema` potrzebuje
+ * dowodu **tylko na autora** — nie na oryginalnosc i nie na unikalny zasob.
+ * Wymaganie tam calego `ApprovedDraft` zmuszaloby sciezke publikacji do
+ * przeliczania oryginalnosci od nowa, a to moze zablokowac artykul, ktory
+ * w miedzyczasie sam trafil do crawla. Weższy dowod jest tu poprawniejszy.
+ */
+export interface VerifiedAuthor extends Author {
+  readonly [sprawdzony]: true
+}
+
 export interface DraftInput {
   readonly title: string
   readonly markdown: string
@@ -58,6 +73,7 @@ declare const zatwierdzony: unique symbol
  */
 export interface ApprovedDraft extends DraftInput {
   readonly [zatwierdzony]: true
+  readonly author: VerifiedAuthor
   readonly originality: OriginalityResult
   readonly approvedAt: number
 }
@@ -87,23 +103,30 @@ function checkUniqueAsset(assets: readonly UniqueAsset[]): GateFailure | null {
   }
 }
 
-function checkAuthor(author: Author): GateFailure | null {
+export type AuthorCheck =
+  | { readonly kind: 'ok'; readonly author: VerifiedAuthor }
+  | { readonly kind: 'rejected'; readonly failure: GateFailure }
+
+/** Jedyna droga do `VerifiedAuthor`. */
+export function verifyAuthor(author: Author): AuthorCheck {
+  const odrzuc = (reason: string): AuthorCheck =>
+    ({ kind: 'rejected', failure: { gate: 'author', reason } })
+
   if (author.name.trim() === '') {
-    return { gate: 'author', reason: 'brak nazwiska autora — nigdy nie generujemy encji autorskich' }
+    return odrzuc('brak nazwiska autora — nigdy nie generujemy encji autorskich')
   }
   let parsed: URL
   try {
     parsed = new URL(author.sameAs)
   } catch {
-    return {
-      gate: 'author',
-      reason: `sameAs "${author.sameAs}" nie jest adresem — zmyslony autor to falszowanie E-E-A-T`,
-    }
+    return odrzuc(
+      `sameAs "${author.sameAs}" nie jest adresem — zmyslony autor to falszowanie E-E-A-T`,
+    )
   }
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    return { gate: 'author', reason: `sameAs uzywa schematu ${parsed.protocol}, a musi byc http albo https` }
+    return odrzuc(`sameAs uzywa schematu ${parsed.protocol}, a musi byc http albo https`)
   }
-  return null
+  return { kind: 'ok', author: author as VerifiedAuthor }
 }
 
 export interface ApprovalOptions {
@@ -147,15 +170,18 @@ export function approveDraft(
   const asset = checkUniqueAsset(input.uniqueAssets)
   if (asset !== null) failures.push(asset)
 
-  const author = checkAuthor(input.author)
-  if (author !== null) failures.push(author)
+  const author = verifyAuthor(input.author)
+  if (author.kind === 'rejected') failures.push(author.failure)
 
-  if (failures.length > 0) return { kind: 'rejected', failures }
+  if (failures.length > 0 || author.kind !== 'ok') {
+    return { kind: 'rejected', failures }
+  }
 
   return {
     kind: 'approved',
     draft: {
       ...input,
+      author: author.author,
       originality,
       approvedAt: (options.now ?? Date.now)(),
     } as ApprovedDraft,

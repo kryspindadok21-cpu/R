@@ -26,6 +26,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@seo/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@seo/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -38,6 +41,9 @@ importers:
       '@seo/geo':
         specifier: workspace:*
         version: link:../../packages/geo
+      '@seo/keywords':
+        specifier: workspace:*
+        version: link:../../packages/keywords
       '@seo/parse':
         specifier: workspace:*
         version: link:../../packages/parse

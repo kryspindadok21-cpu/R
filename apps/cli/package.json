@@ -20,6 +20,8 @@
     "@seo/crawler": "workspace:*",
     "@seo/rules": "workspace:*",
     "@seo/parse": "workspace:*",
-    "@seo/geo": "workspace:*"
+    "@seo/geo": "workspace:*",
+    "@seo/content": "workspace:*",
+    "@seo/keywords": "workspace:*"
   }
 }

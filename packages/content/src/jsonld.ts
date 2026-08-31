@@ -1,4 +1,4 @@
-import type { ApprovedDraft } from './gates.js'
+import type { VerifiedAuthor } from './gates.js'
 
 /**
  * JSON-LD dla artykulu (D39).
@@ -7,13 +7,18 @@ import type { ApprovedDraft } from './gates.js'
  * autor z biogramem to nie jest szara strefa optymalizacji — to wprowadzanie
  * czytelnika w blad co do tego, kto za tekstem stoi.
  *
- * Funkcja przyjmuje `ApprovedDraft`, wiec nie da sie jej wywolac na drafcie,
- * ktory nie przeszedl bramki autora. To nie jest ostroznosc — to jest ten sam
+ * Funkcja przyjmuje `VerifiedAuthor`, wiec nie da sie jej wywolac z autorem,
+ * ktorego nikt nie sprawdzil. To nie jest ostroznosc — to jest ten sam
  * mechanizm, co przy publikacji (AC7).
  */
 
 export interface ArticleSchemaInput {
-  readonly draft: ApprovedDraft
+  readonly title: string
+  /**
+   * Autor **po bramce** (D39). Typu nie da sie zlozyc recznie, wiec nie ma drogi
+   * do JSON-LD z autorem, ktorego nikt nie sprawdzil — AC7 pilnuje kompilator.
+   */
+  readonly author: VerifiedAuthor
   readonly url: string
   readonly datePublished: string
   readonly dateModified?: string | undefined
@@ -42,9 +47,9 @@ export interface ArticleSchema {
 export const MAX_HEADLINE_LENGTH = 110
 
 export function buildArticleSchema(input: ArticleSchemaInput): ArticleSchema {
-  const headline = input.draft.title.length <= MAX_HEADLINE_LENGTH
-    ? input.draft.title
-    : `${input.draft.title.slice(0, MAX_HEADLINE_LENGTH - 1).trimEnd()}…`
+  const headline = input.title.length <= MAX_HEADLINE_LENGTH
+    ? input.title
+    : `${input.title.slice(0, MAX_HEADLINE_LENGTH - 1).trimEnd()}…`
 
   return {
     '@context': 'https://schema.org',
@@ -55,8 +60,8 @@ export function buildArticleSchema(input: ArticleSchemaInput): ArticleSchema {
     dateModified: input.dateModified ?? input.datePublished,
     author: {
       '@type': 'Person',
-      name: input.draft.author.name,
-      sameAs: [input.draft.author.sameAs],
+      name: input.author.name,
+      sameAs: [input.author.sameAs],
     },
     ...(input.description === undefined ? {} : { description: input.description }),
     ...(input.publisherName === undefined

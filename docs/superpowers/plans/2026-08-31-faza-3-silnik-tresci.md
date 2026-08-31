@@ -16,9 +16,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | `fab4527` |
 | 4. `packages/content` — brief, linkowanie wewnętrzne, JSON-LD | ukończone, AC6/AC7 zielone; 947 testów zielonych łącznie | `8f96853` |
 | 5. `packages/db` — migracja `0004` + repozytoria treści | ukończone, AC4/AC8 zielone, izolacja najemców zielona; 979 testów zielonych | `d2bd8f7` |
-| 6. `packages/providers` — generowanie draftu i adapter `git-pr` | ukończone, AC9/AC10 zielone; 1004 testy zielone łącznie | — |
-| 7. `apps/cli` — `seo keywords cluster`, `seo brief` | niezaczęte | — |
-| 8. `apps/cli` — `seo draft`, `seo publish` | niezaczęte | — |
+| 6. `packages/providers` — generowanie draftu i adapter `git-pr` | ukończone, AC9/AC10 zielone; 1004 testy zielone łącznie | `679809a` |
+| 7. `apps/cli` — `seo keywords cluster`, `seo brief` | ukończone, uruchomione na żywo | — |
+| 8. `apps/cli` — `seo draft`, `seo publish` | ukończone; 1026 testów zielonych łącznie | — |
 | 9. Odbiór Fazy 3 na własnej stronie | niezaczęte | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
@@ -157,3 +157,29 @@ za to z darmowym rollbackiem.
 - **Testy adaptera chodzą po prawdziwym repozytorium git** w katalogu tymczasowym.
   Atrapa wykonawcy dowiodłaby tylko, że składamy poprawne argumenty — a nie, że
   git faktycznie robi to, czego oczekujemy. To dzięki temu wyszedł błąd wyżej.
+- **`VerifiedAuthor` wydzielony z `ApprovedDraft`.** `buildArticleSchema` wymagał
+  całego `ApprovedDraft`, więc ścieżka publikacji (która czyta draft z bazy) nie
+  potrafiła go zbudować — typ zadziałał i **słusznie zablokował rzutowanie**.
+  Poprawnym rozwiązaniem nie było przepchnięcie przez `unknown`, tylko zwężenie
+  dowodu: JSON-LD potrzebuje dowodu **tylko na autora**. Wymaganie tam całego
+  `ApprovedDraft` zmuszałoby publikację do przeliczania oryginalności od nowa,
+  co mogłoby zablokować artykuł, który w międzyczasie sam trafił do crawla.
+- **Autor jest sprawdzany ponownie przy publikacji**, na wartościach z bazy.
+  Draft mógł zostać zatwierdzony dawno; JSON-LD ma wyjść z danych, które
+  naprawdę idą do repozytorium.
+- **Odmowa modelu i błąd wywołania unieważniają zatwierdzenie**, nawet gdy bramki
+  czystej treści przeszły. Pusty draft nie jest artykułem — a bramki czyste nie
+  mają skąd o tym wiedzieć, bo dostają sam tekst.
+- **Zestaw porównawczy oryginalności to na razie tylko własne strony.** Bez top10
+  nie mamy cudzych tekstów, więc bramka łapie duplikaty wewnętrzne. Jest to
+  powiedziane wprost w komentarzu, a nie ukryte za słowem „oryginalność" — ta
+  sama luka co przy `serp-overlap` i z tego samego powodu.
+- **Limit tempa sprawdzany PRZED jakimkolwiek zapisem do repozytorium.** Jest na
+  to test, który porównuje `HEAD` przed i po odrzuconej publikacji.
+- **`RateLimitedError` nie jest awarią programu**, tylko wyłącznikiem, który
+  zadziałał zgodnie z projektem — `main.ts` wypisuje to wprost, tak samo jak
+  brak przeglądarki przy renderowaniu.
+- **`queriesWithPosition` dopisane do `packages/db`.** `topQueries` nie zwracało
+  pozycji, a brief jej potrzebuje. Pozycja to średnia **ważona wyświetleniami**,
+  bo tak liczy ją samo Search Console — zwykła średnia dałaby dniowi z dwoma
+  wyświetleniami tę samą wagę, co dniowi z dwoma tysiącami.

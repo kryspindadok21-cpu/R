@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { approveDraft, type ApprovedDraft, type DraftInput } from './gates.js'
+import {
+  approveDraft, verifyAuthor, type ApprovedDraft, type DraftInput, type VerifiedAuthor,
+} from './gates.js'
 import { MAX_HEADLINE_LENGTH, articleSchemaScript, buildArticleSchema } from './jsonld.js'
 
 const TRESC = `
@@ -28,9 +30,15 @@ function zatwierdzony(nadpisz: Partial<DraftInput> = {}): ApprovedDraft {
   return wynik.draft
 }
 
+function autor(): VerifiedAuthor {
+  const wynik = verifyAuthor(WEJSCIE.author)
+  if (wynik.kind !== 'ok') throw new Error('fikstura miala przejsc bramke autora')
+  return wynik.author
+}
+
 describe('buildArticleSchema', () => {
   const schema = buildArticleSchema({
-    draft: zatwierdzony(),
+    title: WEJSCIE.title, author: autor(),
     url: 'https://przyklad.test/blog/grounding',
     datePublished: '2026-08-31',
     description: 'Sześć tygodni pomiaru widoczności w trzech modelach.',
@@ -55,7 +63,7 @@ describe('buildArticleSchema', () => {
   it('bez daty modyfikacji bierze date publikacji', () => {
     expect(schema.dateModified).toBe('2026-08-31')
     const zmodyfikowany = buildArticleSchema({
-      draft: zatwierdzony(), url: 'https://a.test/x',
+      title: WEJSCIE.title, author: autor(), url: 'https://a.test/x',
       datePublished: '2026-08-01', dateModified: '2026-08-31',
     })
     expect(zmodyfikowany.dateModified).toBe('2026-08-31')
@@ -63,7 +71,7 @@ describe('buildArticleSchema', () => {
 
   it('pola opcjonalne nie pojawiaja sie jako undefined', () => {
     const goly = buildArticleSchema({
-      draft: zatwierdzony(), url: 'https://a.test/x', datePublished: '2026-08-31',
+      title: WEJSCIE.title, author: autor(), url: 'https://a.test/x', datePublished: '2026-08-31',
     })
     expect(goly).not.toHaveProperty('description')
     expect(goly).not.toHaveProperty('publisher')
@@ -73,7 +81,7 @@ describe('buildArticleSchema', () => {
   it('za dlugi naglowek jest ucinany, a nie zostawiany do uciecia przez Google', () => {
     const dlugi = 'a'.repeat(200)
     const schema = buildArticleSchema({
-      draft: zatwierdzony({ title: dlugi }), url: 'https://a.test/x', datePublished: '2026-08-31',
+      title: dlugi, author: autor(), url: 'https://a.test/x', datePublished: '2026-08-31',
     })
     expect(schema.headline.length).toBe(MAX_HEADLINE_LENGTH)
     expect(schema.headline.endsWith('…')).toBe(true)
@@ -81,15 +89,37 @@ describe('buildArticleSchema', () => {
 
   it('naglowek miesciacy sie w limicie zostaje nietkniety', () => {
     expect(buildArticleSchema({
-      draft: zatwierdzony(), url: 'https://a.test/x', datePublished: '2026-08-31',
+      title: WEJSCIE.title, author: autor(), url: 'https://a.test/x', datePublished: '2026-08-31',
     }).headline).toBe(WEJSCIE.title)
+  })
+})
+
+describe('AC7: autor przechodzi przez typ, nie przez sprawdzenie', () => {
+  it('nie da sie zbudowac JSON-LD z autorem, ktorego nikt nie sprawdzil', () => {
+    // Bez `verifyAuthor` linia z autorem sie nie kompiluje — i o to chodzi.
+    const podrobka = buildArticleSchema({
+      title: 'X',
+      // @ts-expect-error zwykly Author nie jest VerifiedAuthor
+      author: { name: 'Zmyslony', sameAs: 'nie-adres' },
+      url: 'https://a.test/x', datePublished: '2026-08-31',
+    })
+    expect(podrobka).toBeDefined()
+  })
+
+  it('autor z zatwierdzonego draftu przechodzi bez dodatkowej pracy', () => {
+    const draft = zatwierdzony()
+    const schema = buildArticleSchema({
+      title: draft.title, author: draft.author,
+      url: 'https://a.test/x', datePublished: '2026-08-31',
+    })
+    expect(schema.author.name).toBe('Krzysztof Nowak')
   })
 })
 
 describe('articleSchemaScript', () => {
   it('sklada blok gotowy do wstawienia', () => {
     const blok = articleSchemaScript(buildArticleSchema({
-      draft: zatwierdzony(), url: 'https://a.test/x', datePublished: '2026-08-31',
+      title: WEJSCIE.title, author: autor(), url: 'https://a.test/x', datePublished: '2026-08-31',
     }))
     expect(blok.startsWith('<script type="application/ld+json">')).toBe(true)
     expect(blok.endsWith('</script>')).toBe(true)
@@ -98,7 +128,7 @@ describe('articleSchemaScript', () => {
   it('tytul z zamknieciem skryptu nie rozwala strony', () => {
     // Parser HTML konczy blok skryptu na `</script>` takze wewnatrz ciagu znakow.
     const blok = articleSchemaScript(buildArticleSchema({
-      draft: zatwierdzony({ title: 'Uwaga </script> tutaj' }),
+      title: 'Uwaga </script> tutaj', author: autor(),
       url: 'https://a.test/x', datePublished: '2026-08-31',
     }))
     expect(blok.slice(0, -'</script>'.length)).not.toContain('</script>')
@@ -107,7 +137,7 @@ describe('articleSchemaScript', () => {
 
   it('wynik jest poprawnym JSON-em po odwroceniu eskejpowania', () => {
     const schema = buildArticleSchema({
-      draft: zatwierdzony(), url: 'https://a.test/x', datePublished: '2026-08-31',
+      title: WEJSCIE.title, author: autor(), url: 'https://a.test/x', datePublished: '2026-08-31',
     })
     const json = articleSchemaScript(schema)
       .replace('<script type="application/ld+json">\n', '')
