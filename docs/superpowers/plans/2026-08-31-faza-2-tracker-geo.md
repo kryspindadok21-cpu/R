@@ -16,8 +16,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 2. `packages/geo` — warstwa statystyczna | ukończone, AC1/AC2/AC3/AC4/AC5 zielone; 687 testów zielonych łącznie | `a0d8dda` |
 | 3. `packages/geo` — wykrywanie wzmianek i share of voice | ukończone, AC6 zielone; 710 testów zielonych łącznie | `44779a4` |
 | 4. `packages/geo` — ekstrakcja cytowań (D32) | ukończone; 728 testów zielonych łącznie | `00bb337` |
-| 5. `packages/db` — migracja `0003` + repozytoria GEO | ukończone, izolacja najemców zielona; 762 testy zielone łącznie | — |
-| 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | niezaczęte | — |
+| 5. `packages/db` — migracja `0003` + repozytoria GEO | ukończone, izolacja najemców zielona; 762 testy zielone łącznie | `7905917` |
+| 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | ukończone, AC7/AC8/AC9 zielone; 779 testów zielonych łącznie | — |
 | 7. `apps/cli` — `seo geo prompts`, `seo geo run` | niezaczęte | — |
 | 8. `packages/report` — sekcja GEO z bramką istotności | niezaczęte | — |
 | 9. `apps/cli` — `seo llms-txt` (D31) | niezaczęte | — |
@@ -109,3 +109,19 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
 - **`packages/db` zależy teraz od `@seo/geo`** — po typy `Mention`, `Citation`
   i `EntityDefinition`. To ta sama zależność co od `@seo/parse` w Fazie 1: czysty
   silnik definiuje kształt, baza go zapisuje.
+- **Groq i OpenRouter dzielą jedną implementację.** Oba mówią protokołem
+  `chat/completions` zgodnym z OpenAI i różnią się wyłącznie adresem, modelem
+  i nagłówkami. Dwa osobne pliki byłyby dwiema kopiami tego samego błędu do
+  poprawienia.
+- **Odmowy nie rozpoznajemy po treści odpowiedzi.** Tylko po sygnale, który API
+  podaje samo (`finishReason`, `blockReason`, `finish_reason`). Heurystyka na
+  frazie „nie mogę pomóc" oznaczyłaby prawdziwą odpowiedź jako odmowę i zaniżyła
+  widoczność bez śladu w danych — jest na to osobny test z odpowiedzią, która
+  brzmi jak odmowa, a odmową nie jest.
+- **`DEFAULT_MODELS` nie jest `as const`.** Literalny typ zawęziłby `models`
+  w `selectEngines` do tych trzech napisów, czyli nadpisać model dałoby się
+  wyłącznie tą samą wartością. Złapał to typecheck po napisaniu testu, który
+  robi dokładnie to, po co ta opcja istnieje.
+- **Nieznany powód blokady melduje się dosłownie** (`zablokowane: COS_NOWEGO`)
+  zamiast wpaść do `null`. Dostawcy dokładają nowe kody i cicha zmiana w `null`
+  wyglądałaby jak udzielona odpowiedź.

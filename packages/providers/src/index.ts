@@ -25,3 +25,15 @@ export {
   PSI_BACKOFF_BASE_MS, PSI_ENDPOINT, PSI_MAX_RETRIES, createPsiProvider, type PsiDeps,
 } from './psi/provider.js'
 export type { PsiMetrics, PsiProvider, PsiResult, PsiSource, PsiStrategy } from './psi/types.js'
+export { GEMINI_BASE_URL, createGeminiProvider, type GeminiDeps } from './llm/gemini.js'
+export {
+  GROQ_BASE_URL, OPENROUTER_BASE_URL, createOpenAiCompatibleProvider,
+  type OpenAiCompatibleDeps,
+} from './llm/openai-compatible.js'
+export {
+  DEFAULT_MODELS, selectEngines,
+  type EngineEnv, type EngineSelection, type EngineSelectionDeps,
+} from './llm/registry.js'
+export type {
+  AccessMode, EngineAnswer, EngineId, EnginePrompt, LlmEngineProvider, SkippedEngine,
+} from './llm/types.js'
