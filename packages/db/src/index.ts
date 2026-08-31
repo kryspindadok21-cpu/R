@@ -21,5 +21,9 @@ export {
   type BriefInput, type ClusterSetInput, type ContentRepos, type DraftInput,
   type PublicationInput, type RateLimitStatus,
 } from './content-repo.js'
+export {
+  IllegalTransitionError, agentRepos,
+  type AgentRepos, type ExperimentInput, type OpportunityRow, type TaskInput,
+} from './agent-repo.js'
 // rawHandle i schema swiadomie nieeksportowane — jedynym wejsciem do bazy
 // jest repos(), ktore wymusza TenantScope (D5).

@@ -14,8 +14,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 1. Specyfikacja Fazy 4 (D45–D54) | ukończone | — |
 | 2. `packages/agent` — różnica w różnicach i werdykty (D48–D51) | ukończone, AC5/AC8 zielone; 1051 testów zielonych łącznie | `0f7cf58` |
 | 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | ukończone, AC1/AC2/AC6 zielone; 1087 testów zielonych łącznie | `11eabcf` |
-| 4. `packages/agent` — silnik polityk, wyłączniki i tablica zadań | ukończone, AC3/AC4/AC9/AC10 zielone; 1119 testów zielonych | — |
-| 5. `packages/db` — migracja `0005` + repozytoria agenta | niezaczęte | — |
+| 4. `packages/agent` — silnik polityk, wyłączniki i tablica zadań | ukończone, AC3/AC4/AC9/AC10 zielone; 1119 testów zielonych | `704b21d` |
+| 5. `packages/db` — migracja `0005` + repozytoria agenta | ukończone, izolacja najemców zielona; 1143 testy zielone | — |
 | 6. `apps/cli` — `seo agent plan`, `board`, `verdicts` | niezaczęte | — |
 | 7. `packages/report` — tablica zadań i werdykty | niezaczęte | — |
 | 8. Odbiór Fazy 4 | niezaczęte | — |
@@ -118,3 +118,15 @@ w ogóle istnieją.
 - **Odrzucenie przez człowieka też jest werdyktem.** `needs-you → done` jest
   dozwolone, o ile werdykt jest niepusty — „odrzucone przez właściciela" liczy
   się tak samo jak „nie da się zmierzyć".
+- **`proposeTask` nie ma parametru stanu.** Zadanie powstaje zawsze jako
+  `proposed` — planer emitujący od razu `in-flight` obchodziłby politykę, a to
+  jedyne zabezpieczenie działające niezależnie od zachowania modelu (D46).
+- **Drugi eksperyment dla tego samego zadania odrzuca baza** (unikalny indeks na
+  `tenant_id, task_id`). Nadpisanie grup po fakcie byłoby doborem kontroli po
+  zobaczeniu wyników — D49 egzekwowane przez schemat, nie przez dyscyplinę.
+- **Odmowa pomiaru też trafia do `agent_verdict`.** Bez tego nie da się
+  odpowiedzieć, ile pomiarów nie doszło do skutku i dlaczego — a to jest pierwsza
+  rzecz, którą trzeba wiedzieć o małym serwisie.
+- **Bramka i jej powód są zapisane razem z zadaniem.** Zablokowana akcja zostaje
+  w bazie z wyjaśnieniem, zamiast zniknąć — inaczej „nic się nie stało" wyglądałoby
+  identycznie jak „wyłącznik zadziałał".

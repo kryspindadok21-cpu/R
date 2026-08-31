@@ -112,6 +112,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@seo/agent':
+        specifier: workspace:*
+        version: link:../agent
       '@seo/content':
         specifier: workspace:*
         version: link:../content

@@ -19,7 +19,8 @@
     "@seo/parse": "workspace:*",
     "@seo/geo": "workspace:*",
     "@seo/content": "workspace:*",
-    "@seo/keywords": "workspace:*"
+    "@seo/keywords": "workspace:*",
+    "@seo/agent": "workspace:*"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",

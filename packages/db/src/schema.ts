@@ -360,3 +360,67 @@ export const contentPublication = sqliteTable('content_publication', {
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
 })
+
+export const agentOpportunity = sqliteTable('agent_opportunity', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  slug: text('slug').notNull(),
+  kind: text('kind', {
+    enum: ['fix-finding', 'refresh-content', 'create-content', 'improve-geo'],
+  }).notNull(),
+  title: text('title').notNull(),
+  targetUrl: text('target_url'),
+  score: real('score').notNull(),
+  factors: text('factors').notNull(),
+  measuredFactors: integer('measured_factors').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const agentTask = sqliteTable('agent_task', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  opportunityId: text('opportunity_id').notNull(),
+  actionKind: text('action_kind').notNull(),
+  state: text('state', {
+    enum: ['proposed', 'needs-you', 'in-flight', 'measuring', 'done'],
+  }).notNull(),
+  gate: text('gate').notNull(),
+  gateReason: text('gate_reason').notNull(),
+  verdict: text('verdict'),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+})
+
+export const agentExperiment = sqliteTable('agent_experiment', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  taskId: text('task_id').notNull(),
+  treatmentUrls: text('treatment_urls').notNull(),
+  controlUrls: text('control_urls').notNull(),
+  shortfall: text('shortfall'),
+  changedOn: text('changed_on').notNull(),
+  selectedAt: integer('selected_at').notNull(),
+})
+
+export const agentVerdict = sqliteTable('agent_verdict', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  experimentId: text('experiment_id').notNull(),
+  windowDays: integer('window_days').notNull(),
+  metric: text('metric', { enum: ['clicks', 'impressions', 'ctr', 'position'] }).notNull(),
+  outcome: text('outcome', { enum: ['werdykt', 'odmowa'] }).notNull(),
+  effect: real('effect'),
+  intervalLow: real('interval_low'),
+  intervalHigh: real('interval_high'),
+  significant: integer('significant').notNull(),
+  direction: text('direction', { enum: ['poprawa', 'pogorszenie'] }),
+  refusalReason: text('refusal_reason'),
+  sentence: text('sentence').notNull(),
+  treatmentPages: integer('treatment_pages').notNull(),
+  controlPages: integer('control_pages').notNull(),
+  seed: integer('seed'),
+  measuredAt: integer('measured_at').notNull(),
+})

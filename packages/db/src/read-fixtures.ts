@@ -92,3 +92,17 @@ export const CONTENT_READ_METHOD_ARGS: Record<string, (f: ContentFixture) => unk
   listPublications: (f) => [f.siteId, 50],
   publicationRate: (f) => [f.siteId, 100, Date.now()],
 }
+
+/** To samo dla repozytoriow Fazy 4. Kazda metoda z AgentRepos["read"] MUSI miec wpis. */
+export interface AgentFixture extends ForeignFixture {
+  readonly taskId: string
+  readonly experimentId: string
+}
+
+export const AGENT_READ_METHOD_ARGS: Record<string, (f: AgentFixture) => unknown[]> = {
+  listOpportunities: (f) => [f.siteId, 50],
+  getTask: (f) => [f.taskId],
+  listTasks: (f) => [f.siteId, 50],
+  getExperiment: (f) => [f.taskId],
+  listVerdicts: (f) => [f.experimentId],
+}
