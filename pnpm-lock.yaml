@@ -55,6 +55,16 @@ importers:
         specifier: ^26.4.0
         version: 26.4.0
 
+  packages/content:
+    dependencies:
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
   packages/core:
     dependencies:
       ulid:

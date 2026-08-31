@@ -13,7 +13,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 |---|---|---|
 | 1. Specyfikacja Fazy 3 (D33–D44) | ukończone | — |
 | 2. `packages/keywords` — klastrowanie i pokrycie tematu | niezaczęte | — |
-| 3. `packages/content` — bramka oryginalności i scoring | niezaczęte | — |
+| 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | — |
 | 4. `packages/content` — generator briefów i linkowanie wewnętrzne | niezaczęte | — |
 | 5. `packages/db` — migracja `0004` + repozytoria treści | niezaczęte | — |
 | 6. `packages/providers` — generowanie draftu i adapter `git-pr` | niezaczęte | — |
@@ -40,4 +40,26 @@ za to z darmowym rollbackiem.
 
 ## Odstępstwa od planu odnotowane w trakcie
 
-*(dopisywane w miarę pracy)*
+- **Bramki powstały przed klastrowaniem, wbrew numeracji w tabeli.** Kolejność
+  w planie jest po zadaniach, nie po czasie — a bramki musiały być pierwsze,
+  żeby stać się typem, przez który generator przechodzi. Gdyby powstały po
+  generatorze, byłyby sprawdzeniem w czasie wykonania, które da się pominąć.
+- **`ApprovedDraft` ma znacznik `unique symbol` niedostępny poza modułem.**
+  Funkcja publikująca przyjmuje ten typ, więc jedyną drogą do publikacji jest
+  `approveDraft`. Obejście istnieje (`as ApprovedDraft`), ale jest widoczne
+  w przeglądzie kodu jako rzutowanie, a nie jako zwykłe wywołanie. Jest na to
+  test z `@ts-expect-error`.
+- **Pusty zestaw porównawczy NIE znaczy „przeszło".** Wraca jako `undecidable`
+  i blokuje. Cicha zgoda przy braku danych jest dokładnie tym mechanizmem,
+  który ta bramka ma zablokować — ta sama zasada, co D17 w Fazie 1.
+- **Tekst za krótki, żeby ocenić oryginalność, też nie przechodzi.** Poniżej
+  10 n-gramów nie da się orzec, a orzekanie bez danych jest tym, czego cała
+  ta warstwa ma nie robić.
+- **TF-IDF liczone na całym korpusie, nie na parze.** Efekt uboczny jest tym,
+  o co chodzi: stopka i nawigacja obecne we wszystkich dokumentach dostają wagę
+  bliską zeru, więc nie napompują podobieństwa. Jest na to osobny test.
+- **Tokenizacja przez `\p{L}\p{N}` z flagą `u`.** `\w` z JavaScriptu zna tylko
+  ASCII i rozbiłoby „właściwość" na trzy tokeny — ten sam błąd co `\b`
+  w wykrywaniu wzmianek w Fazie 2.
+- **Wszystkie niepowodzenia zbierane naraz**, nie pierwsze. Redaktor poprawiający
+  draft ma zobaczyć całą listę od razu, zamiast wracać trzy razy.
