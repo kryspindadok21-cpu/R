@@ -1,8 +1,9 @@
 import {
-  actionTable, gateFor, opportunityFromCluster, opportunityFromFinding, opportunityFromGeoGap,
-  rankOpportunities, summarize,
-  type AgentTask, type BreakerInput, type BoardSummary, type Opportunity,
-  type ScoredOpportunity,
+  MEASUREMENT_WINDOWS, actionTable, differenceInDifferences, gateFor,
+  opportunityFromCluster, opportunityFromFinding, opportunityFromGeoGap,
+  rankOpportunities, summarize, verdictSentence,
+  type AgentTask, type BreakerInput, type BoardSummary, type Metric,
+  type Opportunity, type PageObservation, type ScoredOpportunity,
 } from '@seo/agent'
 import type { TenantScope } from '@seo/core'
 import {
@@ -276,4 +277,138 @@ export function runAgentBoard(
     }))),
     rows,
   }
+}
+
+// --- seo agent measure ----------------------------------------------------------
+
+/** Przesuwa date `YYYY-MM-DD` o `dni` — dosłownie, bez strefy (D3). */
+export function przesunDate(data: string, dni: number): string {
+  const [rok, miesiac, dzien] = data.split('-').map(Number) as [number, number, number]
+  const ms = Date.UTC(rok, miesiac - 1, dzien) + dni * 24 * 60 * 60 * 1000
+  return new Date(ms).toISOString().slice(0, 10)
+}
+
+export interface MeasureOptions {
+  readonly siteUrl: string
+  /** Data odniesienia; domyslnie dzisiaj. Okna liczone wstecz od zmiany. */
+  readonly today?: string | undefined
+  readonly metrics?: readonly Metric[] | undefined
+  readonly seed?: number | undefined
+}
+
+export interface MeasuredWindow {
+  readonly taskId: string
+  readonly windowDays: number
+  readonly metric: Metric
+  readonly outcome: 'werdykt' | 'odmowa'
+  readonly sentence: string
+}
+
+export interface MeasureResult {
+  readonly experiments: number
+  readonly windows: readonly MeasuredWindow[]
+  readonly finished: number
+  /** Eksperymenty, dla ktorych okno jeszcze nie doszlo do konca. */
+  readonly pending: number
+}
+
+/**
+ * Mierzy skutek zmian roznica w roznicach (D48–D51).
+ *
+ * Okno `n` dni po zmianie porownujemy z oknem **tej samej dlugosci** przed nia.
+ * Trzy okna dają trzy osobne werdykty, nigdy jednej usrednionej liczby: 14 dni
+ * lapie zmiany techniczne, 60 dni lapie tresc, ktora musi sie wypozycjonowac —
+ * a usrednienie gubi wlasnie te roznice.
+ */
+export function runAgentMeasure(
+  db: Db,
+  scope: TenantScope,
+  options: MeasureOptions,
+): MeasureResult {
+  const site = siteOf(db, scope, options.siteUrl)
+  const agentRepo = agentRepos(db, scope)
+  const baza = repos(db, scope)
+
+  const dzis = options.today ?? new Date().toISOString().slice(0, 10)
+  const metryki = options.metrics ?? (['clicks', 'ctr', 'position'] as const)
+
+  const windows: MeasuredWindow[] = []
+  let experiments = 0
+  let finished = 0
+  let pending = 0
+
+  for (const zadanie of agentRepo.read.listTasks(site.id, 500)) {
+    if (zadanie.state !== 'measuring' && zadanie.state !== 'in-flight') continue
+    const eksperyment = agentRepo.read.getExperiment(zadanie.id)
+    if (eksperyment === undefined) continue
+    experiments += 1
+
+    const zmienioneUrls = new Set(JSON.parse(eksperyment.treatmentUrls) as string[])
+    const kontrolneUrls = new Set(JSON.parse(eksperyment.controlUrls) as string[])
+    const zmiana = eksperyment.changedOn
+
+    let ostatnieZdanie: string | null = null
+    let cokolwiekZmierzone = false
+
+    for (const okno of MEASUREMENT_WINDOWS) {
+      const koniecPo = przesunDate(zmiana, okno)
+      if (koniecPo > dzis) {
+        // Okno jeszcze trwa. Liczenie go teraz dalo by wynik z niepelnego
+        // okresu i nikt by sie nie dowiedzial, ze byl niepelny.
+        pending += 1
+        continue
+      }
+
+      const przed = baza.read.pageMetricsInRange(site.id, przesunDate(zmiana, -okno), zmiana)
+      const po = baza.read.pageMetricsInRange(site.id, zmiana, koniecPo)
+
+      const przedWg = new Map(przed.map((r) => [r.page, r]))
+      const poWg = new Map(po.map((r) => [r.page, r]))
+      const adresy = new Set([...przedWg.keys(), ...poWg.keys()])
+
+      const obserwacje = (nalezy: ReadonlySet<string>): PageObservation[] =>
+        [...adresy].filter((url) => nalezy.has(url)).map((url) => ({
+          url,
+          before: {
+            clicks: przedWg.get(url)?.clicks ?? 0,
+            impressions: przedWg.get(url)?.impressions ?? 0,
+            position: przedWg.get(url)?.position ?? 0,
+          },
+          after: {
+            clicks: poWg.get(url)?.clicks ?? 0,
+            impressions: poWg.get(url)?.impressions ?? 0,
+            position: poWg.get(url)?.position ?? 0,
+          },
+        }))
+
+      for (const metric of metryki) {
+        const wynik = differenceInDifferences(
+          obserwacje(zmienioneUrls), obserwacje(kontrolneUrls),
+          { metric, windowDays: okno, seed: options.seed ?? 20260831 },
+        )
+        const zdanie = verdictSentence(wynik)
+        agentRepo.write.recordVerdict(eksperyment.id, wynik, zdanie)
+        windows.push({
+          taskId: zadanie.id, windowDays: okno, metric,
+          outcome: wynik.kind === 'werdykt' ? 'werdykt' : 'odmowa',
+          sentence: zdanie,
+        })
+        ostatnieZdanie = zdanie
+        cokolwiekZmierzone = true
+      }
+    }
+
+    // Zadanie konczy sie dopiero, gdy **najdluzsze** okno sie domknelo — inaczej
+    // `done` znaczyloby „zmierzone czesciowo" (D53).
+    const najdluzsze = MEASUREMENT_WINDOWS[MEASUREMENT_WINDOWS.length - 1] as number
+    if (cokolwiekZmierzone && przesunDate(zmiana, najdluzsze) <= dzis && ostatnieZdanie !== null) {
+      if (zadanie.state === 'in-flight') agentRepo.write.transition(zadanie.id, 'measuring')
+      agentRepo.write.transition(zadanie.id, 'done', ostatnieZdanie)
+      finished += 1
+    } else if (zadanie.state === 'in-flight' && cokolwiekZmierzone) {
+      agentRepo.write.transition(zadanie.id, 'measuring')
+    }
+  }
+
+  return { experiments, windows, finished, pending }
 }

@@ -1,7 +1,12 @@
 export type ProviderId = 'gsc'
 export type SiteMetricsCapability = 'performance.byDate' | 'performance.byQuery'
 export type DataState = 'final' | 'all'
-export type PerformanceDimension = 'date' | 'query'
+/**
+ * `page` doszlo w Fazie 4: pomiar roznica w roznicach potrzebuje metryk **per
+ * strona**, a wymiary `date` i `query` ich nie daja. Bez tego cala petla
+ * pomiarowa nie ma czego liczyc.
+ */
+export type PerformanceDimension = 'date' | 'query' | 'page'
 
 export interface PerformanceQuery {
   readonly siteUrl: string

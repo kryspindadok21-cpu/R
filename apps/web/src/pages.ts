@@ -306,10 +306,19 @@ const BRAMKA_ETYKIETA: Readonly<Record<string, string>> = {
   auto: 'idzie samo', 'needs-approval': 'wymaga zgody', blocked: 'zablokowane',
 }
 
+export interface PodsumowaniePomiaru {
+  readonly experiments: number
+  readonly windows: number
+  readonly pending: number
+  readonly finished: number
+  readonly zdania: readonly string[]
+}
+
 export function stronaAgenta(
   siteUri: string, siteId: string,
   summary: Readonly<Record<string, number>>,
   rows: readonly AgentRow[],
+  pomiar: PodsumowaniePomiaru | null = null,
 ): string {
   const id = encodeURIComponent(siteId)
 
@@ -348,17 +357,33 @@ jako wniosek; do wykonania trzeba albo polityki „idzie samo", albo Twojej zgod
   ${kafel('Z werdyktem', String(summary.done ?? 0), '', 'ok')}
 </div>
 
-<div class="karta" style="margin:1.5rem 0">
-  <div class="wiersz">
-    <div class="wiersz-tresc">
-      <h3>Przejrzyj okazje jeszcze raz</h3>
-      <p class="podpowiedz">Przelicza ranking na aktualnych danych i wystawia nowe wnioski.</p>
-    </div>
+<div class="siatka siatka-2" style="margin:1.5rem 0">
+  <div class="karta">
+    <h3>Przejrzyj okazje jeszcze raz</h3>
+    <p class="podpowiedz">Przelicza ranking na aktualnych danych i wystawia nowe wnioski.</p>
     <form method="post" action="/agent/${id}/plan">
       <button type="submit">Znajdź okazje</button>
     </form>
   </div>
+  <div class="karta">
+    <h3>Zmierz skutek zmian</h3>
+    <p class="podpowiedz">Różnica w różnicach: porównuje strony zmienione ze stronami
+    kontrolnymi, więc odejmuje core update, sezon i ruchy konkurencji.</p>
+    <form method="post" action="/agent/${id}/measure">
+      <button class="przycisk cichy" type="submit">Zmierz</button>
+    </form>
+  </div>
 </div>
+
+${pomiar === null ? '' : `<div class="karta" style="margin-bottom:1.5rem">
+  <h3>Ostatni pomiar</h3>
+  <p class="podpowiedz">Eksperymenty: ${pomiar.experiments} ·
+  okna zmierzone: ${pomiar.windows} · okna jeszcze trwają: ${pomiar.pending} ·
+  zadania zakończone: ${pomiar.finished}</p>
+  ${pomiar.zdania.length === 0
+    ? '<p class="podpowiedz">Nie było czego mierzyć. Eksperyment powstaje, gdy zadanie wchodzi w wykonanie — a do tego trzeba danych z Search Console.</p>'
+    : `<ul style="margin:.6rem 0 0; padding-left:1.2rem">${pomiar.zdania.map((z) => `<li>${escapeHtml(z)}</li>`).join('')}</ul>`}
+</div>`}
 
 ${lista}
 

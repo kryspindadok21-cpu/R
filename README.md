@@ -22,11 +22,11 @@ Bez hostingu, bez płatnych usług, bez kont w zewnętrznych narzędziach.
 | 1 | Crawler, audyt, renderowanie, PSI, raport techniczny | **ukończona** |
 | 2 | Pomiar widoczności w odpowiedziach modeli językowych | **ukończona** — czeka na darmowy klucz do silnika |
 | 3 | Silnik treści: klastry, briefy, drafty za bramkami, publikacja przez PR | **ukończona** — czeka na darmowy klucz do silnika |
-| 4 | Pętla agentowa: scoring okazji, polityki, wyłączniki, pomiar DiD | **rdzeń ukończony** — scheduler i raport zostają |
+| 4 | Pętla agentowa: scoring okazji, polityki, wyłączniki, pomiar DiD | **ukończona** — czeka na dane z Search Console |
 | 5 | Panel webowy | nie zaczęta |
 
 Szczegóły i punkt wznowienia: tabela **STAN PRAC** w
-`docs/superpowers/plans/2026-08-31-faza-3-silnik-tresci.md`.
+`docs/superpowers/plans/2026-08-31-faza-4-petla-agentowa.md`.
 
 ## Uruchomienie na własnym komputerze
 
@@ -55,7 +55,7 @@ Najprostszy sposób, żeby zobaczyć, jak to działa: wpisujesz adres, klikasz
 
 ```bash
 pnpm install
-pnpm panel        # http://127.0.0.1:4321
+pnpm panel        # http://localhost:4321
 ```
 
 Panel nasłuchuje **wyłącznie na pętli zwrotnej**. To nie jest ostrożność na
@@ -89,6 +89,7 @@ seo draft      --site <uri> --brief <id> --autor "Imie Nazwisko" --autor-url <ad
 seo publish    --site <uri> --draft <id> --repo <sciezka> [--canonical <adres>]
 seo agent plan  --site <uri>          # znajdz okazje i wystaw wnioski
 seo agent board --site <uri>          # tablica zadan agenta
+seo agent measure --site <uri>        # zmierz skutek zmian (roznica w roznicach)
 ```
 
 Pełna lista flag: `seo help`.

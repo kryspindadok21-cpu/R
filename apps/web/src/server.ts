@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http'
 import {
   buildAuditReportData, buildGeoReport, dbLedger, openInitialized, runAgentBoard,
-  runAgentPlan, runAudit, runCrawlCommand, systemClock,
+  runAgentMeasure, runAgentPlan, runAudit, runCrawlCommand, systemClock,
 } from '@seo/cli/lib'
 import { tenantScope, type TenantScope } from '@seo/core'
 import {
@@ -349,6 +349,35 @@ export function createPanel(config: PanelConfig): Server {
               site.propertyUri, siteId,
               tablica.summary as unknown as Record<string, number>,
               tablica.rows,
+            ))
+          } finally { closeDatabase(db) }
+          return
+        }
+
+        if (req.method === 'POST' && sciezka.endsWith('/measure') && sciezka.startsWith('/agent/')) {
+          const siteId = decodeURIComponent(
+            sciezka.slice('/agent/'.length, sciezka.length - '/measure'.length),
+          )
+          const { db } = openInitialized(config)
+          try {
+            const site = repos(db, scope).read.listSites().find((x) => x.id === siteId)
+            if (site === undefined) {
+              wyslij(res, 404, stronaBledu(404, 'nie ma takiej strony'))
+              return
+            }
+            const wynik = runAgentMeasure(db, scope, { siteUrl: site.propertyUri })
+            const tablica = runAgentBoard(db, scope, { siteUrl: site.propertyUri })
+            wyslij(res, 200, stronaAgenta(
+              site.propertyUri, siteId,
+              tablica.summary as unknown as Record<string, number>,
+              tablica.rows,
+              {
+                experiments: wynik.experiments,
+                windows: wynik.windows.length,
+                pending: wynik.pending,
+                finished: wynik.finished,
+                zdania: wynik.windows.map((w) => w.sentence),
+              },
             ))
           } finally { closeDatabase(db) }
           return

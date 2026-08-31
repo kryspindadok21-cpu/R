@@ -5,10 +5,12 @@ kosztuje kontekst w każdej rozmowie.
 
 ## Zacznij tutaj
 
-1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-31-faza-3-silnik-tresci.md`
-   — mówi, co zrobione i gdzie wznowić. Fazy 0–2 są zamknięte po stronie kodu;
+1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-31-faza-4-petla-agentowa.md`
+   — mówi, co zrobione i gdzie wznowić. Fazy 0–3 są zamknięte po stronie kodu;
    ich plany czytaj **tylko zakresami** przez `grep -n '^### Zadanie'`,
    nigdy w całości.
+2. **Panel:** `pnpm panel` → `http://localhost:4321`. Nasłuch na **obu** adresach
+   pętli zwrotnej — sam IPv4 znaczył, że na Windowsie `localhost` nie działa.
 2. **Preferencje właściciela** — sekcja na dole tego pliku.
 3. Dobór umiejętności: `pnpm -s skills:pick "opis zadania"` (plugin `dobor-narzedzi`).
 
@@ -40,9 +42,13 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się:
   **Zero wejścia/wyjścia.**
 - `packages/content` — bramki anty-slop, briefy, linkowanie wewnętrzne, JSON-LD.
   **Zero wejścia/wyjścia.**
+- `packages/agent` — scoring okazji, różnica w różnicach, polityki, wyłączniki.
+  **Zero wejścia/wyjścia.**
+- `apps/web` — panel lokalny. HTTP **wyłącznie na pętli zwrotnej**.
 - `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`,
   `crawl`, `audit`, `psi`, `report`, `report --audit`, `geo prompts`, `geo entity`,
-  `geo run`, `geo report`, `llms-txt`, `keywords cluster`, `brief`, `draft`, `publish`.
+  `geo run`, `geo report`, `llms-txt`, `keywords cluster`, `brief`, `draft`, `publish`,
+  `agent plan`, `agent board`, `agent measure`.
 
 Reguły zależności egzekwuje `scripts/check-deps.ts` — nie obchodź ich, popraw projekt.
 
@@ -116,6 +122,16 @@ Wynikają ze specyfikacji, nie z gustu. Łamanie ich to zmiana decyzji, nie deta
 - **Metoda klastrowania jest nazwana i nie miesza się w jednym zestawie** (D33).
   Bez źródła SERP działa `lexical-overlap` i mówi o sobie wprost.
 - **Domyślną akcją dla pokrytego klastra jest `refresh`, nie `create`** (D38).
+- **Bez grupy kontrolnej nie ma pomiaru, tylko odmowa** (D48). Zejście do
+  porównania „przed/po" jest zakazane — mierzyłoby sumę wszystkiego, co się
+  wydarzyło, i przypisywało to naszej zmianie.
+- **Grupa kontrolna dobierana przed zmianą** (D49). `selectControlGroup` nie ma
+  dostępu do danych „po" i to jest wymuszone kształtem typu.
+- **Typ akcji bez wpisu w politykach to `never`, nie `approve`** (D47).
+- **Wyłącznik bije politykę**, także `approve` (D52). Wyłącznik, który da się
+  ominąć zatwierdzeniem, jest ostrzeżeniem, a nie wyłącznikiem.
+- **Zadanie nie może być `done` bez werdyktu** (D53). „Nie da się zmierzyć"
+  też jest werdyktem.
 
 ## Konwencje pracy
 

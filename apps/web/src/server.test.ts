@@ -144,6 +144,19 @@ describe('panel', () => {
     expect(po).toContain('proponuje')
   })
 
+  it('pomiar z tablicy agenta dziala i mowi, czego brakuje', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const odpowiedz = await fetch(`${panelUrl}/agent/${siteId}/measure`, { method: 'POST' })
+    expect(odpowiedz.status).toBe(200)
+    const tresc = await odpowiedz.text()
+    expect(tresc).toContain('Ostatni pomiar')
+    // Bez danych z Search Console nie ma eksperymentow — i panel mowi to wprost,
+    // zamiast pokazywac pusta liste.
+    expect(tresc).toContain('Nie było czego mierzyć')
+  })
+
   it('zly adres nie wywraca panelu, tylko mowi o co chodzi', async () => {
     const odpowiedz = await fetch(`${panelUrl}/analizuj`, {
       method: 'POST',

@@ -16,7 +16,9 @@ function fakeProvider(pages: Record<string, PerformanceRows[]>): SiteMetricsProv
       const key = q.dimensions.join(',')
       const i = cursor[key] ?? 0
       cursor[key] = i + 1
-      return pages[key]![i] ?? { rows: [], sourceTimezone: 'America/Los_Angeles' }
+      // Wymiar bez fikstury zwraca pustke, a nie wybucha: atrapa, ktora pada na
+      // nowym wymiarze, testuje ksztalt fikstury, a nie zachowanie kodu.
+      return pages[key]?.[i] ?? { rows: [], sourceTimezone: 'America/Los_Angeles' }
     }),
   }
 }
@@ -36,6 +38,7 @@ describe('runSync', () => {
     const provider = fakeProvider({
       date: [rows([{ keys: ['2026-03-10'], clicks: 100, impressions: 1000, ctr: 0.1, position: 5 }])],
       'date,query': [rows([{ keys: ['2026-03-10', 'buty'], clicks: 90, impressions: 900, ctr: 0.1, position: 5 }])],
+      'date,page': [rows([{ keys: ['2026-03-10', 'https://a.test/buty'], clicks: 80, impressions: 800, ctr: 0.1, position: 4 }])],
     })
     const result = await runSync({ db, scope: SCOPE, provider }, {
       siteUrl: 'sc-domain:x.pl', from: '2026-03-10', to: '2026-03-10', pageSize: 2,
@@ -62,7 +65,8 @@ describe('runSync', () => {
       siteUrl: 'sc-domain:x.pl', from: '2026-03-10', to: '2026-03-12', pageSize: 2,
     })
     expect(result.dailyRows).toBe(3)
-    expect(provider.queryPerformance).toHaveBeenCalledTimes(3) // 2 strony dat + 1 pusta hasel
+    // 2 strony dat + 1 pusta hasel + 1 pusta stron (wymiar `page` z Fazy 4)
+    expect(provider.queryPerformance).toHaveBeenCalledTimes(4)
   })
 
   it('jest idempotentny — dwa przebiegi nie tworza duplikatow', async () => {

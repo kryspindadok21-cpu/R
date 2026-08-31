@@ -11,7 +11,7 @@ import {
 import {
   runGeoEntity, runGeoPrompts, runGeoReport, runGeoRun,
 } from './commands/geo.js'
-import { runAgentBoard, runAgentPlan } from './commands/agent.js'
+import { runAgentBoard, runAgentMeasure, runAgentPlan } from './commands/agent.js'
 import {
   RateLimitedError, runBrief, runDraft, runKeywordsCluster, runPublish,
 } from './commands/content.js'
@@ -52,6 +52,7 @@ const USAGE = `seo — platforma SEO/GEO
   seo publish    --site <uri> --draft <id> --repo <sciezka> [--canonical <adres>]
   seo agent plan  --site <uri> [--limit N]   znajdz okazje i wystaw wnioski
   seo agent board --site <uri>               tablica zadan agenta
+  seo agent measure --site <uri>             zmierz skutek zmian (DiD)
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -195,6 +196,7 @@ async function runGsc(config: Config, sub: string | undefined, args: readonly st
         `Zakres:                      ${from} .. ${to}\n` +
         `Wiersze dzienne:             ${result.dailyRows}\n` +
         `Wiersze po haslach:          ${result.queryRows}\n` +
+        `Wiersze po stronach:         ${result.pageRows}\n` +
         `Dni z uzgodnieniem:          ${result.reconciledDays}\n`,
       )
       return 0
@@ -885,6 +887,26 @@ export async function main(argv: readonly string[]): Promise<number> {
               `[${wiersz.state}] ${wiersz.title}\n` +
               (wiersz.verdict === null ? '' : `  ${wiersz.verdict}\n`) +
               (wiersz.gateReason === '' ? '' : `  ${wiersz.gateReason}\n`),
+            )
+          }
+          return 0
+        }
+
+        if (sub === 'measure') {
+          const result = runAgentMeasure(db, scope, { siteUrl })
+          process.stdout.write(
+            `Eksperymenty:                ${result.experiments}\n` +
+            `Okna zmierzone:              ${result.windows.length}\n` +
+            `Okna jeszcze trwaja:         ${result.pending}\n` +
+            `Zadania zakonczone:          ${result.finished}\n\n`,
+          )
+          for (const okno of result.windows) {
+            process.stdout.write(`${okno.sentence}\n`)
+          }
+          if (result.experiments === 0) {
+            process.stdout.write(
+              'Nie ma czego mierzyc. Eksperyment powstaje, gdy zadanie wchodzi\n' +
+              'w wykonanie — a do tego trzeba najpierw danych z Search Console.\n',
             )
           }
           return 0

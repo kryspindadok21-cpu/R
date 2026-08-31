@@ -10,6 +10,7 @@ export interface DailyInput {
   date: string; clicks: number; impressions: number; ctr: number; position: number
 }
 export interface QueryDailyInput extends DailyInput { query: string }
+export interface PageDailyInput extends DailyInput { page: string }
 export interface ReconciliationInput {
   date: string; totalClicks: number; querySumClicks: number
   totalImpressions: number; querySumImpressions: number
@@ -66,6 +67,31 @@ export function repos(db: Db, scope: TenantScope) {
         .groupBy(s.gscQueryDaily.query)
         .orderBy(desc(sql`sum(${s.gscQueryDaily.impressions})`))
         .limit(limit).all(),
+
+    /**
+     * Metryki per strona w zakresie dat — wejscie do roznicy w roznicach (D48).
+     *
+     * Pozycja jest srednia **wazona wyswietleniami**, tak jak liczy ja Search
+     * Console; zwykla srednia z dni dalaby dniowi z dwoma wyswietleniami taka
+     * sama wage, co dniowi z dwoma tysiacami.
+     */
+    pageMetricsInRange: (siteId: string, from: string, to: string) =>
+      db.select({
+        page: s.gscPageDaily.page,
+        clicks: sql<number>`sum(${s.gscPageDaily.clicks})`.as('clicks'),
+        impressions: sql<number>`sum(${s.gscPageDaily.impressions})`.as('impressions'),
+        position: sql<number>`
+          case when sum(${s.gscPageDaily.impressions}) = 0 then 0
+          else sum(${s.gscPageDaily.position} * ${s.gscPageDaily.impressions})
+               / sum(${s.gscPageDaily.impressions}) end
+        `.as('position'),
+      }).from(s.gscPageDaily)
+        .where(and(
+          eq(s.gscPageDaily.tenantId, t), eq(s.gscPageDaily.siteId, siteId),
+          eq(s.gscPageDaily.dataState, 'final'),
+          gte(s.gscPageDaily.date, from), lte(s.gscPageDaily.date, to),
+        ))
+        .groupBy(s.gscPageDaily.page).all(),
 
     topQueries: (siteId: string, from: string, to: string, limit: number) =>
       db.select({
@@ -158,6 +184,20 @@ export function repos(db: Db, scope: TenantScope) {
           ctr: r.ctr, position: r.position, dataState: 'final', syncRunId,
         }).onConflictDoUpdate({
           target: [s.gscDaily.tenantId, s.gscDaily.siteId, s.gscDaily.date, s.gscDaily.dataState],
+          set: { clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position, syncRunId },
+        }).run()
+      }
+    },
+
+    upsertPageDaily: (siteId: string, syncRunId: string, rows: readonly PageDailyInput[]) => {
+      for (const r of rows) {
+        db.insert(s.gscPageDaily).values({
+          id: newId(), tenantId: t, siteId, date: r.date, sourceTimezone: GSC_SOURCE_TIMEZONE,
+          page: r.page, clicks: r.clicks, impressions: r.impressions,
+          ctr: r.ctr, position: r.position, dataState: 'final', syncRunId,
+        }).onConflictDoUpdate({
+          target: [s.gscPageDaily.tenantId, s.gscPageDaily.siteId, s.gscPageDaily.date,
+                   s.gscPageDaily.page, s.gscPageDaily.dataState],
           set: { clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position, syncRunId },
         }).run()
       }

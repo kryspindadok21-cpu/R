@@ -26,6 +26,10 @@ const DATE_ROWS = [
   { keys: ['2026-05-01'], clicks: 100, impressions: 1000, ctr: 0.1, position: 5.1 },
   { keys: ['2026-05-02'], clicks: 80, impressions: 900, ctr: 0.089, position: 5.4 },
 ]
+const PAGE_ROWS = [
+  { keys: ['2026-05-01', 'https://przyklad.pl/buty'], clicks: 70, impressions: 700, ctr: 0.1, position: 4.1 },
+  { keys: ['2026-05-02', 'https://przyklad.pl/buty'], clicks: 55, impressions: 550, ctr: 0.1, position: 4.3 },
+]
 const QUERY_ROWS = [
   { keys: ['2026-05-01', 'buty trekkingowe'], clicks: 60, impressions: 600, ctr: 0.1, position: 4.2 },
   { keys: ['2026-05-02', 'buty trekkingowe'], clicks: 50, impressions: 500, ctr: 0.1, position: 4.4 },
@@ -44,7 +48,11 @@ beforeAll(async () => {
       requests.push({ url: req.url ?? '', auth: req.headers.authorization, body })
       const dimensions = body.dimensions as string[]
       const first = (body.startRow as number) === 0
-      const rows = !first ? [] : dimensions.includes('query') ? QUERY_ROWS : DATE_ROWS
+      const rows = !first
+        ? []
+        : dimensions.includes('query') ? QUERY_ROWS
+          : dimensions.includes('page') ? PAGE_ROWS
+            : DATE_ROWS
       res.writeHead(200, { 'content-type': 'application/json' })
       res.end(JSON.stringify(rows.length === 0 ? {} : { rows }))
     })

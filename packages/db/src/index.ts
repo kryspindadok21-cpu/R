@@ -2,7 +2,7 @@ export { closeDatabase, openDatabase, type Db } from './connection.js'
 export { migrate } from './migrate.js'
 export {
   repos,
-  type DailyInput, type ProviderCallInput, type QueryDailyInput,
+  type DailyInput, type PageDailyInput, type ProviderCallInput, type QueryDailyInput,
   type ReconciliationInput, type Repos,
 } from './repo.js'
 export {

@@ -16,9 +16,10 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | ukończone, AC1/AC2/AC6 zielone; 1087 testów zielonych łącznie | `11eabcf` |
 | 4. `packages/agent` — silnik polityk, wyłączniki i tablica zadań | ukończone, AC3/AC4/AC9/AC10 zielone; 1119 testów zielonych | `704b21d` |
 | 5. `packages/db` — migracja `0005` + repozytoria agenta | ukończone, izolacja najemców zielona; 1143 testy zielone | `ac40eaf` |
-| 6. `apps/cli` — `seo agent plan`, `board` | ukończone, uruchomione na żywo | — |
-| 7. **`apps/web` — panel w przeglądarce** (poza pierwotnym planem) | ukończone, 12 testów przez prawdziwy HTTP; 1155 testów zielonych | — |
-| 8. Odbiór Fazy 4 | niezaczęte | — |
+| 6. `apps/cli` — `seo agent plan`, `board`, `measure` | ukończone, AC7 zielone | — |
+| 7. **`apps/web` — panel w przeglądarce** (poza pierwotnym planem) | ukończone, 23 testy przez prawdziwy HTTP | `c6d91df` |
+| 8. `packages/db` — migracja `0006`: wymiar `page` z GSC | ukończone (odkryty brak, patrz niżej) | — |
+| 9. Odbiór Fazy 4 | **ukończony w zakresie, jaki da się sprawdzić bez GSC**; 1180 testów zielonych | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
@@ -156,3 +157,43 @@ w ogóle istnieją.
   z przeglądarki mówiłby co innego niż raport z terminala.
 - **`apps/cli` ma teraz wejście biblioteczne (`@seo/cli/lib`).** Panel składa te
   same warstwy co linia poleceń i musi wołać dokładnie te funkcje.
+
+## Odstępstwa — runda domykająca Fazę 4
+
+- **⚠️ Odkryty brak, bez którego cała pętla pomiarowa nie miała czego liczyć:
+  nie zbieraliśmy metryk per strona.** Różnica w różnicach porównuje strony
+  zmienione ze stronami kontrolnymi, więc potrzebuje kliknięć, wyświetleń
+  i pozycji **dla pojedynczego adresu**. Faza 0 synchronizowała wymiary `date`
+  i `date,query` — żaden z nich tego nie daje. Dopisany wymiar `date,page`,
+  migracja `0006` z tabelą `gsc_page_daily` i odczyt `pageMetricsInRange`
+  z pozycją ważoną wyświetleniami. Bez tego `seo agent measure` byłby komendą,
+  która zawsze mówi „brak danych".
+- **`runSync` brał `keys[1]!` bez sprawdzenia.** Wiersz o innej liczbie kluczy
+  niż zamówiona wchodził do bazy jako `undefined` i kończył się surowym błędem
+  SQLite, który nie mówił ani który wymiar, ani która odpowiedź zawiniła.
+  Teraz jest jawny błąd z nazwą wymiaru i zawartością kluczy. Wyszło przy
+  dopisywaniu trzeciego wymiaru — dwa poprzednie żyły z tą samą kruchością.
+- **Okno, które jeszcze trwa, nie jest mierzone.** Policzenie go dałoby wynik
+  z niepełnego okresu i nikt by się nie dowiedział, że był niepełny.
+  `runAgentMeasure` liczy tylko okna domknięte i osobno raportuje, ile czeka.
+- **Zadanie kończy się dopiero, gdy domknie się najdłuższe okno.** Inaczej `done`
+  znaczyłoby „zmierzone częściowo" — a to ta sama pułapka, przed którą broni D53.
+- **Fikstury pomiaru musiały mieć rozrzut w *zmianie*, nie w poziomie** — dokładnie
+  ten sam błąd, co przy testach DiD w `packages/agent`. Fikstura, w której każda
+  strona rośnie o tyle samo, daje bootstrapowi przedział punktowy i bramka
+  słusznie odmawia orzekania, więc test sprawdzałby co innego, niż obiecuje.
+- **Panel dostał przycisk „Zmierz"** i pokazuje wynik na tablicy agenta. Bez
+  danych z Search Console mówi wprost „nie było czego mierzyć" zamiast pustej listy.
+
+## Odbiór Fazy 4 — co sprawdzone, a co nie
+
+**Sprawdzone.** Cały rdzeń: DiD z przedziałem i bramką istotności, scoring okazji,
+dobór kontroli przed zmianą, polityki z domyślnym `never`, trzy wyłączniki,
+tablica zadań z zakazem `done` bez werdyktu, migracje `0005` i `0006`, komendy
+`plan`/`board`/`measure` oraz obsługa w panelu. Testy pokrywają wszystkie
+kryteria akceptacji AC1–AC11 poza AC6, które egzekwuje kształt typu.
+
+**Niesprawdzone i nie da się bez danych.** Czy pomiar na **prawdziwym** ruchu
+daje sensowne werdykty. Wymaga `seo gsc sync` z wymiarem `page`, czyli
+dokończenia uprawnienia w Search Console — jedyna rzecz otwarta od Fazy 0.
+Do tego czasu `seo agent measure` uczciwie mówi „nie ma czego mierzyć".

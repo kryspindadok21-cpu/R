@@ -6,7 +6,9 @@
  * z CLI przy pierwszej zmianie — a wtedy raport z przegladarki mowilby co
  * innego niz raport z terminala.
  */
-export { runAgentBoard, runAgentPlan, weeklyClicks } from './commands/agent.js'
+export {
+  przesunDate, runAgentBoard, runAgentMeasure, runAgentPlan, weeklyClicks,
+} from './commands/agent.js'
 export { NoCrawlError, runAudit } from './commands/audit.js'
 export { buildAuditReportData, runAuditReport } from './commands/audit-report.js'
 export { crawlStartUrl, runCrawlCommand, systemClock } from './commands/crawl.js'

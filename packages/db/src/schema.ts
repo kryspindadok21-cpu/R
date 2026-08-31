@@ -74,6 +74,21 @@ export const gscQueryDaily = sqliteTable('gsc_query_daily', {
   syncRunId: text('sync_run_id').notNull(),
 })
 
+export const gscPageDaily = sqliteTable('gsc_page_daily', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  date: text('date').notNull(),
+  sourceTimezone: text('source_timezone').notNull(),
+  page: text('page').notNull(),
+  clicks: integer('clicks').notNull(),
+  impressions: integer('impressions').notNull(),
+  ctr: real('ctr').notNull(),
+  position: real('position').notNull(),
+  dataState: text('data_state', { enum: ['final', 'all'] }).notNull(),
+  syncRunId: text('sync_run_id').notNull(),
+})
+
 export const gscReconciliation = sqliteTable('gsc_reconciliation', {
   id: text('id').primaryKey(),
   tenantId: text('tenant_id').notNull(),
