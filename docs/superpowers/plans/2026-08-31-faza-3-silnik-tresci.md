@@ -14,8 +14,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 1. Specyfikacja Fazy 3 (D33–D44) | ukończone | — |
 | 2. `packages/keywords` — klastrowanie i pokrycie tematu | ukończone, AC1/AC2/AC5 zielone; 913 testów zielonych łącznie | `30a564a` |
 | 3. `packages/content` — bramki anty-slop (D34, D37, D39) | ukończone, AC3/AC4/AC7 zielone; 879 testów zielonych łącznie | `fab4527` |
-| 4. `packages/content` — brief, linkowanie wewnętrzne, JSON-LD | ukończone, AC6/AC7 zielone; 947 testów zielonych łącznie | — |
-| 5. `packages/db` — migracja `0004` + repozytoria treści | niezaczęte | — |
+| 4. `packages/content` — brief, linkowanie wewnętrzne, JSON-LD | ukończone, AC6/AC7 zielone; 947 testów zielonych łącznie | `8f96853` |
+| 5. `packages/db` — migracja `0004` + repozytoria treści | ukończone, AC4/AC8 zielone, izolacja najemców zielona; 979 testów zielonych | — |
 | 6. `packages/providers` — generowanie draftu i adapter `git-pr` | niezaczęte | — |
 | 7. `apps/cli` — `seo keywords cluster`, `seo brief` | niezaczęte | — |
 | 8. `apps/cli` — `seo draft`, `seo publish` | niezaczęte | — |
@@ -107,3 +107,28 @@ za to z darmowym rollbackiem.
 - **`<` w JSON-LD jest eskejpowane jako `\u003c`.** Parser HTML kończy blok
   skryptu na `</script>` także wewnątrz ciągu znaków, więc tytuł zawierający
   ten ciąg rozwaliłby stronę. Jest na to test.
+- **⚠️ Limit tempa z D43 ma dziurę i zaimplementowałem go tak, jak jest napisany
+  w analizie — ale trzeba to rozstrzygnąć.** Formuła brzmi
+  `max(3/dzień, 10% zaindeksowanych stron/miesiąc)`. Dla dużego serwisu działa:
+  przy 10 000 stron limit to 1000 miesięcznie. **Dla małego nie działa w ogóle.**
+  Własna strona właściciela ma dziś **4 strony**: 10% miesięcznie to 0,4 strony,
+  więc `max()` wybiera podłogę 3 dziennie — czyli **90 artykułów miesięcznie na
+  serwisie liczącym 4 strony**. To jest 2250% rozmiaru witryny i dokładnie ten
+  wzorzec, przed którym cały ten wyłącznik ma bronić.
+  Nie zmieniałem formuły po cichu, bo to jest udokumentowana decyzja właściciela.
+  Status i oba liczniki są widoczne w wyniku (`publicationRate` zwraca
+  `dailyLimit` i `monthlyLimit`), więc dziurę widać w każdym wywołaniu.
+  **Rekomendacja do rozstrzygnięcia:** obniżyć podłogę z 3/dzień do czegoś
+  rzędu 4–8 miesięcznie dopóki serwis nie przekroczy ~100 stron.
+- **Licznik tempa liczony z tabeli publikacji, nie z osobnego licznika.** Osobny
+  licznik może się rozjechać z rzeczywistością; zapytanie o wiersze nie może.
+- **Odrzucone drafty też trafiają do bazy.** Bez tego nie da się odpowiedzieć na
+  pytanie „ile draftów odpadło i na której bramce" — a to jedyny sposób, żeby
+  zobaczyć, że generator zaczął produkować slop, zanim cokolwiek wyjdzie na
+  zewnątrz.
+- **Bramka publikacji stoi w dwóch miejscach, celowo.** W kodzie czystym broni
+  jej typ `ApprovedDraft`; w bazie broni jej `createPublication`, bo do
+  repozytorium można wejść z samym identyfikatorem draftu i typ nie ma tam nic
+  do powiedzenia.
+- **`shared_urls` jako `NULL` vs `0` przeżywa zapis do bazy.** „Nie widzieliśmy
+  SERP-a" i „widzieliśmy i nie dzieli nic" to dwie różne informacje.

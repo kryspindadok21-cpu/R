@@ -68,3 +68,26 @@ export const GEO_READ_METHOD_ARGS: Record<string, (f: GeoFixture) => unknown[]> 
   listMentions: (f) => [f.runId],
   listCitations: (f) => [f.runId, 'inline'],
 }
+
+/**
+ * To samo dla repozytoriow Fazy 3. Kazda metoda z ContentRepos["read"] MUSI
+ * miec tu wpis — test izolacji porownuje ten rejestr z faktyczna lista metod.
+ */
+export interface ContentFixture extends ForeignFixture {
+  readonly clusterSetId: string
+  readonly briefId: string
+  readonly draftId: string
+}
+
+export const CONTENT_READ_METHOD_ARGS: Record<string, (f: ContentFixture) => unknown[]> = {
+  latestClusterSet: (f) => [f.siteId],
+  listClusterSets: (f) => [f.siteId, 50],
+  listClusters: (f) => [f.clusterSetId],
+  getBrief: (f) => [f.briefId],
+  listBriefs: (f) => [f.siteId, 50],
+  getDraft: (f) => [f.draftId],
+  listDrafts: (f) => [f.briefId],
+  getPublication: (f) => [f.draftId],
+  listPublications: (f) => [f.siteId, 50],
+  publicationRate: (f) => [f.siteId, 100, Date.now()],
+}

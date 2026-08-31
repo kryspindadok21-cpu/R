@@ -292,3 +292,71 @@ export const geoCitation = sqliteTable('geo_citation', {
   positionShare: real('position_share'),
   ours: integer('ours').notNull(),
 })
+
+export const keywordClusterSet = sqliteTable('keyword_cluster_set', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  method: text('method', { enum: ['serp-overlap', 'lexical-overlap'] }).notNull(),
+  fromDate: text('from_date').notNull(),
+  toDate: text('to_date').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const keywordCluster = sqliteTable('keyword_cluster', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  clusterSetId: text('cluster_set_id').notNull(),
+  slug: text('slug').notNull(),
+  head: text('head').notNull(),
+  totalImpressions: integer('total_impressions').notNull(),
+  totalClicks: integer('total_clicks').notNull(),
+  sharedUrls: integer('shared_urls'),
+  keywords: text('keywords').notNull(),
+})
+
+export const contentBrief = sqliteTable('content_brief', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  clusterId: text('cluster_id').notNull(),
+  decision: text('decision', { enum: ['refresh', 'create'] }).notNull(),
+  targetUrl: text('target_url'),
+  decisionReason: text('decision_reason').notNull(),
+  markdown: text('markdown').notNull(),
+  payload: text('payload').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const contentDraft = sqliteTable('content_draft', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  briefId: text('brief_id').notNull(),
+  title: text('title').notNull(),
+  markdown: text('markdown').notNull(),
+  authorName: text('author_name').notNull(),
+  authorSameAs: text('author_same_as').notNull(),
+  uniqueAssets: text('unique_assets').notNull(),
+  engine: text('engine').notNull(),
+  modelVersion: text('model_version').notNull(),
+  promptId: text('prompt_id').notNull(),
+  approved: integer('approved').notNull(),
+  gateFailures: text('gate_failures').notNull(),
+  originality: text('originality').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const contentPublication = sqliteTable('content_publication', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  draftId: text('draft_id').notNull(),
+  adapter: text('adapter', { enum: ['git-pr'] }).notNull(),
+  branch: text('branch').notNull(),
+  filePath: text('file_path').notNull(),
+  prUrl: text('pr_url'),
+  state: text('state', { enum: ['prepared', 'opened', 'merged', 'closed'] }).notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+})

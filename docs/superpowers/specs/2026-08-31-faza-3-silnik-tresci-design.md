@@ -187,6 +187,17 @@ jest w bazie i egzekwuje go kod, nie dyscyplina.
 **Uzasadnienie:** limit dopisany „później" nigdy nie powstaje. A to jest jeden
 z trzech wyłączników, które mają działać wtedy, gdy wszystko inne zawiedzie.
 
+> **Otwarte po implementacji (2026-08-31).** Formuła `max()` chroni duży serwis
+> i **nie chroni małego**. Przy 10 000 zaindeksowanych stron limit to 1000
+> miesięcznie — rozsądnie. Przy 4 stronach (tyle ma dziś własna strona
+> właściciela) 10% miesięcznie to 0,4, więc `max()` wybiera podłogę 3 dziennie,
+> czyli **90 artykułów miesięcznie na serwisie liczącym 4 strony**. To jest
+> 2250% rozmiaru witryny i dokładnie ten wzorzec, przed którym ten wyłącznik ma
+> bronić. Zaimplementowane zgodnie z zapisem, bo to udokumentowana decyzja
+> właściciela, a `publicationRate` zwraca oba limity, więc dziurę widać w każdym
+> wywołaniu. **Do rozstrzygnięcia:** obniżyć podłogę do rzędu 4–8 miesięcznie,
+> dopóki serwis nie przekroczy ~100 stron.
+
 ### D44 — Draft jest Markdownem, nie HTML-em
 
 **Decyzja:** pipeline produkuje Markdown z front matterem. Renderowanie do HTML

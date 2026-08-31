@@ -17,7 +17,9 @@
     "drizzle-orm": "^0.45.2",
     "zod": "^4.4.3",
     "@seo/parse": "workspace:*",
-    "@seo/geo": "workspace:*"
+    "@seo/geo": "workspace:*",
+    "@seo/content": "workspace:*",
+    "@seo/keywords": "workspace:*"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",

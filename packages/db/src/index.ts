@@ -15,5 +15,11 @@ export {
   type BrandEntityInput, type GeoAnswerInput, type GeoRepos, type GeoRunFinish,
   type GeoRunInput, type PromptInput, type PromptSetInput,
 } from './geo-repo.js'
+export {
+  DAILY_PUBLICATION_FLOOR, DAY_MS, MONTHLY_SITE_SHARE, MONTH_MS,
+  MixedClusterMethodError, UnapprovedDraftError, contentRepos,
+  type BriefInput, type ClusterSetInput, type ContentRepos, type DraftInput,
+  type PublicationInput, type RateLimitStatus,
+} from './content-repo.js'
 // rawHandle i schema swiadomie nieeksportowane — jedynym wejsciem do bazy
 // jest repos(), ktore wymusza TenantScope (D5).

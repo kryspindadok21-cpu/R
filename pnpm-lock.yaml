@@ -93,12 +93,18 @@ importers:
 
   packages/db:
     dependencies:
+      '@seo/content':
+        specifier: workspace:*
+        version: link:../content
       '@seo/core':
         specifier: workspace:*
         version: link:../core
       '@seo/geo':
         specifier: workspace:*
         version: link:../geo
+      '@seo/keywords':
+        specifier: workspace:*
+        version: link:../keywords
       '@seo/parse':
         specifier: workspace:*
         version: link:../parse
