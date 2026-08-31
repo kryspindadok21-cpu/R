@@ -202,6 +202,30 @@ po normalizacji białych znaków. Dodatkowo zapisujemy numer akapitu.
 na liście — ale modele nie zawsze odpowiadają listą. Udział znaków działa
 dla każdej formy odpowiedzi i jest porównywalny między silnikami.
 
+### D32 — Cytowania z groundingu i z tekstu nigdy nie sumują się w jedną liczbę
+
+**Decyzja:** cytowanie ma dwa źródła i są one rozdzielne na stałe:
+`grounding` — adresy z metadanych dostawcy, oraz `inline` — adresy wypisane
+w treści odpowiedzi. Raport pokazuje je osobno. Nie istnieje „liczba cytowań".
+
+**Uzasadnienie:** to są dwa różne byty. Adres z metadanych groundingu jest
+świadectwem, że model **pobrał** ten dokument. Adres w treści odpowiedzi jest
+tym, co model **napisał** — i bywa zmyślony, bo generowanie adresu URL to
+generowanie tekstu, nie odczyt. Zsumowane dają liczbę, w której nie da się
+odróżnić realnego źródła od halucynacji.
+
+To jest ta sama zasada, co rozdzielenie danych terenowych i laboratoryjnych
+z PSI w Fazie 1: dwa pomiary tej samej rzeczy różnymi metodami zestawia się
+obok siebie, nie dodaje.
+
+**Konsekwencja:** silnik bez groundingu ma zero cytowań `grounding` i to jest
+poprawny wynik, a nie brak danych. `access_mode` już to rozróżnia (D27).
+
+**Dopasowanie „to nasza strona"** idzie po hoście, po odcięciu wiodącego `www.`.
+To jest złagodzenie **wyłącznie** na potrzeby cytowań: model piszący
+`www.przyklad.pl` cytuje ten sam serwis. Tożsamość strony w bazie pozostaje
+nietknięta — `url_hash` z D4 nadal traktuje `www` jako część hosta.
+
 ### D31 — `llms.txt` generujemy, ale nie obiecujemy
 
 **Decyzja:** generator `llms.txt` powstaje, a audyt zgłasza jego brak jako

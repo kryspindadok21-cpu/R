@@ -14,8 +14,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 |---|---|---|
 | 1. Specyfikacja Fazy 2 (D23–D31) | ukończone | `a0d8dda` |
 | 2. `packages/geo` — warstwa statystyczna | ukończone, AC1/AC2/AC3/AC4/AC5 zielone; 687 testów zielonych łącznie | `a0d8dda` |
-| 3. `packages/geo` — wykrywanie wzmianek i share of voice | ukończone, AC6 zielone; 710 testów zielonych łącznie | — |
-| 4. `packages/geo` — ekstrakcja cytowań i pozycja wzmianki | niezaczęte | — |
+| 3. `packages/geo` — wykrywanie wzmianek i share of voice | ukończone, AC6 zielone; 710 testów zielonych łącznie | `44779a4` |
+| 4. `packages/geo` — ekstrakcja cytowań (D32) | ukończone; 728 testów zielonych łącznie | — |
 | 5. `packages/db` — migracja `0003` + repozytoria GEO | niezaczęte | — |
 | 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | niezaczęte | — |
 | 7. `apps/cli` — `seo geo prompts`, `seo geo run` | niezaczęte | — |
@@ -78,3 +78,19 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
 - **Odmiany nie zgadujemy.** Automatyczny stemmer polskiego dokładałby własne
   błędy do pomiaru, który ma te błędy wykrywać. Warianty są deklarowane —
   „Mentiometrom" bez wpisu na liście nie liczy się i to jest zachowanie testowane.
+- **Cytowania nie miały decyzji w specyfikacji — dopisana jako D32.** Zakres
+  Fazy 2 wymieniał „ekstrakcję cytowań", ale nic nie mówił, czym cytowanie jest.
+  Bez tego kod podjąłby decyzję po cichu. Rozstrzygnięcie: adres z metadanych
+  groundingu (model **pobrał** dokument) i adres wypisany w treści (model go
+  **napisał**, więc może być zmyślony) to dwa różne byty i nigdy nie sumują się
+  w jedną liczbę — ta sama zasada, co rozdział danych terenowych i laboratoryjnych
+  z PSI. `ourCitationRate` przyjmuje źródło jako argument, więc sygnatura funkcji
+  nie pozwala ich zsumować jednym wywołaniem.
+- **Dopasowanie „to nasza strona" odcina wiodące `www.`** — złagodzenie wyłącznie
+  dla cytowań. Tożsamość strony w bazie (`url_hash`, D4) zostaje nietknięta.
+- **Adres nie do sparsowania jest danymi, nie błędem.** Model potrafi napisać
+  śmieć; to obserwacja o jego zachowaniu i trafia do raportu z `normalized: null`,
+  zamiast ginąć w wyjątku.
+- **Obcinanie ogona adresu rozstrzyga bilans nawiasów w samym adresie**, a nie
+  sam znak. Inaczej albo tniemy poprawne adresy (`.../Delta_(rzeka)`), albo
+  doklejamy składnię markdownu z `[tekst](adres)`.
