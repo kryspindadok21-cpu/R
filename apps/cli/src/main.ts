@@ -5,8 +5,11 @@ import { closeDatabase } from '@seo/db'
 import {
   GSC_MAX_ROW_LIMIT, RenderUnavailableError, createGscProvider, createPsiProvider,
   createRenderProvider, createServiceAccountTokenSource, createSiteFetchProvider,
-  proxyFromEnv, type PsiStrategy,
+  proxyFromEnv, selectEngines, type AccessMode, type PsiStrategy,
 } from '@seo/providers'
+import {
+  runGeoEntity, runGeoPrompts, runGeoRun,
+} from './commands/geo.js'
 import { runPsi } from './commands/psi.js'
 import { runAuditReport } from './commands/audit-report.js'
 import { runAudit } from './commands/audit.js'
@@ -31,6 +34,9 @@ const USAGE = `seo — platforma SEO/GEO
   seo psi        --site <uri> [--limit N] [--strategy mobile|desktop]
   seo report     --site <uri> [--out sciezka.html]
   seo report     --site <uri> --audit [--out sciezka.html]   raport techniczny z crawla
+  seo geo prompts --site <uri> [--add "tresc"]... [--locale pl] [--set nazwa]
+  seo geo entity  --site <uri> --name "Marka" [--variants a,b] [--exclusions c] [--own]
+  seo geo run     --site <uri> [--runs N] [--grounded] [--set nazwa]
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -42,6 +48,9 @@ Zmienne srodowiskowe:
   SEO_TENANT         identyfikator tenanta (domyslnie "local")
   SEO_CHROMIUM_PATH  sciezka do binarki przegladarki dla --render (opcjonalna)
   SEO_PSI_KEY        klucz PageSpeed Insights (opcjonalny, podnosi limit)
+  SEO_GEMINI_KEY     klucz Gemini (opcjonalny — bez niego silnik jest pomijany)
+  SEO_GROQ_KEY       klucz Groq (opcjonalny)
+  SEO_OPENROUTER_KEY klucz OpenRouter (opcjonalny)
   HTTPS_PROXY        serwer posredniczacy — przekazywany takze do przegladarki
 `
 
@@ -60,6 +69,15 @@ interface Flags {
   render?: string | undefined
   limit?: string | undefined
   strategy?: string | undefined
+  add?: string[] | undefined
+  locale?: string | undefined
+  set?: string | undefined
+  name?: string | undefined
+  variants?: string | undefined
+  exclusions?: string | undefined
+  own?: boolean | undefined
+  runs?: string | undefined
+  grounded?: boolean | undefined
 }
 
 function parseFlags(args: readonly string[]): Flags {
@@ -80,6 +98,16 @@ function parseFlags(args: readonly string[]): Flags {
       render: { type: 'string' },
       limit: { type: 'string' },
       strategy: { type: 'string' },
+      // `multiple` — jedno wywolanie moze dodac kilka promptow naraz.
+      add: { type: 'string', multiple: true },
+      locale: { type: 'string' },
+      set: { type: 'string' },
+      name: { type: 'string' },
+      variants: { type: 'string' },
+      exclusions: { type: 'string' },
+      own: { type: 'boolean' },
+      runs: { type: 'string' },
+      grounded: { type: 'boolean' },
     },
     allowPositionals: true,
   })
@@ -446,6 +474,120 @@ function runReportCommand(config: Config, args: readonly string[]): number {
   }
 }
 
+function listFlag(value: string | undefined): string[] {
+  return (value ?? '').split(',').map((v) => v.trim()).filter((v) => v !== '')
+}
+
+function formatShare(p: { rate: number; interval: { low: number; high: number } }): string {
+  const pct = (v: number) => `${(v * 100).toFixed(1)}%`
+  return `${pct(p.rate)}  (${pct(p.interval.low)} – ${pct(p.interval.high)})`
+}
+
+async function runGeoCommand(
+  config: Config,
+  sub: string | undefined,
+  args: readonly string[],
+): Promise<number> {
+  const flags = parseFlags(args)
+  const scope = tenantScope(config.tenantId)
+  const { db } = openInitialized(config)
+
+  try {
+    if (sub === 'prompts') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const result = runGeoPrompts(db, scope, {
+        siteUrl, add: flags.add ?? [], locale: flags.locale, setName: flags.set,
+      })
+      process.stdout.write(
+        `Zestaw:                      ${result.setName} (wersja ${result.version})\n` +
+        `Dodane prompty:              ${result.added}\n` +
+        `Prompty w zestawie:          ${result.total}\n` +
+        `Zamrozony:                   ${result.frozen ? 'tak' : 'nie'}\n` +
+        (result.frozen
+          ? 'Zestaw byl juz uzyty w pomiarze. Kolejne prompty zaloza nowa wersje,\n' +
+            'zeby nie uniewaznic porownan wstecz.\n'
+          : ''),
+      )
+      return 0
+    }
+
+    if (sub === 'entity') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const result = runGeoEntity(db, scope, {
+        siteUrl,
+        name: requireFlag(flags.name, 'name'),
+        variants: listFlag(flags.variants),
+        exclusions: listFlag(flags.exclusions),
+        isOwn: flags.own === true,
+      })
+      process.stdout.write(
+        `Encja:                       ${result.name}\n` +
+        `Wersja definicji:            ${result.version}\n` +
+        (result.supersededVersion === null
+          ? ''
+          : `Zastapiona wersja:           ${result.supersededVersion}\n` +
+            'Pomiary sprzed zmiany licza sie wedlug starej definicji i nie sa\n' +
+            'porownywalne z nowymi (D29).\n'),
+      )
+      return 0
+    }
+
+    if (sub === 'run') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const accessMode: AccessMode = flags.grounded === true ? 'api_grounded' : 'api'
+      const { engines, skipped } = selectEngines({
+        fetchFn: globalThis.fetch,
+        ledger: dbLedger(db, scope),
+        now: () => Date.now(),
+        env: process.env,
+        accessMode,
+      })
+
+      const result = await runGeoRun(db, scope, engines, skipped, {
+        siteUrl,
+        runsPerPrompt: flags.runs === undefined ? undefined : Number(flags.runs),
+        setName: flags.set,
+      })
+
+      const naglowek =
+        `Prompty:                     ${result.prompts}\n` +
+        `Przebiegi na prompt:         ${result.runsPerPrompt}\n` +
+        `Wersja definicji encji:      ${result.entityVersion}\n`
+
+      const silniki = result.outcomes.map((o) =>
+        `\n${o.engine} (${o.modelVersion}, ${o.accessMode})\n` +
+        `  Odpowiedzi:                ${o.answersOk}\n` +
+        `  Nieudane:                  ${o.answersFailed}\n` +
+        `  Odmowy modelu:             ${o.refusals}\n` +
+        `  Widocznosc marki:          ${formatShare(o.visibility)}\n` +
+        (o.lastError === null ? '' : `  Powod niepowodzenia:       ${o.lastError}\n`),
+      ).join('')
+
+      // Pominiety silnik melduje sie wprost. Cicha lista dwoch silnikow zamiast
+      // trzech wygladalaby jak komplet danych, a nie jak brak klucza (D17, AC7).
+      const pominiete = result.skipped.length === 0
+        ? ''
+        : `\nSilniki pominiete:\n` +
+          result.skipped.map((s) => `  ${s.id}: ${s.reason}\n`).join('')
+
+      process.stdout.write(naglowek + silniki + pominiete)
+
+      if (result.outcomes.length === 0) {
+        process.stderr.write(
+          '\nZaden silnik nie byl dostepny — przebieg nie zmierzyl niczego.\n',
+        )
+        return 1
+      }
+      return 0
+    }
+
+    process.stderr.write(`Nieznane polecenie: geo ${sub ?? ''}\n\n${USAGE}`)
+    return 1
+  } finally {
+    closeDatabase(db)
+  }
+}
+
 export async function main(argv: readonly string[]): Promise<number> {
   const [command, sub] = argv
 
@@ -475,6 +617,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (command === 'psi') return await runPsiCommand(config, argv.slice(1))
 
     if (command === 'report') return runReportCommand(config, argv.slice(1))
+
+    if (command === 'geo') return await runGeoCommand(config, sub, argv.slice(2))
 
     process.stderr.write(`Nieznane polecenie: ${command}${sub ? ` ${sub}` : ''}\n\n${USAGE}`)
     return 1

@@ -35,6 +35,9 @@ importers:
       '@seo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@seo/geo':
+        specifier: workspace:*
+        version: link:../../packages/geo
       '@seo/parse':
         specifier: workspace:*
         version: link:../../packages/parse

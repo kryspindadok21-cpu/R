@@ -19,6 +19,7 @@
     "@seo/report": "workspace:*",
     "@seo/crawler": "workspace:*",
     "@seo/rules": "workspace:*",
-    "@seo/parse": "workspace:*"
+    "@seo/parse": "workspace:*",
+    "@seo/geo": "workspace:*"
   }
 }

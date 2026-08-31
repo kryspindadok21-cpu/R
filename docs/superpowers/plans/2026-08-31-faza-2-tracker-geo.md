@@ -17,8 +17,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 3. `packages/geo` — wykrywanie wzmianek i share of voice | ukończone, AC6 zielone; 710 testów zielonych łącznie | `44779a4` |
 | 4. `packages/geo` — ekstrakcja cytowań (D32) | ukończone; 728 testów zielonych łącznie | `00bb337` |
 | 5. `packages/db` — migracja `0003` + repozytoria GEO | ukończone, izolacja najemców zielona; 762 testy zielone łącznie | `7905917` |
-| 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | ukończone, AC7/AC8/AC9 zielone; 779 testów zielonych łącznie | — |
-| 7. `apps/cli` — `seo geo prompts`, `seo geo run` | niezaczęte | — |
+| 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | ukończone, AC7/AC8/AC9 zielone; 779 testów zielonych łącznie | `8923340` |
+| 7. `apps/cli` — `seo geo prompts`, `seo geo entity`, `seo geo run` | ukończone, uruchomione na żywo; 797 testów zielonych łącznie | — |
 | 8. `packages/report` — sekcja GEO z bramką istotności | niezaczęte | — |
 | 9. `apps/cli` — `seo llms-txt` (D31) | niezaczęte | — |
 | 10. Odbiór na własnej stronie | niezaczęte | — |
@@ -125,3 +125,17 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
 - **Nieznany powód blokady melduje się dosłownie** (`zablokowane: COS_NOWEGO`)
   zamiast wpaść do `null`. Dostawcy dokładają nowe kody i cicha zmiana w `null`
   wyglądałaby jak udzielona odpowiedź.
+- **Zamrożony zestaw nie blokuje pracy — zakłada nową wersję.** `seo geo prompts`
+  na zamrożonym zestawie kopiuje dotychczasowy skład do wersji `n+1`, dopisuje
+  nowy prompt i wskazuje poprzednika przez `supersedes_id`. Stara wersja zostaje
+  nietknięta, więc pomiar sprzed zmiany nadal da się odtworzyć. Alternatywa —
+  odmowa dodania promptu — byłaby wierna D25, ale zmuszałaby właściciela do
+  ręcznego przepisywania zestawu, żeby dopisać jedno pytanie.
+- **Nieudane wywołanie nie liczy się jako próba.** Odmowa modelu tak: to jest
+  odpowiedź, w której marki nie było (`hits: 0, trials: 1`). Błąd sieci daje
+  `trials: 0`, bo inaczej awaria łącza wyglądałaby jak spadek widoczności.
+- **`listEntities` zwraca `isOwn` jawnie.** Pierwsza wersja rozpoznawała własną
+  markę po kolejności sortowania — działało, ale w sposób niewidoczny w typie.
+  Od tego pola zależy, co w ogóle znaczy „widoczność", więc musi być polem.
+- **`seo geo run` bez żadnego klucza kończy się kodem 1** i wypisuje wszystkie
+  trzy pominięte silniki z nazwą brakującej zmiennej. Sprawdzone na żywo.

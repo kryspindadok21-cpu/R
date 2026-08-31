@@ -94,17 +94,25 @@ export function geoRepos(db: Db, scope: TenantScope) {
         .where(and(eq(s.prompt.tenantId, t), eq(s.prompt.promptSetId, promptSetId)))
         .orderBy(asc(s.prompt.createdAt), asc(s.prompt.id)).all(),
 
-    /** Encje w najnowszej wersji — definicja starsza zostaje dla porownan wstecz. */
-    listEntities: (siteId: string): EntityDefinition[] =>
+    /**
+     * Wszystkie definicje encji, takze starsze wersje — bez nich nie da sie
+     * odtworzyc, jak liczylismy wzmianki w poprzednich tygodniach (D29).
+     *
+     * `isOwn` wraca jawnie, a nie przez kolejnosc sortowania: wlasna marka musi
+     * byc rozpoznawalna po polu, bo od niej zalezy, co znaczy „widocznosc".
+     */
+    listEntities: (siteId: string): (EntityDefinition & { isOwn: boolean })[] =>
       db.select().from(s.brandEntity)
         .where(and(eq(s.brandEntity.tenantId, t), eq(s.brandEntity.siteId, siteId)))
-        .orderBy(desc(s.brandEntity.isOwn), asc(s.brandEntity.name)).all()
+        .orderBy(desc(s.brandEntity.isOwn), asc(s.brandEntity.name), asc(s.brandEntity.version))
+        .all()
         .map((row) => ({
           id: row.id,
           name: row.name,
           variants: JSON.parse(row.variants) as string[],
           exclusions: JSON.parse(row.exclusions) as string[],
           version: row.version,
+          isOwn: row.isOwn === 1,
         })),
 
     latestGeoRun: (siteId: string) =>
