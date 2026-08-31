@@ -64,6 +64,8 @@ export interface RenderSampleResult {
   readonly rendered: number
   readonly failed: number
   readonly requiringJs: readonly string[]
+  /** Powod ostatniego niepowodzenia — zeby nie kazac szukac go w bazie. */
+  readonly lastError: string | null
 }
 
 export async function renderSample(
@@ -92,6 +94,7 @@ export async function renderSample(
 
   let rendered = 0
   let failed = 0
+  let lastError: string | null = null
   const requiringJs: string[] = []
 
   try {
@@ -100,7 +103,11 @@ export async function renderSample(
       if (!raw) continue
 
       const result = await deps.provider.renderPage(candidate.url, input.options)
-      if (result.html === null) { failed += 1; continue }
+      if (result.html === null) {
+        failed += 1
+        lastError = result.error ?? 'przegladarka nie zwrocila tresci'
+        continue
+      }
 
       const renderedFacts = parsePage(result.html, { url: result.finalUrl })
       const diff = diffRenderedFacts(raw, renderedFacts)
@@ -114,5 +121,5 @@ export async function renderSample(
   }
 
   write.markRenderSample(input.runId, rendered)
-  return { rendered, failed, requiringJs }
+  return { rendered, failed, requiringJs, lastError }
 }

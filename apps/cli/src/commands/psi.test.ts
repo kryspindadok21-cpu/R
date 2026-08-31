@@ -161,6 +161,19 @@ describe('runPsi', () => {
     expect(result.slowest[0]).toEqual({ url: BASE, lcpMs: 4200 })
   })
 
+  it('podaje powód ostatniego niepowodzenia, zamiast kazać szukać w bazie', async () => {
+    const provider = fakePsi({ [BASE]: 'blad' })
+    const result = await runPsi(db, scope, provider, { siteUrl: BASE, limit: 1 })
+    expect(result.failed).toBe(1)
+    expect(result.lastError).toContain('limit')
+  })
+
+  it('przy samych sukcesach nie ma powodu do zgłoszenia', async () => {
+    const provider = fakePsi({ [BASE]: wynik(BASE, 2400, 2100) })
+    const result = await runPsi(db, scope, provider, { siteUrl: BASE, limit: 1 })
+    expect(result.lastError).toBeNull()
+  })
+
   it('nieudany pomiar jest liczony, ale nie przerywa reszty', async () => {
     const provider = fakePsi({
       [BASE]: 'blad',

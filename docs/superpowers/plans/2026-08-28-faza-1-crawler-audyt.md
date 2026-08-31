@@ -70,6 +70,14 @@ potem pierwsze zadanie ze stanem innym niż „ukończone".
   Zakres to teraz host **plus ścieżka bazowa** property, z granicą na segmencie
   ścieżki — `/projekt` nie obejmuje `/projekt-kogos-innego`. Adresy poza zakresem
   są liczone i pokazywane, nie znikają po cichu.
+- **PSI zweryfikowane na prawdziwym API Google** (2026-08-31): żądanie zbudowane
+  poprawnie, prawdziwa odpowiedź, ponawianie zadziałało dokładnie trzy razy zgodnie
+  z polityką, każda próba w `provider_call`. Danych nie ma, bo API bez klucza
+  odpowiada `429` z adresów współdzielonych — darmowy `SEO_PSI_KEY` to rozwiązuje.
+  Parsowanie odpowiedzi pozostaje sprawdzone wyłącznie na fixturze.
+- Uruchomienie na żywo ujawniło **tę samą klasę błędu w dwóch miejscach**: i PSI,
+  i renderowanie meldowały samą liczbę porażek, każąc szukać powodu w bazie.
+  Oba podają teraz powód wprost, a `429` dodatkowo podpowiada darmowe rozwiązanie.
 - **Odbiór wykonany** na `https://kryspindadok21-cpu.github.io/R/` — własnej stronie
   właściciela na GitHub Pages. Cztery strony, mapa witryny znaleziona pod prefiksem
   property, zero ustaleń cięższych niż `low`. Jedyne cztery to `url.problematic`

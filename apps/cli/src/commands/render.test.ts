@@ -201,6 +201,33 @@ describe('renderSample', () => {
     expect(result.rendered).toBe(1)
   })
 
+  it('podaje powód nieudanego renderowania, zamiast kazać szukać w bazie', async () => {
+    const pages = [crawledPage(BASE, SUROWY)]
+    crawlRepos(db, scope).write.insertCrawlPages(siteId, runId, pages.map((p) => ({
+      url: p.url, depth: p.depth, httpStatus: p.status, contentType: p.contentType,
+      bytes: p.bytes, durationMs: p.durationMs, redirectChain: p.redirectChain,
+      fetchError: p.error, facts: p.facts, renderDiff: null, inSitemap: false,
+    })))
+    const result = await renderSample({ db, scope, provider: fakeRenderProvider({ [BASE]: null }) }, {
+      siteId, runId, pages, limit: 1, options: OPTIONS,
+    })
+    expect(result.failed).toBe(1)
+    expect(result.lastError).toContain('atrapa')
+  })
+
+  it('przy samych sukcesach nie ma powodu do zgłoszenia', async () => {
+    const pages = [crawledPage(BASE, SUROWY)]
+    crawlRepos(db, scope).write.insertCrawlPages(siteId, runId, pages.map((p) => ({
+      url: p.url, depth: p.depth, httpStatus: p.status, contentType: p.contentType,
+      bytes: p.bytes, durationMs: p.durationMs, redirectChain: p.redirectChain,
+      fetchError: p.error, facts: p.facts, renderDiff: null, inSitemap: false,
+    })))
+    const result = await renderSample({ db, scope, provider: fakeRenderProvider({ [BASE]: WYRENDEROWANY }) }, {
+      siteId, runId, pages, limit: 1, options: OPTIONS,
+    })
+    expect(result.lastError).toBeNull()
+  })
+
   it('zamyka przeglądarkę zawsze — inaczej proces nie kończy się nigdy', async () => {
     const provider = fakeRenderProvider({})
     await renderSample({ db, scope, provider }, {

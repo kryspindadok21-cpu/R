@@ -50,6 +50,12 @@ export interface PsiCommandResult {
   readonly failed: number
   readonly strategy: PsiStrategy
   readonly slowest: readonly { url: string; lcpMs: number }[]
+  /**
+   * Powod ostatniego niepowodzenia. Bez tego uzytkownik widzi samo „nieudane: 2"
+   * i musi szukac przyczyny w bazie — a to jest ta sama cisza, ktora w regulach
+   * audytu nazywamy falszywym poczuciem porzadku.
+   */
+  readonly lastError: string | null
 }
 
 export async function runPsi(
@@ -90,11 +96,16 @@ export async function runPsi(
 
   let measured = 0
   let failed = 0
+  let lastError: string | null = null
   const slowest: { url: string; lcpMs: number }[] = []
 
   for (const candidate of chosen) {
     const result = await provider.measure(candidate.url, strategy)
-    if (result.error !== null || result.metrics.length === 0) { failed += 1; continue }
+    if (result.error !== null || result.metrics.length === 0) {
+      failed += 1
+      lastError = result.error ?? 'odpowiedź bez metryk'
+      continue
+    }
 
     for (const metrics of result.metrics) {
       crawlRepo.write.upsertPsiMeasurement(site.id, {
@@ -119,5 +130,5 @@ export async function runPsi(
   }
 
   slowest.sort((a, b) => b.lcpMs - a.lcpMs)
-  return { siteId: site.id, measured, failed, strategy, slowest: slowest.slice(0, 5) }
+  return { siteId: site.id, measured, failed, strategy, slowest: slowest.slice(0, 5), lastError }
 }

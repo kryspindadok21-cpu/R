@@ -69,6 +69,8 @@ export interface CrawlCommandResult {
    * brak przegladarki nie moze uniewaznic udanego crawla, ktory juz jest w bazie.
    */
   readonly renderUnavailable: string | null
+  /** Powod ostatniego nieudanego renderowania pojedynczej strony. */
+  readonly renderLastError: string | null
 }
 
 /**
@@ -165,7 +167,7 @@ export async function runCrawlCommand(
       robotsState: robots.state, sitemapUrls,
       truncated: false, truncationReason: null, requests: 0, durationMs: 0,
       adjustments, limits, rendered: 0, renderFailed: 0, requiringJs: [],
-      renderUnavailable: null,
+      renderUnavailable: null, renderLastError: null,
     }
   }
 
@@ -215,7 +217,10 @@ export async function runCrawlCommand(
     })))
 
     const wantsRender = (options.renderSample ?? 0) > 0
-    let render = { rendered: 0, failed: 0, requiringJs: [] as readonly string[] }
+    let render = {
+      rendered: 0, failed: 0, requiringJs: [] as readonly string[],
+      lastError: null as string | null,
+    }
     let renderUnavailable: string | null = null
 
     if (wantsRender && deps.renderProvider !== undefined) {
@@ -272,6 +277,7 @@ export async function runCrawlCommand(
       renderFailed: render.failed,
       requiringJs: render.requiringJs,
       renderUnavailable,
+      renderLastError: render.lastError,
     }
   } catch (error) {
     // Przerwany crawl zostaje w bazie oznaczony jako nieudany. Wiersz bez `ok`

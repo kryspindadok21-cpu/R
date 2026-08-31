@@ -277,8 +277,10 @@ async function runCrawlCommandLine(config: Config, args: readonly string[]): Pro
         : '') +
       // Cisza przy samych porazkach wygladalaby jak sukces. Nie wolno.
       (result.rendered === 0 && result.renderFailed > 0
-        ? `Renderowanie nieudane:       ${result.renderFailed} stron ` +
-          `— powod w tabeli provider_call\n`
+        ? `Renderowanie nieudane:       ${result.renderFailed} stron\n` +
+          (result.renderLastError === null
+            ? ''
+            : `Powod:                       ${result.renderLastError.split('\n')[0]}\n`)
         : '') +
       (result.requiringJs.length > 0
         ? `Tresc wymaga JavaScriptu:    ${result.requiringJs.length} ` +
@@ -332,7 +334,14 @@ async function runPsiCommand(config: Config, args: readonly string[]): Promise<n
     process.stdout.write(
       `Strategia:                   ${result.strategy}\n` +
       `Strony zmierzone:            ${result.measured}\n` +
-      `Strony nieudane:             ${result.failed}\n`,
+      `Strony nieudane:             ${result.failed}\n` +
+      // Powod wprost, nie „szukaj w bazie".
+      (result.lastError === null ? '' : `Powod:                       ${result.lastError}\n`) +
+      // 429 bez klucza to najczestszy powod porazki i ma darmowe rozwiazanie.
+      (result.lastError?.includes('429') === true
+        ? 'PageSpeed Insights bez klucza ma bardzo niski limit. Zaloz darmowy klucz\n' +
+          'w Google Cloud i ustaw go: export SEO_PSI_KEY=<klucz>\n'
+        : ''),
     )
     if (result.slowest.length > 0) {
       process.stdout.write('\nNajwolniejsze wczytanie tresci glownej:\n')
