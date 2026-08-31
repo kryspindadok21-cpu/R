@@ -61,6 +61,19 @@ importers:
         specifier: ^26.4.0
         version: 26.4.0
 
+  packages/agent:
+    dependencies:
+      '@seo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@seo/geo':
+        specifier: workspace:*
+        version: link:../geo
+    devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+
   packages/content:
     dependencies:
       '@seo/core':
