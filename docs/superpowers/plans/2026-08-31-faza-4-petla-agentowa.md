@@ -12,8 +12,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | Zadanie | Stan | Commit |
 |---|---|---|
 | 1. Specyfikacja Fazy 4 (D45–D54) | ukończone | — |
-| 2. `packages/agent` — różnica w różnicach i werdykty (D48–D51) | ukończone, AC5/AC8 zielone; 1051 testów zielonych łącznie | — |
-| 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | niezaczęte | — |
+| 2. `packages/agent` — różnica w różnicach i werdykty (D48–D51) | ukończone, AC5/AC8 zielone; 1051 testów zielonych łącznie | `0f7cf58` |
+| 3. `packages/agent` — scoring okazji i dobór kontroli (D45, D49) | ukończone, AC1/AC2/AC6 zielone; 1087 testów zielonych łącznie | — |
 | 4. `packages/agent` — silnik polityk i wyłączniki (D47, D52) | niezaczęte | — |
 | 5. `packages/db` — migracja `0005` + repozytoria agenta | niezaczęte | — |
 | 6. `apps/cli` — `seo agent plan`, `board`, `verdicts` | niezaczęte | — |
@@ -68,3 +68,29 @@ w ogóle istnieją.
   wersja dawała każdej stronie identyczny przyrost i cztery testy oczekujące
   werdyktu dostawały odmowę — słusznie. Wzorce rozrzutu mają sumę zero, więc
   średnia zostaje dokładna i test może sprawdzać efekt co do dziesiątego miejsca.
+- **Krzywa CTR według pozycji jest branżowa, nie nasza — i tak jest opisana
+  w każdym uzasadnieniu.** Wpływ okazji z klastra wychodzi z prawdziwych
+  wyświetleń i prawdziwej pozycji z Search Console, ale przelicznik „ile kliknięć
+  dałby awans do trójki" pochodzi z branżowych szacunków. `basis` mówi o tym
+  wprost (`krzywa CTR branżowa, nie własna`). Gdy uzbieramy dość własnych danych,
+  krzywa ma zostać zastąpiona i wtedy czynnik przejdzie z opisu na pomiar.
+- **Wagi ustaleń audytu są `declared`, nie `measured`.** Wynikają z definicji wag
+  z Fazy 1, a nie z pomiaru wpływu na ruch. Kuszące byłoby oznaczyć je jako
+  zmierzone, bo liczba ustaleń jest policzona — ale policzona jest *liczba*,
+  nie *wpływ*.
+- **Metoda leksykalna obniża `confidence` z 0,8 do 0,45.** D33 mówi, że to
+  hipoteza, a nie pomiar opinii wyszukiwarki — więc okazja z takiego klastra
+  ma spaść w rankingu wobec identycznej okazji z overlapu SERP. To jedyne
+  miejsce, gdzie ostrzeżenie z D33 wpływa na decyzję, a nie tylko na tekst.
+- **`selectControlGroup` nie ma dostępu do danych „po" i to jest celowe.**
+  Nie da się napisać funkcji dobierającej kontrolę po wynikach, bo nie ma ich
+  czym zobaczyć. D49 egzekwowane przez kształt typu, nie przez dyscyplinę.
+- **Dobór idzie rundami, nie „najlepsze N dla każdej po kolei".** Inaczej pierwsza
+  strona zmieniona zabrałaby wszystkich dobrych kandydatów, a druga dostałaby
+  resztki — i porównanie mówiłoby o kolejności w pętli.
+- **Strona nie może być kontrolą dwa razy.** Powtórzenie zawyżałoby liczebność
+  grupy, a więc i precyzję przedziału — przedział z powtórzeń jest węższy, niż
+  dane na to pozwalają.
+- **Odległość między stronami normalizowana logarytmicznie.** Ruch ma rozkład
+  skrajnie skośny: różnica 10 → 100 wyświetleń znaczy więcej niż 10 000 → 10 090,
+  choć w liczbach bezwzględnych jest identyczna.
