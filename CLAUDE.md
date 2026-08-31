@@ -5,11 +5,10 @@ kosztuje kontekst w każdej rozmowie.
 
 ## Zacznij tutaj
 
-1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-31-faza-2-tracker-geo.md`
-   — mówi, co zrobione i gdzie wznowić. Fazy 0 i 1 są zamknięte po stronie kodu;
-   ich plany (`2026-08-27-faza-0-fundament.md` ~3000 linii,
-   `2026-08-28-faza-1-crawler-audyt.md`) czytaj **tylko zakresami** przez
-   `grep -n '^### Zadanie'`, nigdy w całości.
+1. **Tabela STAN PRAC** w `docs/superpowers/plans/2026-08-31-faza-3-silnik-tresci.md`
+   — mówi, co zrobione i gdzie wznowić. Fazy 0–2 są zamknięte po stronie kodu;
+   ich plany czytaj **tylko zakresami** przez `grep -n '^### Zadanie'`,
+   nigdy w całości.
 2. **Preferencje właściciela** — sekcja na dole tego pliku.
 3. Dobór umiejętności: `pnpm -s skills:pick "opis zadania"` (plugin `dobor-narzedzi`).
 
@@ -37,9 +36,13 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się:
   stron dostaje **wstrzyknięte** interfejsem `PageSource` (D12).
 - `packages/geo` — statystyka trackera AI, wykrywanie wzmianek, share of voice.
   **Zero wejścia/wyjścia.**
+- `packages/keywords` — klastrowanie fraz, decyzja `refresh` vs `create`.
+  **Zero wejścia/wyjścia.**
+- `packages/content` — bramki anty-slop, briefy, linkowanie wewnętrzne, JSON-LD.
+  **Zero wejścia/wyjścia.**
 - `apps/cli` — skleja warstwy. Komendy: `init`, `gsc sync`, `verify`, `smoke`,
   `crawl`, `audit`, `psi`, `report`, `report --audit`, `geo prompts`, `geo entity`,
-  `geo run`, `geo report`, `llms-txt`.
+  `geo run`, `geo report`, `llms-txt`, `keywords cluster`, `brief`, `draft`, `publish`.
 
 Reguły zależności egzekwuje `scripts/check-deps.ts` — nie obchodź ich, popraw projekt.
 
@@ -101,6 +104,18 @@ Wynikają ze specyfikacji, nie z gustu. Łamanie ich to zmiana decyzji, nie deta
   (D27), tego samego zestawu promptów (D25) i tej samej wersji definicji encji (D29).
   W przeciwnym razie **odmowa z powodem**, nigdy cicho policzona różnica.
 - **Cytowanie z groundingu i cytowanie z treści nigdy się nie sumują** (D32).
+- **Bramki anty-slop są typem, nie sprawdzeniem** (D34, D37, D39). Funkcja
+  publikująca przyjmuje `ApprovedDraft`, JSON-LD przyjmuje `VerifiedAuthor` —
+  obu nie da się złożyć poza modułem bramek.
+- **Draft bez unikalnego zasobu nie istnieje** (D37). Brak własnych danych,
+  cytatu z pierwszej ręki, autorskiego diagramu albo podpisu eksperta = odrzucenie.
+- **Nigdy nie generujemy encji autorskich** (D39). Zmyślony autor to fałszowanie
+  E-E-A-T, nie szara strefa optymalizacji.
+- **Publikacja zawsze przez pull request na osobnej gałęzi** (D35, D36). Commit
+  na gałęzi chronionej jest odmawiany. Merge jest decyzją człowieka.
+- **Metoda klastrowania jest nazwana i nie miesza się w jednym zestawie** (D33).
+  Bez źródła SERP działa `lexical-overlap` i mówi o sobie wprost.
+- **Domyślną akcją dla pokrytego klastra jest `refresh`, nie `create`** (D38).
 
 ## Konwencje pracy
 

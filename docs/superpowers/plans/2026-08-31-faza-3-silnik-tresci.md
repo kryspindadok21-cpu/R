@@ -17,9 +17,9 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 4. `packages/content` — brief, linkowanie wewnętrzne, JSON-LD | ukończone, AC6/AC7 zielone; 947 testów zielonych łącznie | `8f96853` |
 | 5. `packages/db` — migracja `0004` + repozytoria treści | ukończone, AC4/AC8 zielone, izolacja najemców zielona; 979 testów zielonych | `d2bd8f7` |
 | 6. `packages/providers` — generowanie draftu i adapter `git-pr` | ukończone, AC9/AC10 zielone; 1004 testy zielone łącznie | `679809a` |
-| 7. `apps/cli` — `seo keywords cluster`, `seo brief` | ukończone, uruchomione na żywo | — |
-| 8. `apps/cli` — `seo draft`, `seo publish` | ukończone; 1026 testów zielonych łącznie | — |
-| 9. Odbiór Fazy 3 na własnej stronie | niezaczęte | — |
+| 7. `apps/cli` — `seo keywords cluster`, `seo brief` | ukończone, uruchomione na żywo | `c009d9c` |
+| 8. `apps/cli` — `seo draft`, `seo publish` | ukończone; 1026 testów zielonych łącznie | `c009d9c` |
+| 9. Odbiór Fazy 3 | **ukończony w zakresie, jaki da się sprawdzić bez klucza**; 1029 testów zielonych | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
@@ -183,3 +183,37 @@ za to z darmowym rollbackiem.
   pozycji, a brief jej potrzebuje. Pozycja to średnia **ważona wyświetleniami**,
   bo tak liczy ją samo Search Console — zwykła średnia dałaby dniowi z dwoma
   wyświetleniami tę samą wagę, co dniowi z dwoma tysiącami.
+
+## Odbiór Fazy 3 — co zostało sprawdzone, a co nie
+
+**Sprawdzone.** `apps/cli/src/content-e2e.test.ts` przechodzi całą ścieżkę:
+frazy z Search Console → klaster → brief z crawla i grafu linków → draft przez
+**prawdziwy** serwer HTTP → bramki → commit w **prawdziwym** repozytorium git na
+osobnej gałęzi, z front matterem i JSON-LD. Sprawdzane jest też to, czego być
+nie powinno: `main` po publikacji ma nadal jeden commit, draft bez unikalnego
+zasobu nie dochodzi do repozytorium, a czwarty artykuł tego samego dnia jest
+zatrzymany przez limit tempa — w każdym z tych przypadków `HEAD` przed i po
+jest ten sam.
+
+Osobno, na żywo: `keywords cluster` bez danych GSC kończy się kodem 1 i mówi
+dlaczego; `brief` bez klastrów mówi, jaką komendę uruchomić; `draft` bez klucza
+wypisuje wszystkie cztery silniki z powodami pominięcia.
+
+**Niesprawdzone i nie da się tego sprawdzić testem.** Czy model naprawdę napisze
+dobry artykuł. Test dowodzi, że tekst przechodzi przez wszystkie warstwy i że
+bramki działają — nie że treść jest warta publikacji. Od tego jest pull request
+i człowiek, który go czyta. To jest cała treść D35.
+
+**Co właściciel może zrobić, żeby zobaczyć pierwszy artykuł** (wszystko darmowe):
+1. `export SEO_GROQ_KEY=<klucz>` — darmowy tier, 14 400 żądań dziennie.
+2. `seo gsc sync --site <adres>` — bez fraz z Search Console nie ma z czego
+   robić klastrów. **To jest jedyny twardy warunek wstępny** i wymaga
+   dokończenia uprawnienia w Search Console (otwarte od Fazy 0).
+3. `seo keywords cluster --site <adres>`, potem `seo brief --site <adres>`.
+4. `seo draft --site <adres> --brief <id> --autor "..." --autor-url <adres>
+   --zasob own-data:"co zmierzyłeś":"skąd"` — bez zasobu draft odpadnie i tak
+   ma być.
+5. `seo publish --site <adres> --draft <id> --repo <ścieżka do repo strony>`.
+
+Krok 4 nie da się zautomatyzować i to jest **decyzja projektowa**, nie brak.
+Unikalny zasób ma podpisać człowiek.

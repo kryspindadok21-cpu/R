@@ -21,12 +21,12 @@ Bez hostingu, bez płatnych usług, bez kont w zewnętrznych narzędziach.
 | 0 | Fundament: dane z Search Console, baza, raport | kod gotowy; czeka na uprawnienie w GSC |
 | 1 | Crawler, audyt, renderowanie, PSI, raport techniczny | **ukończona** |
 | 2 | Pomiar widoczności w odpowiedziach modeli językowych | **ukończona** — czeka na darmowy klucz do silnika |
-| 3 | Silnik treści | nie zaczęta |
+| 3 | Silnik treści: klastry, briefy, drafty za bramkami, publikacja przez PR | **ukończona** — czeka na darmowy klucz do silnika |
 | 4 | Pętla agentowa — sama naprawia i mierzy efekt | nie zaczęta |
 | 5 | Panel webowy | nie zaczęta |
 
 Szczegóły i punkt wznowienia: tabela **STAN PRAC** w
-`docs/superpowers/plans/2026-08-31-faza-2-tracker-geo.md`.
+`docs/superpowers/plans/2026-08-31-faza-3-silnik-tresci.md`.
 
 ## Uruchomienie na własnym komputerze
 
@@ -63,6 +63,11 @@ seo geo entity  --site <uri> --name "Marka" --own
 seo geo run     --site <uri> [--runs N] [--grounded]
 seo geo report  --site <uri> [--out raport-geo.html]
 seo llms-txt   --site <uri> [--out llms.txt]
+seo keywords cluster --site <uri> [--from YYYY-MM-DD] [--to YYYY-MM-DD]
+seo brief      --site <uri> [--klaster <slug>]
+seo draft      --site <uri> --brief <id> --autor "Imie Nazwisko" --autor-url <adres>
+                           --zasob own-data:opis:zrodlo
+seo publish    --site <uri> --draft <id> --repo <sciezka> [--canonical <adres>]
 ```
 
 Pełna lista flag: `seo help`.
@@ -79,6 +84,8 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się i pilnuje tego
 | `rules` | silnik reguł i 61 reguł audytu | **zero** |
 | `crawler` | `robots.txt`, mapy, kolejka, graf linków | **zero** — źródło stron wstrzykiwane |
 | `geo` | statystyka, wzmianki, share of voice, cytowania | **zero** |
+| `keywords` | klastrowanie fraz, decyzja refresh vs create | **zero** |
+| `content` | bramki anty-slop, briefy, linkowanie, JSON-LD | **zero** |
 | `report` | generowanie raportów HTML | **zero** |
 | `db` | jedyne wejście do bazy | SQLite |
 | `providers` | jedyne wyjście na zewnątrz | sieć |
