@@ -81,7 +81,7 @@ async function analizuj(url: string, maxPages = 5): Promise<string> {
 async function poczekajNaKoniec(sciezka: string): Promise<string> {
   for (let i = 0; i < 60; i += 1) {
     const tresc = await (await fetch(`${panelUrl}${sciezka}`)).text()
-    if (tresc.includes('<h1>Gotowe</h1>') || tresc.includes('Nie udalo sie')) return tresc
+    if (tresc.includes('<h1>Gotowe</h1>') || tresc.includes('Nie udało się')) return tresc
     await new Promise((r) => setTimeout(r, 250))
   }
   throw new Error('zadanie nie skonczylo sie w czasie')
@@ -91,7 +91,7 @@ describe('panel', () => {
   it('strona glowna dziala i mowi, ze nie ma jeszcze witryn', async () => {
     const tresc = await (await fetch(`${panelUrl}/`)).text()
     expect(tresc).toContain('Panel SEO/GEO')
-    expect(tresc).toContain('Nie ma jeszcze zadnej strony')
+    expect(tresc).toContain('Nie masz jeszcze żadnej strony')
   })
 
   it('nie odwoluje sie do niczego z sieci', async () => {
@@ -122,16 +122,16 @@ describe('panel', () => {
   it('po analizie witryna pojawia sie na liscie z liczbami', async () => {
     await poczekajNaKoniec(await analizuj(stronaUrl))
     const glowna = await (await fetch(`${panelUrl}/`)).text()
-    expect(glowna).toContain('stron w ostatnim crawlu')
-    expect(glowna).toContain('ustalen audytu')
+    expect(glowna).toContain('Twoje strony')
+    expect(glowna).toMatch(/\d+ stron ·/)
   })
 
   it('tablica agenta pokazuje wnioski po uruchomieniu planu', async () => {
     const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
-    const siteId = /href="\/agent\/([^"]+)"/.exec(gotowe)?.[1] as string
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
 
     const przed = await (await fetch(`${panelUrl}/agent/${siteId}`)).text()
-    expect(przed).toContain('Agent nie ma jeszcze zadnych wnioskow')
+    expect(przed).toContain('Agent nie ma jeszcze żadnych wniosków')
 
     const plan = await fetch(`${panelUrl}/agent/${siteId}/plan`, {
       method: 'POST', redirect: 'manual',
@@ -169,7 +169,7 @@ describe('panel', () => {
   it('nieosiagalna strona konczy sie bledem zadania, a nie padem serwera', async () => {
     const sciezka = await analizuj('http://127.0.0.1:1/')
     const wynik = await poczekajNaKoniec(sciezka)
-    expect(wynik).toContain('Nie udalo sie')
+    expect(wynik).toContain('Nie udało się')
     // Panel dalej odpowiada.
     expect((await fetch(`${panelUrl}/`)).status).toBe(200)
   })
@@ -178,7 +178,7 @@ describe('panel', () => {
     for (const sciezka of ['/zadanie/nie-ma', '/raport/nie-ma', '/agent/nie-ma', '/cos']) {
       const odpowiedz = await fetch(`${panelUrl}${sciezka}`)
       expect(odpowiedz.status).toBe(404)
-      expect(await odpowiedz.text()).toContain('wroc do panelu')
+      expect(await odpowiedz.text()).toContain('wróć do panelu')
     }
   })
 
@@ -198,6 +198,69 @@ describe('panel', () => {
       redirect: 'manual',
     })
     expect(odpowiedz.status).toBe(303)
+  })
+
+  it('menu jest na kazdej stronie i linki dzialaja', async () => {
+    for (const sciezka of ['/', '/strony', '/pomoc']) {
+      const tresc = await (await fetch(`${panelUrl}${sciezka}`)).text()
+      expect(tresc).toContain('href="/strony"')
+      expect(tresc).toContain('href="/pomoc"')
+      expect(tresc).toContain('class="marka"')
+    }
+  })
+
+  it('kazdy link wewnetrzny ze startu prowadzi do istniejacej strony', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const start = await (await fetch(`${panelUrl}/`)).text()
+    const linki = [...start.matchAll(/href="(\/[^"#]*)"/g)].map((m) => m[1] as string)
+    expect(linki.length).toBeGreaterThan(3)
+
+    for (const link of new Set(linki)) {
+      const odpowiedz = await fetch(`${panelUrl}${link}`)
+      expect(odpowiedz.status, `link ${link} nie dziala`).toBe(200)
+    }
+
+    // To samo dla strony witryny — tam linkow jest najwiecej.
+    const witryna = await (await fetch(`${panelUrl}/strona/${siteId}`)).text()
+    for (const link of new Set([...witryna.matchAll(/href="(\/[^"#]*)"/g)].map((m) => m[1] as string))) {
+      expect((await fetch(`${panelUrl}${link}`)).status, `link ${link} nie dziala`).toBe(200)
+    }
+  })
+
+  it('strona witryny pokazuje liczby z crawla i audytu', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const tresc = await (await fetch(`${panelUrl}/strona/${siteId}`)).text()
+    expect(tresc).toContain('Ustalenia według wagi')
+    expect(tresc).toContain('Najczęstsze ustalenia')
+    expect(tresc).toContain('robots.txt')
+    expect(tresc).toContain(`href="/raport/${siteId}"`)
+    expect(tresc).toContain(`href="/agent/${siteId}"`)
+  })
+
+  it('lista witryn pokazuje dodana strone', async () => {
+    await poczekajNaKoniec(await analizuj(stronaUrl))
+    const tresc = await (await fetch(`${panelUrl}/strony`)).text()
+    expect(tresc).toContain('Moje strony')
+    expect(tresc).toContain('127.0.0.1')
+  })
+
+  it('pomoc mowi wprost, ktore silniki sa dostepne', async () => {
+    const tresc = await (await fetch(`${panelUrl}/pomoc`)).text()
+    expect(tresc).toContain('Silniki językowe')
+    expect(tresc).toContain('groq')
+    expect(tresc).toContain('anthropic')
+    // Kazdy silnik ma stan: gotowy albo wylaczony.
+    expect(tresc).toMatch(/plakietka (dobra|neutralna)/)
+  })
+
+  it('pomoc nie zdradza sciezki do klucza, tylko fakt jego obecnosci', async () => {
+    const tresc = await (await fetch(`${panelUrl}/pomoc`)).text()
+    expect(tresc).toContain('SEO_GSC_KEY_FILE')
+    expect(tresc).not.toContain('.sa.json')
   })
 
   it('naglowki bezpieczenstwa sa ustawione', async () => {

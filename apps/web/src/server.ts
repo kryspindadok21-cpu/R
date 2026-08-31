@@ -1,15 +1,18 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http'
 import {
-  buildAuditReportData, dbLedger, openInitialized, runAgentBoard, runAgentPlan,
-  runAudit, runCrawlCommand, systemClock,
+  buildAuditReportData, buildGeoReport, dbLedger, openInitialized, runAgentBoard,
+  runAgentPlan, runAudit, runCrawlCommand, systemClock,
 } from '@seo/cli/lib'
 import { tenantScope, type TenantScope } from '@seo/core'
-import { closeDatabase, crawlRepos, geoRepos, repos, type Db } from '@seo/db'
-import { createSiteFetchProvider } from '@seo/providers'
-import { renderAuditReport } from '@seo/report'
+import {
+  agentRepos, closeDatabase, contentRepos, crawlRepos, geoRepos, repos, type Db,
+} from '@seo/db'
+import { createSiteFetchProvider, selectEngines } from '@seo/providers'
+import { renderAuditReport, renderGeoReport } from '@seo/report'
 import { JobRegistry } from './jobs.js'
 import {
-  stronaAgenta, stronaBledu, stronaGlowna, stronaZadania, type SiteRow,
+  stronaAgenta, stronaBledu, stronaListyWitryn, stronaPomocy, stronaStart,
+  stronaWitryny, stronaZadania, type SiteDetail, type SiteRow,
 } from './pages.js'
 
 /**
@@ -20,6 +23,20 @@ import {
  * wiec wystawienie go na siec byloby oddaniem obu tych rzeczy komukolwiek
  * w tej samej sieci.
  */
+
+/**
+ * Oba adresy petli zwrotnej.
+ *
+ * **To nie jest nadmiarowosc — to byl blad, przez ktory panel sie nie otwieral.**
+ * Nasluch tylko na `127.0.0.1` znaczy, ze `http://localhost:4321` dziala albo
+ * nie, zaleznie od tego, co system rozwiaze pierwsze. Windows preferuje IPv6,
+ * wiec `localhost` idzie na `::1` i przegladarka dostaje odmowe polaczenia,
+ * choc serwer stoi i odpowiada na IPv4.
+ *
+ * Nadal **wylacznie petla zwrotna**: panel uruchamia crawler na dowolny adres
+ * i ma pelny dostep do bazy, wiec `0.0.0.0` nie wchodzi w gre.
+ */
+export const LOOPBACK_HOSTS = ['127.0.0.1', '::1'] as const
 
 export const DEFAULT_HOST = '127.0.0.1'
 export const DEFAULT_PORT = 4321
@@ -55,20 +72,78 @@ async function odczytajFormularz(req: IncomingMessage): Promise<URLSearchParams>
   return new URLSearchParams(Buffer.concat(kawalki).toString('utf8'))
 }
 
-function listaStron(db: Db, scope: TenantScope): SiteRow[] {
-  const crawlRepo = crawlRepos(db, scope)
-  const geoRepo = geoRepos(db, scope)
+function chwila(ms: number): string {
+  const d = new Date(ms)
+  const pad = (n: number): string => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} `
+    + `${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
 
-  return repos(db, scope).read.listSites().map((site) => {
-    const run = crawlRepo.read.latestCrawlRun(site.id)
-    return {
-      id: site.id,
-      propertyUri: site.propertyUri,
-      pages: run === undefined ? 0 : crawlRepo.read.listCrawlPages(run.id).length,
-      findings: run === undefined ? 0 : crawlRepo.read.listFindings(run.id).length,
-      hasGeo: geoRepo.read.latestGeoRun(site.id) !== undefined,
+function wierszWitryny(db: Db, scope: TenantScope, site: { id: string; propertyUri: string }): SiteRow {
+  const crawlRepo = crawlRepos(db, scope)
+  const run = crawlRepo.read.latestCrawlRun(site.id)
+  const strony = run === undefined ? [] : crawlRepo.read.listCrawlPages(run.id)
+  const ustalenia = run === undefined ? [] : crawlRepo.read.listFindings(run.id)
+
+  return {
+    id: site.id,
+    propertyUri: site.propertyUri,
+    pages: strony.length,
+    failedPages: strony.filter((p) => p.httpStatus === null).length,
+    findings: ustalenia.length,
+    blocking: ustalenia.filter((f) => f.severity === 'blocker' || f.severity === 'high').length,
+    crawledAt: run === undefined ? null : chwila(run.startedAt),
+    hasGeo: geoRepos(db, scope).read.latestGeoRun(site.id) !== undefined,
+    hasClusters: contentRepos(db, scope).read.latestClusterSet(site.id) !== undefined,
+    agentTasks: agentRepos(db, scope).read.listTasks(site.id, 200).length,
+  }
+}
+
+function listaStron(db: Db, scope: TenantScope): SiteRow[] {
+  return repos(db, scope).read.listSites()
+    .map((site) => wierszWitryny(db, scope, site))
+    .sort((a, b) => (b.crawledAt ?? '').localeCompare(a.crawledAt ?? ''))
+}
+
+function szczegolyWitryny(db: Db, scope: TenantScope, site: { id: string; propertyUri: string }): SiteDetail {
+  const podstawa = wierszWitryny(db, scope, site)
+  const crawlRepo = crawlRepos(db, scope)
+  const run = crawlRepo.read.latestCrawlRun(site.id)
+
+  const severity: Record<string, number> = {
+    blocker: 0, high: 0, medium: 0, low: 0, info: 0,
+  }
+  let orphans = 0
+  let topRules: SiteDetail['topRules'] = []
+
+  if (run !== undefined) {
+    // Zwraca wiersze `{ severity, count }`, a nie obiekt — `Object.entries`
+    // dalby tu indeksy tablicy zamiast nazw wag.
+    for (const wiersz of crawlRepo.read.findingCountsBySeverity(run.id)) {
+      severity[wiersz.severity] = wiersz.count
     }
-  })
+    topRules = crawlRepo.read.topFindingRules(run.id, 10)
+    orphans = crawlRepo.read.orphanPages(run.id).length
+  }
+
+  const zadania = agentRepos(db, scope).read.listTasks(site.id, 500)
+  const policz = (stan: string): number => zadania.filter((z) => z.state === stan).length
+
+  return {
+    ...podstawa,
+    severity,
+    topRules,
+    orphans,
+    truncated: run?.truncated === 1,
+    robotsState: run === undefined ? 'brak crawla' : run.robotsState,
+    agentSummary: {
+      proposed: policz('proposed'),
+      needsYou: policz('needs-you'),
+      inFlight: policz('in-flight'),
+      measuring: policz('measuring'),
+      done: policz('done'),
+    },
+  }
 }
 
 /**
@@ -142,7 +217,7 @@ export function createPanel(config: PanelConfig): Server {
         if (req.method === 'GET' && sciezka === '/') {
           const { db } = openInitialized(config)
           try {
-            wyslij(res, 200, stronaGlowna(listaStron(db, scope), jobs.list()))
+            wyslij(res, 200, stronaStart(listaStron(db, scope), jobs.list()))
           } finally { closeDatabase(db) }
           return
         }
@@ -173,6 +248,62 @@ export function createPanel(config: PanelConfig): Server {
 
           res.writeHead(303, { location: `/zadanie/${encodeURIComponent(job.id)}` })
           res.end()
+          return
+        }
+
+        if (req.method === 'GET' && sciezka === '/strony') {
+          const { db } = openInitialized(config)
+          try {
+            wyslij(res, 200, stronaListyWitryn(listaStron(db, scope)))
+          } finally { closeDatabase(db) }
+          return
+        }
+
+        if (req.method === 'GET' && sciezka === '/pomoc') {
+          const { engines, skipped } = selectEngines({
+            fetchFn: globalThis.fetch,
+            ledger: { record: () => {} },
+            now: () => Date.now(),
+            env: process.env,
+          })
+          wyslij(res, 200, stronaPomocy({
+            silniki: [
+              ...engines.map((e) => ({
+                id: e.id, dostepny: true, powod: `model ${e.modelVersion}`,
+              })),
+              ...skipped.map((sk) => ({ id: sk.id, dostepny: false, powod: sk.reason })),
+            ].sort((a, b) => a.id.localeCompare(b.id)),
+            gscKlucz: config.gscKeyFile !== undefined,
+            dbPath: config.dbPath,
+          }))
+          return
+        }
+
+        if (req.method === 'GET' && sciezka.startsWith('/strona/')) {
+          const siteId = decodeURIComponent(sciezka.slice('/strona/'.length))
+          const { db } = openInitialized(config)
+          try {
+            const site = repos(db, scope).read.listSites().find((x) => x.id === siteId)
+            if (site === undefined) {
+              wyslij(res, 404, stronaBledu(404, 'nie ma takiej strony w bazie'))
+              return
+            }
+            wyslij(res, 200, stronaWitryny(szczegolyWitryny(db, scope, site)))
+          } finally { closeDatabase(db) }
+          return
+        }
+
+        if (req.method === 'GET' && sciezka.startsWith('/raport-geo/')) {
+          const siteId = decodeURIComponent(sciezka.slice('/raport-geo/'.length))
+          const { db } = openInitialized(config)
+          try {
+            const site = repos(db, scope).read.listSites().find((x) => x.id === siteId)
+            if (site === undefined) {
+              wyslij(res, 404, stronaBledu(404, 'nie ma takiej strony w bazie'))
+              return
+            }
+            wyslij(res, 200, renderGeoReport(buildGeoReport(db, scope, site.propertyUri)))
+          } finally { closeDatabase(db) }
           return
         }
 
