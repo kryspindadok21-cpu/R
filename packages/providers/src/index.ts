@@ -25,6 +25,9 @@ export {
   PSI_BACKOFF_BASE_MS, PSI_ENDPOINT, PSI_MAX_RETRIES, createPsiProvider, type PsiDeps,
 } from './psi/provider.js'
 export type { PsiMetrics, PsiProvider, PsiResult, PsiSource, PsiStrategy } from './psi/types.js'
+export {
+  ANTHROPIC_DEFAULT_MODEL, ANTHROPIC_MAX_TOKENS, createAnthropicProvider, type AnthropicDeps,
+} from './llm/anthropic.js'
 export { GEMINI_BASE_URL, createGeminiProvider, type GeminiDeps } from './llm/gemini.js'
 export {
   GROQ_BASE_URL, OPENROUTER_BASE_URL, createOpenAiCompatibleProvider,

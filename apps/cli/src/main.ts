@@ -54,6 +54,7 @@ Zmienne srodowiskowe:
   SEO_GEMINI_KEY     klucz Gemini (opcjonalny — bez niego silnik jest pomijany)
   SEO_GROQ_KEY       klucz Groq (opcjonalny)
   SEO_OPENROUTER_KEY klucz OpenRouter (opcjonalny)
+  SEO_ANTHROPIC_KEY  klucz Anthropic — jedyny PLATNY silnik, domyslnie wylaczony
   HTTPS_PROXY        serwer posredniczacy — przekazywany takze do przegladarki
 `
 

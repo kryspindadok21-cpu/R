@@ -87,6 +87,19 @@ Monorepo pnpm + Turborepo. Warstwy nie mieszają się i pilnuje tego
 Silnik, który zaimportuje warstwę wejścia/wyjścia, przestaje być silnikiem —
 i test to wyłapie.
 
+### Silniki językowe
+
+| Silnik | Zmienna | Koszt |
+|---|---|---|
+| Groq | `SEO_GROQ_KEY` | darmowy tier, 14 400 żądań dziennie |
+| Gemini | `SEO_GEMINI_KEY` | darmowy tier, jedyny z groundingiem |
+| OpenRouter | `SEO_OPENROUTER_KEY` | darmowe modele |
+| Anthropic | `SEO_ANTHROPIC_KEY` | **płatny** — domyślnie wyłączony |
+
+Brak klucza pomija silnik i melduje to wprost. Zestaw darmowy działa w całości
+bez klucza Anthropic — ten silnik istnieje dla kogoś, kto już ma własny klucz
+i świadomie chce go użyć.
+
 ## Zasady, które nie są kwestią gustu
 
 - **Koszt 0 zł.** Żadnej zależności wymagającej płatnego konta.

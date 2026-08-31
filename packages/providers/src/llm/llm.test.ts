@@ -188,23 +188,24 @@ describe('dobor silnikow', () => {
   it('AC7: brak klucza pomija silnik i melduje to wprost', () => {
     const { engines, skipped } = selectEngines({ ...shared, env: { SEO_GROQ_KEY: 'k' } })
     expect(engines.map((e) => e.id)).toEqual(['groq'])
-    expect(skipped.map((s) => s.id)).toEqual(['gemini', 'openrouter'])
+    expect(skipped.map((s) => s.id)).toEqual(['gemini', 'openrouter', 'anthropic'])
     expect(skipped[0]?.reason).toContain('SEO_GEMINI_KEY')
   })
 
   it('pusty klucz liczy sie jak brak klucza', () => {
     const { engines, skipped } = selectEngines({ ...shared, env: { SEO_GROQ_KEY: '' } })
     expect(engines).toHaveLength(0)
-    expect(skipped).toHaveLength(3)
+    expect(skipped).toHaveLength(4)
   })
 
   it('brak wszystkich kluczy nie wybucha — przebieg ma prawo byc pusty', () => {
     const { engines, skipped } = selectEngines({ ...shared, env: {} })
     expect(engines).toEqual([])
-    expect(skipped.map((s) => s.id).sort()).toEqual(['gemini', 'groq', 'openrouter'])
+    expect(skipped.map((s) => s.id).sort())
+      .toEqual(['anthropic', 'gemini', 'groq', 'openrouter'])
   })
 
-  it('komplet kluczy daje trzy silniki i zadnego pominietego', () => {
+  it('komplet darmowych kluczy daje trzy silniki, platny zostaje wylaczony', () => {
     const { engines, skipped } = selectEngines({
       ...shared,
       env: { SEO_GEMINI_KEY: 'a', SEO_GROQ_KEY: 'b', SEO_OPENROUTER_KEY: 'c' },
@@ -213,7 +214,35 @@ describe('dobor silnikow', () => {
     expect(engines.map((e) => e.modelVersion)).toEqual([
       DEFAULT_MODELS.gemini, DEFAULT_MODELS.groq, DEFAULT_MODELS.openrouter,
     ])
-    expect(skipped).toEqual([])
+    // Komplet darmowych kluczy to **pelny** zestaw domyslny. Anthropic zostaje
+    // pominiety i to nie jest brak do uzupelnienia.
+    expect(skipped.map((s) => s.id)).toEqual(['anthropic'])
+  })
+
+  it('platny silnik ma inny powod pominiecia niz darmowe', () => {
+    const { skipped } = selectEngines({ ...shared, env: {} })
+    const platny = skipped.find((s) => s.id === 'anthropic')
+    const darmowy = skipped.find((s) => s.id === 'groq')
+    expect(platny?.reason).toContain('platny')
+    expect(platny?.reason).toContain('wylaczony domyslnie')
+    // Darmowy silnik bez klucza to brak do uzupelnienia — platny nie.
+    expect(darmowy?.reason).toContain('brak klucza')
+    expect(darmowy?.reason).not.toContain('platny')
+  })
+
+  it('klucz Anthropic wlacza silnik i wybiera model domyslny', () => {
+    const { engines, skipped } = selectEngines({ ...shared, env: { SEO_ANTHROPIC_KEY: 'k' } })
+    expect(engines.map((e) => e.id)).toEqual(['anthropic'])
+    expect(engines[0]?.modelVersion).toBe(DEFAULT_MODELS.anthropic)
+    expect(engines[0]?.accessMode).toBe('api')
+    expect(skipped.map((s) => s.id)).toEqual(['gemini', 'groq', 'openrouter'])
+  })
+
+  it('grounding nie dotyczy Anthropic — nie ma tam wyszukiwarki', () => {
+    const { engines } = selectEngines({
+      ...shared, accessMode: 'api_grounded', env: { SEO_ANTHROPIC_KEY: 'k' },
+    })
+    expect(engines[0]?.accessMode).toBe('api')
   })
 
   it('tryb groundingu dotyczy tylko gemini', () => {

@@ -1,4 +1,4 @@
-export type EngineId = 'gemini' | 'groq' | 'openrouter'
+export type EngineId = 'gemini' | 'groq' | 'openrouter' | 'anthropic'
 
 /** `api_grounded` znaczy: model mial dostep do wyszukiwarki. To inny proces (D27). */
 export type AccessMode = 'api' | 'api_grounded'

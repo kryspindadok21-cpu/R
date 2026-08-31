@@ -1,4 +1,5 @@
 import type { CallLedger } from '../ledger.js'
+import { createAnthropicProvider } from './anthropic.js'
 import { createGeminiProvider } from './gemini.js'
 import {
   GROQ_BASE_URL, OPENROUTER_BASE_URL, createOpenAiCompatibleProvider,
@@ -26,12 +27,15 @@ export const DEFAULT_MODELS: Readonly<Record<EngineId, string>> = {
   gemini: 'gemini-2.5-flash',
   groq: 'llama-3.3-70b-versatile',
   openrouter: 'meta-llama/llama-3.3-70b-instruct:free',
+  anthropic: 'claude-opus-5',
 }
 
 export interface EngineEnv {
   readonly SEO_GEMINI_KEY?: string | undefined
   readonly SEO_GROQ_KEY?: string | undefined
   readonly SEO_OPENROUTER_KEY?: string | undefined
+  /** Jedyny platny silnik. Bez klucza pomijany, jak kazdy inny. */
+  readonly SEO_ANTHROPIC_KEY?: string | undefined
 }
 
 export interface EngineSelectionDeps {
@@ -90,6 +94,21 @@ export function selectEngines(deps: EngineSelectionDeps): EngineSelection {
     }))
   } else {
     skipped.push({ id: 'openrouter', reason: missing('SEO_OPENROUTER_KEY') })
+  }
+
+  if (deps.env.SEO_ANTHROPIC_KEY !== undefined && deps.env.SEO_ANTHROPIC_KEY !== '') {
+    engines.push(createAnthropicProvider({
+      ...shared,
+      apiKey: deps.env.SEO_ANTHROPIC_KEY,
+      model: models.anthropic,
+    }))
+  } else {
+    // Inny komunikat niz reszta: brak tego klucza jest **stanem domyslnym**,
+    // a nie brakiem do uzupelnienia. Zestaw darmowy dziala bez niego w calosci.
+    skipped.push({
+      id: 'anthropic',
+      reason: 'silnik platny, wylaczony domyslnie — wlacz przez SEO_ANTHROPIC_KEY',
+    })
   }
 
   return { engines, skipped }
