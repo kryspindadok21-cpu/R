@@ -1,9 +1,17 @@
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { dirname } from 'node:path'
 import type { TenantScope } from '@seo/core'
 import { type Db, FrozenPromptSetError, geoRepos, repos } from '@seo/db'
 import {
-  collectCitations, detectInAnswers, measurePrompts, proportion,
-  type EntityDefinition, type Proportion,
+  collectCitations, compareMeasurements, detectInAnswers, detectableDifference,
+  measurePrompts, proportion,
+  type EntityDefinition, type MeasurementSet, type Proportion,
 } from '@seo/geo'
+import {
+  renderGeoReport,
+  type GeoComparisonRow, type GeoEngineRow, type GeoReportData,
+  type GeoVoiceRow, type ShareRow,
+} from '@seo/report'
 import type { AccessMode, EngineId, LlmEngineProvider, SkippedEngine } from '@seo/providers'
 
 /**
@@ -329,4 +337,288 @@ export function latestEntityVersions<T extends EntityDefinition>(all: readonly T
     if (current === undefined || entity.version > current.version) byName.set(entity.name, entity)
   }
   return [...byName.values()]
+}
+
+// --- seo geo report ------------------------------------------------------------
+
+/**
+ * Zestawienie pomiaru w dane raportu.
+ *
+ * Cala trudnosc jest w porownaniu z poprzednim tygodniem: wolno je policzyc
+ * **wylacznie** w obrebie tej samej trojki silnik/wersja/tryb (D27), tego samego
+ * zestawu promptow (D25) i tej samej wersji definicji encji (D29). Gdy ktorykolwiek
+ * z tych warunkow nie jest spelniony, raport pokazuje odmowe z powodem — a nie
+ * pusta komorke i nie policzona mimo wszystko roznice.
+ */
+export function buildGeoReport(
+  db: Db,
+  scope: TenantScope,
+  siteUrl: string,
+  clock: () => Date = () => new Date(),
+): GeoReportData {
+  const site = siteOf(db, scope, siteUrl)
+  const g = geoRepos(db, scope)
+
+  const wszystkieEncje = g.read.listEntities(site.id)
+  const own = latestEntityVersions(wszystkieEncje).find((e) => e.isOwn)
+  if (own === undefined) throw new NoEntityError(siteUrl)
+  const ownIds = new Set(wszystkieEncje.filter((e) => e.isOwn).map((e) => e.id))
+
+  const runs = g.read.listGeoRuns(site.id, 200)
+  if (runs.length === 0) throw new NoGeoRunError(siteUrl)
+
+  // Najnowszy przebieg per trojka kontekstu — kazda trojka to osobna linia trendu.
+  const najnowsze = new Map<string, (typeof runs)[number]>()
+  const poprzednie = new Map<string, (typeof runs)[number]>()
+  for (const run of runs) {
+    const key = `${run.engine}|${run.modelVersion}|${run.accessMode}`
+    if (!najnowsze.has(key)) najnowsze.set(key, run)
+    else if (!poprzednie.has(key)) poprzednie.set(key, run)
+  }
+
+  const engines: GeoEngineRow[] = []
+  const comparisons: GeoComparisonRow[] = []
+  const wszystkieOdpowiedzi: { answerId: string; entityIds: string[] }[] = []
+  let citationsGrounding = 0
+  let citationsInline = 0
+  const hosts = new Map<string, Map<string, number>>()
+
+  for (const [key, run] of najnowsze) {
+    const answers = g.read.listAnswers(run.id)
+    const mentions = g.read.listMentions(run.id)
+    const byAnswer = new Map<string, string[]>()
+    for (const m of mentions) {
+      byAnswer.set(m.geoAnswerId, [...(byAnswer.get(m.geoAnswerId) ?? []), m.entityId])
+    }
+
+    const udane = answers.filter((a) => a.fetchError === null)
+    const trafienia = udane.filter((a) =>
+      (byAnswer.get(a.id) ?? []).some((id) => ownIds.has(id))).length
+
+    engines.push({
+      engine: run.engine,
+      modelVersion: run.modelVersion,
+      accessMode: run.accessMode,
+      answersOk: run.answersOk,
+      answersFailed: run.answersFailed,
+      refusals: answers.filter((a) => a.refusalReason !== null).length,
+      visibility: shareOf(proportion(trafienia, udane.length)),
+    })
+
+    for (const a of udane) {
+      wszystkieOdpowiedzi.push({ answerId: a.id, entityIds: byAnswer.get(a.id) ?? [] })
+    }
+
+    for (const source of ['grounding', 'inline'] as const) {
+      const rows = g.read.listCitations(run.id, source)
+      const naszeOdpowiedzi = new Set(rows.filter((r) => r.ours === 1).map((r) => r.geoAnswerId))
+      if (source === 'grounding') citationsGrounding += naszeOdpowiedzi.size
+      else citationsInline += naszeOdpowiedzi.size
+
+      const licznik = hosts.get(source) ?? new Map<string, number>()
+      for (const row of rows) {
+        if (row.host === null) continue
+        licznik.set(row.host, (licznik.get(row.host) ?? 0) + 1)
+      }
+      hosts.set(source, licznik)
+    }
+
+    const previous = poprzednie.get(key)
+    if (previous !== undefined) {
+      comparisons.push(compareRuns(g, run, previous, ownIds))
+    }
+  }
+
+  const odpowiedziRazem = wszystkieOdpowiedzi.length
+  const voice: GeoVoiceRow[] = latestEntityVersions(wszystkieEncje).map((entity) => {
+    const ids = new Set(wszystkieEncje.filter((e) => e.name === entity.name).map((e) => e.id))
+    const zeWzmianka = wszystkieOdpowiedzi
+      .filter((a) => a.entityIds.some((id) => ids.has(id))).length
+    return {
+      name: entity.name,
+      isOwn: entity.isOwn,
+      answersWithMention: zeWzmianka,
+      share: shareOf(proportion(zeWzmianka, odpowiedziRazem)),
+      // Mediane pozycji liczymy w warstwie czystej; tu wystarczy jej brak,
+      // gdy encji w ogole nie bylo — zmyslona liczba bylaby gorsza od kreski.
+      medianFirstPosition: zeWzmianka === 0 ? null : medianPosition(g, najnowsze, ids),
+    }
+  })
+
+  const pierwszy = [...najnowsze.values()][0]
+  const promptSet = pierwszy === undefined ? undefined : g.read.getPromptSet(pierwszy.promptSetId)
+  const prompts = pierwszy === undefined ? 0 : g.read.listPrompts(pierwszy.promptSetId).length
+  const runsPerPrompt = pierwszy?.runsPerPrompt ?? 0
+
+  return {
+    siteUri: site.propertyUri,
+    generatedAt: formatMoment(clock()),
+    runStartedAt: pierwszy === undefined ? '—' : formatMoment(new Date(pierwszy.startedAt)),
+    ownBrand: own.name,
+    promptSetName: promptSet?.name ?? '—',
+    promptSetVersion: promptSet?.version ?? 0,
+    prompts,
+    runsPerPrompt,
+    entityVersion: pierwszy?.entityVersion ?? own.version,
+    detectableDifference: detectableDifference(prompts, runsPerPrompt),
+    engines,
+    skipped: [],
+    voice,
+    citations: [
+      {
+        source: 'grounding',
+        ourRate: shareOf(proportion(citationsGrounding, odpowiedziRazem)),
+        topHosts: topHosts(hosts.get('grounding')),
+      },
+      {
+        source: 'inline',
+        ourRate: shareOf(proportion(citationsInline, odpowiedziRazem)),
+        topHosts: topHosts(hosts.get('inline')),
+      },
+    ],
+    comparisons,
+  }
+}
+
+export class NoGeoRunError extends Error {
+  constructor(siteUrl: string) {
+    super(`Brak pomiaru GEO dla ${siteUrl}. Uruchom najpierw: seo geo run --site ${siteUrl}`)
+    this.name = 'NoGeoRunError'
+  }
+}
+
+function shareOf(p: Proportion): ShareRow {
+  return { rate: p.rate, low: p.interval.low, high: p.interval.high }
+}
+
+function topHosts(licznik: Map<string, number> | undefined): { host: string; count: number }[] {
+  return [...(licznik ?? new Map<string, number>()).entries()]
+    .map(([host, count]) => ({ host, count }))
+    .sort((a, b) => b.count - a.count || a.host.localeCompare(b.host))
+    .slice(0, 5)
+}
+
+function medianPosition(
+  g: ReturnType<typeof geoRepos>,
+  runs: ReadonlyMap<string, { id: string }>,
+  entityIds: ReadonlySet<string>,
+): number | null {
+  const pozycje: number[] = []
+  for (const run of runs.values()) {
+    const pierwszeWOdpowiedzi = new Map<string, number>()
+    for (const m of g.read.listMentions(run.id)) {
+      if (!entityIds.has(m.entityId)) continue
+      const dotychczas = pierwszeWOdpowiedzi.get(m.geoAnswerId)
+      if (dotychczas === undefined || m.positionShare < dotychczas) {
+        pierwszeWOdpowiedzi.set(m.geoAnswerId, m.positionShare)
+      }
+    }
+    pozycje.push(...pierwszeWOdpowiedzi.values())
+  }
+  if (pozycje.length === 0) return null
+  pozycje.sort((a, b) => a - b)
+  const srodek = Math.floor(pozycje.length / 2)
+  return pozycje.length % 2 === 1
+    ? (pozycje[srodek] as number)
+    : ((pozycje[srodek - 1] as number) + (pozycje[srodek] as number)) / 2
+}
+
+function measurementOf(
+  g: ReturnType<typeof geoRepos>,
+  run: {
+    id: string; promptSetId: string; entityVersion: number
+    engine: string; modelVersion: string; accessMode: AccessMode
+  },
+  ownIds: ReadonlySet<string>,
+): MeasurementSet {
+  const answers = g.read.listAnswers(run.id).filter((a) => a.fetchError === null)
+  const zeWzmianka = new Set(
+    g.read.listMentions(run.id).filter((m) => ownIds.has(m.entityId)).map((m) => m.geoAnswerId),
+  )
+  const byPrompt = new Map<string, { hits: number; trials: number }>()
+  for (const a of answers) {
+    const bucket = byPrompt.get(a.promptId) ?? { hits: 0, trials: 0 }
+    bucket.trials += 1
+    if (zeWzmianka.has(a.id)) bucket.hits += 1
+    byPrompt.set(a.promptId, bucket)
+  }
+
+  return {
+    context: { engine: run.engine, modelVersion: run.modelVersion, accessMode: run.accessMode },
+    promptSetId: run.promptSetId,
+    entityVersion: run.entityVersion,
+    measurements: [...byPrompt.entries()].map(([promptId, b]) => ({ promptId, ...b })),
+  }
+}
+
+/** Ziarno wyprowadzone z pary przebiegow — ten sam raport zawsze da ten sam przedzial. */
+function seedFor(a: string, b: string): number {
+  let hash = 2166136261
+  for (const ch of `${a}|${b}`) {
+    hash ^= ch.charCodeAt(0)
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+function compareRuns(
+  g: ReturnType<typeof geoRepos>,
+  latest: Parameters<typeof measurementOf>[1],
+  previous: Parameters<typeof measurementOf>[1],
+  ownIds: ReadonlySet<string>,
+): GeoComparisonRow {
+  const wynik = compareMeasurements(
+    measurementOf(g, previous, ownIds),
+    measurementOf(g, latest, ownIds),
+    { seed: seedFor(previous.id, latest.id) },
+  )
+
+  if (wynik.kind === 'odmowa') {
+    return {
+      kind: 'odmowa', engine: latest.engine,
+      reason: wynik.reason.replace(/-/g, ' '),
+      detail: wynik.detail,
+    }
+  }
+  return {
+    kind: 'porownanie', engine: latest.engine,
+    meanDifference: wynik.comparison.meanDifference,
+    low: wynik.comparison.interval.low,
+    high: wynik.comparison.interval.high,
+    significant: wynik.comparison.significant,
+  }
+}
+
+function formatMoment(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} `
+    + `${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+export interface GeoReportOptions {
+  readonly siteUrl: string
+  readonly outPath: string
+}
+
+export interface GeoReportResult {
+  readonly outPath: string
+  readonly engines: number
+  readonly comparisons: number
+  readonly refused: number
+}
+
+export function runGeoReport(
+  db: Db,
+  scope: TenantScope,
+  options: GeoReportOptions,
+): GeoReportResult {
+  const data = buildGeoReport(db, scope, options.siteUrl)
+  mkdirSync(dirname(options.outPath), { recursive: true })
+  writeFileSync(options.outPath, renderGeoReport(data), 'utf8')
+  return {
+    outPath: options.outPath,
+    engines: data.engines.length,
+    comparisons: data.comparisons.length,
+    refused: data.comparisons.filter((c) => c.kind === 'odmowa').length,
+  }
 }

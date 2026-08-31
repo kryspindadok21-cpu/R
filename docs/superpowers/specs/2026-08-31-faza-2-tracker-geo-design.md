@@ -149,6 +149,23 @@ rozdzielczość wprost, żeby nikt nie oczekiwał czułości, której nie ma.
 > liczy przypadek `σ = 0`, bo tylko ten da się policzyć przed pomiarem, więc
 > raportowana liczba jest granicą, nie obietnicą.
 
+**Druga bramka: rozdzielczość pomiaru (dopisane 2026-08-31, po implementacji).**
+Sam bootstrap **nie wystarcza**. Losuje z różnic **między** promptami i traktuje
+odsetek każdego promptu jak liczbę dokładną — a przy trzech przebiegach ten
+odsetek sam ma błąd standardowy rzędu 29 punktów procentowych. Skutek jest
+konkretny i zły: gdy różnice na promptach są zgodne, przedział bootstrapowy
+robi się wąski albo punktowy i zmiana zostaje uznana za istotną, choć zestaw
+fizycznie nie jest w stanie jej zmierzyć. Wyszło to w teście na dwóch promptach:
+przedział zerowej szerokości wyglądał jak pewność.
+
+Dlatego istotność wymaga **obu** warunków naraz:
+
+1. przedział bootstrapowy nie obejmuje zera,
+2. `|średnia różnica| ≥ detectableDifference(prompty, przebiegi)`.
+
+Gdy liczba przebiegów nie jest znana, warunek drugi jest niepoliczalny — wtedy
+przy zerowym rozrzucie między promptami nie orzekamy w ogóle, zamiast zgadywać.
+
 ### D27 — `access_mode` i `model_version` nigdy nie mieszają się w jednej linii
 
 **Decyzja:** każdy pomiar niesie `engine`, `model_version` i `access_mode`

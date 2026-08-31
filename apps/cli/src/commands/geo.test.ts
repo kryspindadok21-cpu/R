@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { tenantScope } from '@seo/core'
@@ -6,8 +6,9 @@ import { type Db, closeDatabase, geoRepos, repos } from '@seo/db'
 import type { EngineAnswer, EnginePrompt, LlmEngineProvider } from '@seo/providers'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
-  NoEntityError, NoPromptSetError, UnknownSiteError,
-  activePromptSet, latestEntityVersions, runGeoEntity, runGeoPrompts, runGeoRun,
+  NoEntityError, NoGeoRunError, NoPromptSetError, UnknownSiteError,
+  activePromptSet, buildGeoReport, latestEntityVersions,
+  runGeoEntity, runGeoPrompts, runGeoReport, runGeoRun,
 } from './geo.js'
 import { openInitialized } from './init.js'
 
@@ -258,5 +259,163 @@ describe('seo geo run bez przygotowania', () => {
       siteUrl: BASE, name: 'Konkurent', variants: [], exclusions: [], isOwn: false,
     })
     await expect(runGeoRun(db, scope, [], [], { siteUrl: BASE })).rejects.toThrow(NoEntityError)
+  })
+})
+
+describe('buildGeoReport', () => {
+  beforeEach(() => {
+    runGeoPrompts(db, scope, { siteUrl: BASE, add: ['A', 'B'] })
+    przygotujMarke()
+    runGeoEntity(db, scope, {
+      siteUrl: BASE, name: 'Konkurent', variants: [], exclusions: [], isOwn: false,
+    })
+  })
+
+  it('zbiera widocznosc, udzial i cytowania z zapisanego przebiegu', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [
+      { text: 'Polecam Mentiometry, zobacz https://przyklad.test/blog' },
+      { text: 'Raczej Konkurent.' },
+    ])], [], { siteUrl: BASE, runsPerPrompt: 2 })
+
+    const dane = buildGeoReport(db, scope, BASE)
+    expect(dane.engines).toHaveLength(1)
+    expect(dane.engines[0]?.visibility.rate).toBeCloseTo(0.5, 10)
+    // Kazdy odsetek niesie przedzial — inaczej udawalby precyzje (D24).
+    expect(dane.engines[0]?.visibility.high).toBeGreaterThan(0.5)
+
+    const nasza = dane.voice.find((v) => v.isOwn)
+    expect(nasza?.name).toBe('Mentiometry')
+    expect(nasza?.answersWithMention).toBe(2)
+    expect(dane.voice.find((v) => !v.isOwn)?.answersWithMention).toBe(2)
+
+    const grounding = dane.citations.find((c) => c.source === 'grounding')
+    const inline = dane.citations.find((c) => c.source === 'inline')
+    expect(grounding?.ourRate.rate).toBe(0)
+    expect(inline?.ourRate.rate).toBeCloseTo(0.5, 10)
+  })
+
+  it('pierwszy pomiar nie ma z czym porownywac', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'x' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+    expect(buildGeoReport(db, scope, BASE).comparisons).toEqual([])
+  })
+
+  it('D25: zmiana zestawu promptow odmawia porownania z powodem', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+    // Zamrozony zestaw + nowy prompt = nowa wersja zestawu.
+    runGeoPrompts(db, scope, { siteUrl: BASE, add: ['C'] })
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+
+    const [porownanie] = buildGeoReport(db, scope, BASE).comparisons
+    expect(porownanie?.kind).toBe('odmowa')
+    if (porownanie?.kind !== 'odmowa') return
+    expect(porownanie.reason).toBe('rozny zestaw promptow')
+  })
+
+  it('D29: zmiana wersji encji odmawia porownania', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+    runGeoEntity(db, scope, {
+      siteUrl: BASE, name: 'Mentiometry', variants: ['Mentiometrom'], exclusions: [], isOwn: true,
+    })
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+
+    const [porownanie] = buildGeoReport(db, scope, BASE).comparisons
+    expect(porownanie?.kind).toBe('odmowa')
+    if (porownanie?.kind !== 'odmowa') return
+    expect(porownanie.reason).toBe('rozna wersja encji')
+  })
+
+  it('dwa pomiary tego samego kontekstu liczy sie sparowanie', async () => {
+    for (const tekst of ['Nie znam.', 'Polecam Mentiometry.']) {
+      await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: tekst }])], [], {
+        siteUrl: BASE, runsPerPrompt: 1,
+      })
+    }
+    const [porownanie] = buildGeoReport(db, scope, BASE).comparisons
+    expect(porownanie?.kind).toBe('porownanie')
+    if (porownanie?.kind !== 'porownanie') return
+    expect(porownanie.meanDifference).toBeCloseTo(1, 10)
+    // Skok z zera do stu punktow przekracza rozdzielczosc nawet tak malego
+    // zestawu (2 prompty po 1 przebiegu wykrywaja dopiero okolo 98 pp), wiec
+    // bramka go przepuszcza. To nie jest wada — to jest jedyna zmiana, jaka
+    // taki pomiar w ogole potrafi zobaczyc.
+    expect(porownanie.significant).toBe(true)
+  })
+
+  it('D26: zmiana na jednym prompcie z dwoch nie przebija rozdzielczosci', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }, { text: 'nic' }])],
+      [], { siteUrl: BASE, runsPerPrompt: 1 })
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }, { text: 'Mentiometry' }])],
+      [], { siteUrl: BASE, runsPerPrompt: 1 })
+
+    const [porownanie] = buildGeoReport(db, scope, BASE).comparisons
+    expect(porownanie?.kind).toBe('porownanie')
+    if (porownanie?.kind !== 'porownanie') return
+    expect(porownanie.meanDifference).toBeCloseTo(0.5, 10)
+    // Polowa skali to duzo, ale nie przy dwoch promptach po jednym przebiegu.
+    expect(porownanie.significant).toBe(false)
+  })
+
+  it('to samo porownanie liczone dwa razy daje ten sam przedzial', async () => {
+    for (const tekst of ['Nie znam.', 'Polecam Mentiometry.']) {
+      await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: tekst }])], [], {
+        siteUrl: BASE, runsPerPrompt: 1,
+      })
+    }
+    const a = buildGeoReport(db, scope, BASE).comparisons[0]
+    const b = buildGeoReport(db, scope, BASE).comparisons[0]
+    expect(b).toEqual(a)
+  })
+
+  it('D27: dwa tryby dostepu to dwie linie, nie jedna', async () => {
+    const grounded: LlmEngineProvider = {
+      ...atrapaSilnika('gemini', [{ text: 'Mentiometry' }]), accessMode: 'api_grounded',
+    }
+    await runGeoRun(db, scope, [atrapaSilnika('gemini', [{ text: 'x' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+    await runGeoRun(db, scope, [grounded], [], { siteUrl: BASE, runsPerPrompt: 1 })
+
+    const dane = buildGeoReport(db, scope, BASE)
+    expect(dane.engines).toHaveLength(2)
+    expect(dane.engines.map((e) => e.accessMode).sort()).toEqual(['api', 'api_grounded'])
+    // Osobne linie, wiec zadna nie ma poprzednika do porownania.
+    expect(dane.comparisons).toEqual([])
+  })
+
+  it('podaje rozdzielczosc pomiaru wprost', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'x' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 3,
+    })
+    const dane = buildGeoReport(db, scope, BASE)
+    expect(dane.prompts).toBe(2)
+    expect(dane.runsPerPrompt).toBe(3)
+    expect(dane.detectableDifference).toBeGreaterThan(0)
+    expect(dane.detectableDifference).toBeLessThan(1)
+  })
+
+  it('brak pomiaru mowi, jak go zrobic', () => {
+    expect(() => buildGeoReport(db, scope, BASE)).toThrow(NoGeoRunError)
+  })
+
+  it('zapisuje plik raportu', async () => {
+    await runGeoRun(db, scope, [atrapaSilnika('groq', [{ text: 'Mentiometry' }])], [], {
+      siteUrl: BASE, runsPerPrompt: 1,
+    })
+    const out = join(dir, 'raport.html')
+    const wynik = runGeoReport(db, scope, { siteUrl: BASE, outPath: out })
+    expect(wynik.engines).toBe(1)
+    const html = readFileSync(out, 'utf8')
+    expect(html).toContain('Widoczność w AI')
+    expect(html).not.toMatch(/(?:src|href)\s*=\s*["'](?:https?:)?\/\//i)
   })
 })

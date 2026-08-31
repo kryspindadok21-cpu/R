@@ -102,10 +102,16 @@ export interface PairedComparison {
   readonly meanDifference: number
   readonly interval: Interval
   /**
-   * `false`, gdy przedzial obejmuje zero. Wtedy zmiana jest **jeszcze
-   * nieistotna** — pokazujemy ja, ale bez kierunku (D26).
+   * `false`, gdy przedzial obejmuje zero **albo** gdy zmiana jest mniejsza niz
+   * rozdzielczosc pomiaru. Wtedy zmiana jest **jeszcze nieistotna** —
+   * pokazujemy ja, ale bez kierunku (D26).
    */
   readonly significant: boolean
+  /**
+   * Rozdzielczosc pomiaru uzyta jako druga bramka; `null`, gdy nie podano
+   * `runsPerPrompt` i nie dalo sie jej policzyc.
+   */
+  readonly resolution: number | null
   readonly seed: number
   readonly resamples: number
 }
@@ -126,16 +132,32 @@ export const DEFAULT_RESAMPLES = 10_000
  */
 export function pairedComparison(
   samples: readonly PairedSample[],
-  options: { readonly seed: number; readonly resamples?: number },
+  options: {
+    readonly seed: number
+    readonly resamples?: number
+    /**
+     * Liczba przebiegow na prompt. **Konieczna, zeby istotnosc nie klamala.**
+     * Bootstrap losuje z zaobserwowanych roznic i traktuje odsetek kazdego
+     * promptu jak liczbe dokladna — a przy trzech przebiegach on sam ma blad
+     * standardowy rzedu 29 punktow procentowych. Bez tej liczby zgodne roznice
+     * na kilku promptach daja przedzial zerowej szerokosci i falszywe
+     * „istotne". Rozdzielczosc z `detectableDifference` domyka te luke.
+     */
+    readonly runsPerPrompt?: number
+  },
 ): PairedComparison {
   const resamples = options.resamples ?? DEFAULT_RESAMPLES
   const differences = samples.map((s) => s.after - s.before)
   const n = differences.length
 
+  const resolution = options.runsPerPrompt === undefined
+    ? null
+    : detectableDifference(n, options.runsPerPrompt)
+
   if (n === 0) {
     return {
       pairs: 0, meanDifference: 0, interval: { low: 0, high: 0 },
-      significant: false, seed: options.seed, resamples,
+      significant: false, resolution, seed: options.seed, resamples,
     }
   }
 
@@ -149,7 +171,7 @@ export function pairedComparison(
   if (n === 1) {
     return {
       pairs: 1, meanDifference: observed, interval: { low: observed, high: observed },
-      significant: false, seed: options.seed, resamples,
+      significant: false, resolution, seed: options.seed, resamples,
     }
   }
 
@@ -170,11 +192,28 @@ export function pairedComparison(
   }
 
   const interval = { low: percentile(0.025), high: percentile(0.975) }
+
+  // Dwie bramki plus zabezpieczenie na brak danych:
+  //  1. przedzial nie obejmuje zera — klasyczna bramka;
+  //  2. zmiana przekracza rozdzielczosc pomiaru — bootstrap losuje z roznic
+  //     **miedzy** promptami i nie widzi szumu **wewnatrz** promptu, wiec bez
+  //     tego przy trzech przebiegach uznawalby za istotne zmiany, ktorych ten
+  //     zestaw fizycznie nie jest w stanie zmierzyc;
+  //  3. gdy wszystkie roznice sa identyczne, przedzial ma zerowa szerokosc.
+  //     Przy znanej liczbie przebiegow to nie problem — zerowy rozrzut miedzy
+  //     promptami jest sygnalem mocnym, nie slabym, a reszta niepewnosci siedzi
+  //     w bramce rozdzielczosci. Przy nieznanej liczbie przebiegow nie mamy czym
+  //     tej reszty zmierzyc, wiec nie orzekamy.
+  const excludesZero = interval.low > 0 || interval.high < 0
+  const aboveResolution = resolution === null || Math.abs(observed) >= resolution
+  const measurable = interval.high > interval.low || resolution !== null
+
   return {
     pairs: n,
     meanDifference: observed,
     interval,
-    significant: interval.low > 0 || interval.high < 0,
+    significant: excludesZero && aboveResolution && measurable,
+    resolution,
     seed: options.seed,
     resamples,
   }
@@ -321,5 +360,15 @@ export function compareMeasurements(
     }
   })
 
-  return { kind: 'porownanie', comparison: pairedComparison(samples, options) }
+  // Liczba przebiegow bierze sie z danych, nie z argumentu: najmniejsza liczba
+  // prob w zestawie wyznacza, jak dokladny jest najslabszy punkt porownania.
+  const minTrials = Math.min(
+    ...before.measurements.map((m) => m.trials),
+    ...after.measurements.map((m) => m.trials),
+  )
+
+  return {
+    kind: 'porownanie',
+    comparison: pairedComparison(samples, { ...options, runsPerPrompt: minTrials }),
+  }
 }

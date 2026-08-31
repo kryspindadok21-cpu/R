@@ -10,3 +10,8 @@ export type {
 export type {
   DailyPoint, ProviderCallPoint, QueryPoint, ReconciliationPoint, ReportData,
 } from './types.js'
+export { renderGeoReport } from './geo.js'
+export type {
+  AccessMode, CitationSource, GeoCitationRow, GeoComparisonRow, GeoEngineRow,
+  GeoReportData, GeoVoiceRow, ShareRow,
+} from './geo-types.js'

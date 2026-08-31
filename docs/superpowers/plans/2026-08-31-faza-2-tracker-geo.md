@@ -18,8 +18,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 4. `packages/geo` — ekstrakcja cytowań (D32) | ukończone; 728 testów zielonych łącznie | `00bb337` |
 | 5. `packages/db` — migracja `0003` + repozytoria GEO | ukończone, izolacja najemców zielona; 762 testy zielone łącznie | `7905917` |
 | 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | ukończone, AC7/AC8/AC9 zielone; 779 testów zielonych łącznie | `8923340` |
-| 7. `apps/cli` — `seo geo prompts`, `seo geo entity`, `seo geo run` | ukończone, uruchomione na żywo; 797 testów zielonych łącznie | — |
-| 8. `packages/report` — sekcja GEO z bramką istotności | niezaczęte | — |
+| 7. `apps/cli` — `seo geo prompts`, `seo geo entity`, `seo geo run` | ukończone, uruchomione na żywo; 797 testów zielonych łącznie | `2551c21` |
+| 8. `packages/report` — raport GEO + `seo geo report` | ukończone; 826 testów zielonych łącznie | — |
 | 9. `apps/cli` — `seo llms-txt` (D31) | niezaczęte | — |
 | 10. Odbiór na własnej stronie | niezaczęte | — |
 
@@ -139,3 +139,25 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
   Od tego pola zależy, co w ogóle znaczy „widoczność", więc musi być polem.
 - **`seo geo run` bez żadnego klucza kończy się kodem 1** i wypisuje wszystkie
   trzy pominięte silniki z nazwą brakującej zmiennej. Sprawdzone na żywo.
+- **Bramka istotności z samego bootstrapu kłamała — to była realna wada, nie zła
+  asercja w teście.** Bootstrap losuje z różnic **między** promptami i traktuje
+  odsetek każdego promptu jak liczbę dokładną. Przy trzech przebiegach ten
+  odsetek sam ma błąd standardowy rzędu 29 pp. Gdy różnice na promptach są
+  zgodne, przedział robi się wąski albo punktowy — i zmiana zostaje uznana za
+  istotną, choć zestaw fizycznie nie jest w stanie jej zmierzyć. Wyszło to na
+  fikstur ze zerowym rozrzutem: przedział zerowej szerokości wyglądał jak
+  pewność. Istotność wymaga teraz **obu** warunków: przedział mija zero
+  **i** `|średnia różnica| ≥ detectableDifference(prompty, przebiegi)`.
+  D26 dopisane.
+- **`compareMeasurements` bierze liczbę przebiegów z danych**, jako minimum
+  `trials` w obu zestawach — najsłabszy punkt porównania wyznacza jego dokładność.
+  Nie trzeba jej podawać osobno i nie da się jej podać niezgodnie z danymi.
+- **Bez `runsPerPrompt` przy zerowym rozrzucie nie orzekamy w ogóle.** Nie ma
+  wtedy czym zmierzyć szumu wewnątrz promptu, a zgadywanie w tym miejscu byłoby
+  dokładnie tym, przed czym broni cała ta warstwa.
+- **Ziarno bootstrapu wyprowadzone z pary identyfikatorów przebiegów** (FNV-1a),
+  więc ten sam raport wygenerowany dwa razy daje identyczny przedział — jest na
+  to test.
+- **Raport nie ma jednej liczby „widoczności w AI".** Każdy silnik to osobny
+  wiersz, bo model z groundingiem i model bez to dwa procesy. Cytowania też są
+  rozdzielone na źródła i nie sumują się.

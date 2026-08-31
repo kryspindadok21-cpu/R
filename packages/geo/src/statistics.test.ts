@@ -109,10 +109,47 @@ describe('pairedComparison', () => {
 
   it('konsekwentna poprawa na kazdym prompcie jest istotna', () => {
     const samples = Array.from({ length: 12 }, (_, i) => proba(`p${i}`, 0.2, 0.6))
-    const wynik = pairedComparison(samples, { seed: 3 })
+    const wynik = pairedComparison(samples, { seed: 3, runsPerPrompt: 3 })
     expect(wynik.meanDifference).toBeCloseTo(0.4, 10)
     expect(wynik.interval.low).toBeGreaterThan(0)
+    // 0,4 przekracza rozdzielczosc 12 promptow po 3 przebiegi (okolo 0,23).
+    expect(wynik.resolution).toBeCloseTo(0.23098, 4)
     expect(wynik.significant).toBe(true)
+  })
+
+  it('bez liczby przebiegow nie orzeka o istotnosci przy zerowym rozrzucie', () => {
+    // Wszystkie roznice identyczne: bootstrap zwraca przedzial punktowy, ktory
+    // wyglada jak pewnosc. Bez `runsPerPrompt` nie ma czym zmierzyc szumu
+    // wewnatrz promptu, wiec milczymy zamiast orzekac.
+    const samples = Array.from({ length: 12 }, (_, i) => proba(`p${i}`, 0.2, 0.6))
+    const wynik = pairedComparison(samples, { seed: 3 })
+    expect(wynik.resolution).toBeNull()
+    expect(wynik.significant).toBe(false)
+  })
+
+  it('zmiana ponizej rozdzielczosci nie jest istotna, choc przedzial mija zero', () => {
+    // Male, ale zgodne roznice: sam bootstrap orzeklby istotnosc, bo miedzy
+    // promptami nie ma rozrzutu. Szum wewnatrz promptu przy 3 przebiegach
+    // jest wielokrotnie wiekszy niz ta zmiana.
+    const samples = Array.from({ length: 12 }, (_, i) => proba(`p${i}`, 0.30, 0.35))
+    const wynik = pairedComparison(samples, { seed: 3, runsPerPrompt: 3 })
+    expect(wynik.interval.low).toBeGreaterThan(0)
+    expect(wynik.meanDifference).toBeLessThan(wynik.resolution as number)
+    expect(wynik.significant).toBe(false)
+  })
+
+  it('ta sama zmiana staje sie istotna przy wiekszym zestawie promptow', () => {
+    const maly = pairedComparison(
+      Array.from({ length: 12 }, (_, i) => proba(`p${i}`, 0.30, 0.35)),
+      { seed: 3, runsPerPrompt: 3 },
+    )
+    const duzy = pairedComparison(
+      Array.from({ length: 400 }, (_, i) => proba(`p${i}`, 0.30, 0.35)),
+      { seed: 3, runsPerPrompt: 3, resamples: 2000 },
+    )
+    expect(maly.significant).toBe(false)
+    expect(duzy.significant).toBe(true)
+    expect(duzy.resolution as number).toBeLessThan(maly.resolution as number)
   })
 
   it('jeden prompt nie udaje precyzji', () => {

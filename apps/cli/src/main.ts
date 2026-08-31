@@ -8,7 +8,7 @@ import {
   proxyFromEnv, selectEngines, type AccessMode, type PsiStrategy,
 } from '@seo/providers'
 import {
-  runGeoEntity, runGeoPrompts, runGeoRun,
+  runGeoEntity, runGeoPrompts, runGeoReport, runGeoRun,
 } from './commands/geo.js'
 import { runPsi } from './commands/psi.js'
 import { runAuditReport } from './commands/audit-report.js'
@@ -37,6 +37,7 @@ const USAGE = `seo — platforma SEO/GEO
   seo geo prompts --site <uri> [--add "tresc"]... [--locale pl] [--set nazwa]
   seo geo entity  --site <uri> --name "Marka" [--variants a,b] [--exclusions c] [--own]
   seo geo run     --site <uri> [--runs N] [--grounded] [--set nazwa]
+  seo geo report  --site <uri> [--out sciezka.html]
 
 Bezpieczniki crawlera sa w kodzie, nie w konfiguracji: 1 zadanie/s na host,
 500 stron, glebokosc 5, 15 min budzetu. Flaga moze zejsc w dol, nigdy powyzej
@@ -578,6 +579,24 @@ async function runGeoCommand(
         )
         return 1
       }
+      return 0
+    }
+
+    if (sub === 'report') {
+      const siteUrl = requireFlag(flags.site, 'site')
+      const result = runGeoReport(db, scope, {
+        siteUrl, outPath: flags.out ?? 'raport-geo.html',
+      })
+      process.stdout.write(
+        `Raport:                      ${result.outPath}\n` +
+        `Silniki w raporcie:          ${result.engines}\n` +
+        `Porownania:                  ${result.comparisons}\n` +
+        (result.refused === 0
+          ? ''
+          : `Odmowy porownania:           ${result.refused}\n` +
+            'Odmowa znaczy, ze zmienil sie zestaw promptow, wersja modelu albo\n' +
+            'definicja encji. Powod jest w raporcie przy kazdym silniku.\n'),
+      )
       return 0
     }
 
