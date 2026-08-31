@@ -80,6 +80,9 @@ importers:
       '@seo/core':
         specifier: workspace:*
         version: link:../core
+      '@seo/geo':
+        specifier: workspace:*
+        version: link:../geo
       '@seo/parse':
         specifier: workspace:*
         version: link:../parse

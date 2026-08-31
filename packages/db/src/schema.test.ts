@@ -7,23 +7,41 @@ import * as schema from './schema.js'
 
 const tables = Object.values(schema).filter((v) => is(v, SQLiteTable)) as SQLiteTable[]
 
-function columnsInDatabase(table: string): string[] {
+function migrated() {
   const db = openDatabase(':memory:')
   migrate(db)
-  return rawHandle(db)
+  return db
+}
+
+function columnsInDatabase(table: string): string[] {
+  return rawHandle(migrated())
     .prepare(`PRAGMA table_info(${table})`)
     .all()
     .map((r) => (r as { name: string }).name)
     .sort()
 }
 
+/** Tabele, ktore naprawde powstaja po wszystkich migracjach. */
+function tablesInDatabase(): string[] {
+  return rawHandle(migrated())
+    .prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+    )
+    .all()
+    .map((r) => (r as { name: string }).name)
+    .filter((name) => name !== 'schema_migration')
+    .sort()
+}
+
 describe('schema', () => {
-  it('opisuje wszystkie tabele domenowe', () => {
-    expect(tables.map(getTableName).sort()).toEqual([
-      'audit_finding', 'audit_skipped_rule', 'crawl_page', 'crawl_run',
-      'gsc_daily', 'gsc_query_daily', 'gsc_reconciliation', 'gsc_sync_run',
-      'page_link', 'provider_call', 'psi_measurement', 'site', 'tenant', 'url',
-    ])
+  /**
+   * Wlasnosc, nie lista. Wpisana na sztywno lista tabel psula sie przy kazdej
+   * nowej migracji i uczyla, ze test sie „poprawia" zamiast cos wykrywac.
+   * Porownanie z faktyczna zawartoscia bazy lapie oba kierunki rozjazdu:
+   * tabele bez modelu drizzle i model bez tabeli.
+   */
+  it('opisuje dokladnie te tabele, ktore tworza migracje', () => {
+    expect(tables.map(getTableName).sort()).toEqual(tablesInDatabase())
   })
 
   it.each(tables.map((t) => [getTableName(t), t] as const))(

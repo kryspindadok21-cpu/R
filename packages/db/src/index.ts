@@ -10,5 +10,10 @@ export {
   type CrawlPageInput, type CrawlRepos, type CrawlRunFinish, type CrawlRunInput,
   type FindingInput, type PageLinkInput, type PsiMeasurementInput, type SkippedRuleInput,
 } from './crawl-repo.js'
+export {
+  FrozenPromptSetError, geoRepos,
+  type BrandEntityInput, type GeoAnswerInput, type GeoRepos, type GeoRunFinish,
+  type GeoRunInput, type PromptInput, type PromptSetInput,
+} from './geo-repo.js'
 // rawHandle i schema swiadomie nieeksportowane — jedynym wejsciem do bazy
 // jest repos(), ktore wymusza TenantScope (D5).

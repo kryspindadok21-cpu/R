@@ -46,3 +46,25 @@ export const CRAWL_READ_METHOD_ARGS: Record<string, (f: CrawlFixture) => unknown
   orphanPages: (f) => [f.runId],
   listPsiMeasurements: (f) => [f.siteId, 0, Number.MAX_SAFE_INTEGER],
 }
+
+/**
+ * To samo dla repozytoriow Fazy 2. Kazda metoda z GeoRepos["read"] MUSI miec
+ * tu wpis — test izolacji porownuje ten rejestr z faktyczna lista metod.
+ */
+export interface GeoFixture extends ForeignFixture {
+  readonly runId: string
+  readonly promptSetId: string
+}
+
+export const GEO_READ_METHOD_ARGS: Record<string, (f: GeoFixture) => unknown[]> = {
+  getPromptSet: (f) => [f.promptSetId],
+  listPromptSets: (f) => [f.siteId],
+  listPrompts: (f) => [f.promptSetId],
+  listEntities: (f) => [f.siteId],
+  latestGeoRun: (f) => [f.siteId],
+  getGeoRun: (f) => [f.runId],
+  listGeoRuns: (f) => [f.siteId, 50],
+  listAnswers: (f) => [f.runId],
+  listMentions: (f) => [f.runId],
+  listCitations: (f) => [f.runId, 'inline'],
+}

@@ -15,8 +15,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 1. Specyfikacja Fazy 2 (D23–D31) | ukończone | `a0d8dda` |
 | 2. `packages/geo` — warstwa statystyczna | ukończone, AC1/AC2/AC3/AC4/AC5 zielone; 687 testów zielonych łącznie | `a0d8dda` |
 | 3. `packages/geo` — wykrywanie wzmianek i share of voice | ukończone, AC6 zielone; 710 testów zielonych łącznie | `44779a4` |
-| 4. `packages/geo` — ekstrakcja cytowań (D32) | ukończone; 728 testów zielonych łącznie | — |
-| 5. `packages/db` — migracja `0003` + repozytoria GEO | niezaczęte | — |
+| 4. `packages/geo` — ekstrakcja cytowań (D32) | ukończone; 728 testów zielonych łącznie | `00bb337` |
+| 5. `packages/db` — migracja `0003` + repozytoria GEO | ukończone, izolacja najemców zielona; 762 testy zielone łącznie | — |
 | 6. `packages/providers` — adaptery silników (gemini, groq, openrouter) | niezaczęte | — |
 | 7. `apps/cli` — `seo geo prompts`, `seo geo run` | niezaczęte | — |
 | 8. `packages/report` — sekcja GEO z bramką istotności | niezaczęte | — |
@@ -94,3 +94,18 @@ nie potrzebuje ani sieci, ani bazy. Dopiero potem baza, potem silniki, na końcu
 - **Obcinanie ogona adresu rozstrzyga bilans nawiasów w samym adresie**, a nie
   sam znak. Inaczej albo tniemy poprawne adresy (`.../Delta_(rzeka)`), albo
   doklejamy składnię markdownu z `[tekst](adres)`.
+- **Zamrożenie zestawu promptów jest wymuszone kodem, nie regulaminem.**
+  `startGeoRun` ustawia `prompt_set.frozen_at`, a `addPrompts` rzuca wtedy
+  `FrozenPromptSetError`. D25 mówi, że dodanie promptu w środku okresu unieważnia
+  porównywalność — bez tego byłby to akapit, o którym ktoś zapomni za trzy
+  miesiące. Zmiana składu wymaga nowej wersji zestawu (`supersedes_id`).
+- **`listCitations` wymaga źródła jako argumentu.** Nie ma odczytu, który zwraca
+  oba naraz — sygnatura pilnuje D32 tam, gdzie komentarz by nie wystarczył.
+- **Test schematu miał wpisaną na sztywno listę tabel** i psuł się przy każdej
+  migracji — dokładnie ta sama klasa błędu, co lista migracji w `migrate.test.ts`
+  w Fazie 1. Porównuje teraz model drizzle z faktyczną zawartością bazy po
+  migracjach, więc łapie oba kierunki rozjazdu: tabelę bez modelu i model bez
+  tabeli. Test, który „się poprawia" przy każdej zmianie, niczego nie pilnuje.
+- **`packages/db` zależy teraz od `@seo/geo`** — po typy `Mention`, `Citation`
+  i `EntityDefinition`. To ta sama zależność co od `@seo/parse` w Fazie 1: czysty
+  silnik definiuje kształt, baza go zapisuje.

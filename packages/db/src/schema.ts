@@ -203,3 +203,92 @@ export const psiMeasurement = sqliteTable('psi_measurement', {
   performanceScore: real('performance_score'),
   source: text('source', { enum: ['lab', 'field'] }).notNull(),
 })
+
+export const promptSet = sqliteTable('prompt_set', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  name: text('name').notNull(),
+  version: integer('version').notNull(),
+  supersedesId: text('supersedes_id'),
+  createdAt: integer('created_at').notNull(),
+  frozenAt: integer('frozen_at'),
+})
+
+export const prompt = sqliteTable('prompt', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  promptSetId: text('prompt_set_id').notNull(),
+  text: text('text').notNull(),
+  locale: text('locale').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const brandEntity = sqliteTable('brand_entity', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  name: text('name').notNull(),
+  variants: text('variants').notNull(),
+  exclusions: text('exclusions').notNull(),
+  version: integer('version').notNull(),
+  isOwn: integer('is_own').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const geoRun = sqliteTable('geo_run', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  siteId: text('site_id').notNull(),
+  promptSetId: text('prompt_set_id').notNull(),
+  engine: text('engine').notNull(),
+  modelVersion: text('model_version').notNull(),
+  accessMode: text('access_mode', { enum: ['api', 'api_grounded'] }).notNull(),
+  entityVersion: integer('entity_version').notNull(),
+  runsPerPrompt: integer('runs_per_prompt').notNull(),
+  startedAt: integer('started_at').notNull(),
+  finishedAt: integer('finished_at'),
+  ok: integer('ok'),
+  error: text('error'),
+  answersOk: integer('answers_ok').notNull(),
+  answersFailed: integer('answers_failed').notNull(),
+})
+
+export const geoAnswer = sqliteTable('geo_answer', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  geoRunId: text('geo_run_id').notNull(),
+  promptId: text('prompt_id').notNull(),
+  runIndex: integer('run_index').notNull(),
+  text: text('text').notNull(),
+  refusalReason: text('refusal_reason'),
+  fetchError: text('fetch_error'),
+  latencyMs: integer('latency_ms').notNull(),
+  createdAt: integer('created_at').notNull(),
+})
+
+export const geoMention = sqliteTable('geo_mention', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  geoRunId: text('geo_run_id').notNull(),
+  geoAnswerId: text('geo_answer_id').notNull(),
+  entityId: text('entity_id').notNull(),
+  matched: text('matched').notNull(),
+  startOffset: integer('start_offset').notNull(),
+  positionShare: real('position_share').notNull(),
+  paragraph: integer('paragraph').notNull(),
+})
+
+export const geoCitation = sqliteTable('geo_citation', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  geoRunId: text('geo_run_id').notNull(),
+  geoAnswerId: text('geo_answer_id').notNull(),
+  source: text('source', { enum: ['grounding', 'inline'] }).notNull(),
+  rawUrl: text('raw_url').notNull(),
+  urlNormalized: text('url_normalized'),
+  urlHash: text('url_hash'),
+  host: text('host'),
+  positionShare: real('position_share'),
+  ours: integer('ours').notNull(),
+})
