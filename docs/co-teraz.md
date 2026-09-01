@@ -49,11 +49,12 @@ czterech stronach.
 
 <https://console.cloud.google.com>, konto Google to samo, co w Search Console.
 
-1. Nowy projekt, nazwa dowolna.
-2. ☰ → *Interfejsy API i usługi* → **Biblioteka** → `Google Search Console API` →
-   **Włącz**. ← ten krok najczęściej się pomija, a bez niego wszystko zwraca 403.
-3. ☰ → *Dane logowania* → **Utwórz dane logowania** → *Konto usługi* → nazwa →
-   Utwórz → **Dalej** → **Gotowe**. **Żadnej roli IAM.**
+1. ~~Projekt~~ i ~~`Google Search Console API` → **Włącz**~~ — ✅ zrobione
+   2026-09-01. To był krok, który najczęściej się pomija; skoro jest za Tobą,
+   reszta jest mechaniczna.
+2. ☰ → *Dane logowania* → **Utwórz dane logowania** → *Konto usługi* → nazwa →
+   Utwórz → **Dalej** → **Gotowe**. **Żadnej roli IAM** — dostęp do danych
+   nadaje się w Search Console, nie w Cloud.
 
 Klucza **jeszcze nie pobieraj** — patrz punkt 5.
 
