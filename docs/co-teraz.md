@@ -20,16 +20,15 @@ Gałąź ma cztery commity, których Twój lokalny klon jeszcze nie widział.
 
 ---
 
-## 1. Search Console — potwierdź własność  ⟶ telefon albo komputer
+## 1. ~~Search Console — potwierdź własność~~  ✅ ZROBIONE 2026-09-01
 
-Plik potwierdzający **już leży na serwerze** i został sprawdzony na żywo:
-`https://kryspindadok21-cpu.github.io/R/google87481e6c21f429cf.html`
+Property `https://kryspindadok21-cpu.github.io/R/` jest zweryfikowana i widoczna
+na liście. Plik potwierdzający leży pod
+`https://kryspindadok21-cpu.github.io/R/google87481e6c21f429cf.html` — **nie
+kasuj go**, Google sprawdza go ponownie i skasowanie unieważnia weryfikację.
 
-Zostaje kliknąć **Zweryfikuj** w Search Console.
-
-Property dodajesz jako **Prefiks adresu URL**:
-`https://kryspindadok21-cpu.github.io/R/`
-Typ *Domena* nie zadziała — wymaga wpisu DNS, którego na `github.io` nie masz.
+W Search Console jest też druga property: `https://bbqstation46.lovable.app/`
+— patrz sekcja na dole.
 
 ---
 
@@ -123,6 +122,33 @@ setx SEO_GROQ_KEY "gsk_..."
 
 Potem otwórz nową konsolę, `pnpm panel`, wejdź w swoją stronę → **Widoczność w
 AI**: ustaw markę, dopisz pytania klientów, kliknij *Zmierz*.
+
+---
+
+## Druga property: BBQ Station 46 — prawdopodobnie ważniejsza
+
+W Twoim Search Console jest `https://bbqstation46.lovable.app/` — prawdziwa
+restauracja w Gorzowie Wielkopolskim. Sprawdzone: strona odpowiada 200, ma tytuł
+i opis, **treść widać bez JavaScriptu** (1988 znaków), `robots.txt` i
+`sitemap.xml` leżą pod korzeniem hosta i działają. Strukturalnie jest w lepszym
+stanie niż strona notatek.
+
+**Dlaczego to może być właściwy poligon, a nie strona projektu:**
+
+- Ma szansę na prawdziwy ruch z lokalnych zapytań („żeberka Gorzów", „burgery
+  Gorzów") — a bez ruchu cały silnik treści i pomiar różnicą w różnicach nie mają
+  czego liczyć. Strona notatek może nie dostać żadnych wyświetleń miesiącami.
+- To realny biznes, więc wynik jest **case study**, a nie demonstracją na sobie.
+  Cel projektu brzmi „najpierw urosnąć na własnej stronie, potem sprzedawać" —
+  restauracja pasuje do tego lepiej niż notatki o narzędziu.
+- Pytania typu „gdzie zjeść dobre żeberka w Gorzowie" to dokładnie ten rodzaj
+  zapytania, na który tracker widoczności w AI został zbudowany.
+
+**Co z tego wynika dla punktów 3–4:** dodaj konto serwisowe jako użytkownika
+**do obu property**. To jedno dodatkowe wklejenie tego samego adresu, a daje
+wybór, którą stronę mierzyć, zamiast wracać po tydzień.
+
+Decyzja, czy pracujemy na BBQ, należy do Ciebie — nie zakładam, że tak.
 
 ---
 
