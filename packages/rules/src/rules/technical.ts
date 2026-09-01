@@ -218,6 +218,56 @@ const sitemapMissingPage: SiteRule = siteRule(
   },
 )
 
+/**
+ * Mapa witryny, ktorej nikt nie znajdzie.
+ *
+ * Znalezione na wlasnej stronie projektu i **dlatego ta regula istnieje**.
+ * Witryna na GitHub Pages stoi pod `https://uzytkownik.github.io/repo/`, wiec
+ * `robots.txt` z repozytorium laduje pod `/repo/robots.txt`. Tam **nikt go nie
+ * czyta**: `robots.txt` jest plikiem poziomu hosta i wyszukiwarki pytaja
+ * wylacznie o `https://uzytkownik.github.io/robots.txt`.
+ *
+ * Skutek jest podstepny, bo nic nie wyglada na zepsute. Plik istnieje, otwiera
+ * sie w przegladarce, ma w srodku poprawna linijke `Sitemap:` — i ta linijka
+ * nie dziala. Mapa witryny nie zostanie odkryta, bo jedyne dwa miejsca, w ktore
+ * wyszukiwarka zaglada, to `robots.txt` pod korzeniem hosta i `/sitemap.xml`
+ * pod korzeniem hosta. Oba nalezą do kogos innego.
+ *
+ * To samo dotyczy kazdej witryny serwowanej z podkatalogu: sklepu pod `/shop/`,
+ * bloga pod `/blog/` na cudzym hostingu, dokumentacji pod `/docs/`.
+ *
+ * Waga `medium`, nie `high`: strony nadal da sie odkryc przez linki, a mape
+ * mozna zglosic recznie w Search Console. Ale dla nowej witryny bez linkow
+ * przychodzacych mapa jest **jedyna** droga i wtedy to jest roznica miedzy
+ * indeksacja w tydzien a w kwartal.
+ */
+const sitemapNotDiscoverable: SiteRule = siteRule(
+  {
+    id: 'sitemap.not-discoverable',
+    category: 'technical',
+    severity: 'medium',
+    title: 'Mapa witryny jest nie do odkrycia dla wyszukiwarek',
+    requires: ['sitemap'],
+  },
+  (site) => {
+    if (site.robotsState === 'ok') return []
+
+    const start = new URL(site.siteUrl)
+    const korzenHosta = new URL('/', start).toString()
+
+    return [finding(sitemapNotDiscoverable, null, {
+      'robots.txt pod korzeniem hosta': `${korzenHosta}robots.txt — ${
+        site.robotsState === 'missing' ? 'nie istnieje' : 'nieosiągalny'}`,
+      'adresów w mapie': site.sitemapUrls.length,
+      'witryna w podkatalogu': start.pathname !== '/',
+      'co zrobić': start.pathname === '/'
+        ? 'dodaj robots.txt pod korzeniem hosta z linią Sitemap:'
+        : 'zgłoś mapę ręcznie w Search Console — pliku robots.txt pod '
+          + 'korzeniem hosta nie kontrolujesz',
+    })]
+  },
+)
+
 const sitemapNonIndexableUrl: SiteRule = siteRule(
   {
     id: 'sitemap.non-indexable-url',
@@ -247,4 +297,5 @@ export const TECHNICAL_PAGE_RULES: readonly PageRule[] = [
 
 export const TECHNICAL_SITE_RULES: readonly SiteRule[] = [
   hreflangMissingReturn, sitemapDeadUrl, sitemapMissingPage, sitemapNonIndexableUrl,
+  sitemapNotDiscoverable,
 ]

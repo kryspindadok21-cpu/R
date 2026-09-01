@@ -127,3 +127,57 @@ describe('sitemap.dead-url', () => {
     expect(result.skipped.map((s) => s.ruleId)).toContain('sitemap.dead-url')
   })
 })
+
+describe('sitemap.not-discoverable', () => {
+  const zbadaj = (robotsState: 'ok' | 'missing' | 'unreachable', siteUrl: string) =>
+    auditSite(
+      site([], { siteUrl, sitemapUrls: [`${siteUrl}a/`, `${siteUrl}b/`], robotsState }),
+      ctx(),
+      SITE_ONLY,
+    )
+
+  const ustalenie = (w: ReturnType<typeof zbadaj>) =>
+    w.findings.find((f) => f.ruleId === 'sitemap.not-discoverable')
+
+  it('milczy, gdy robots.txt stoi pod korzeniem hosta', () => {
+    expect(ustalenie(zbadaj('ok', 'https://przyklad.test/'))).toBeUndefined()
+  })
+
+  /**
+   * Sedno: plik istnieje i otwiera sie w przegladarce, wiec nic nie wyglada
+   * na zepsute — a linijka `Sitemap:` w nim jest martwa.
+   */
+  it('łapie witrynę w podkatalogu, gdzie robots.txt hosta nie istnieje', () => {
+    const f = ustalenie(zbadaj('missing', 'https://kto.github.io/repo/'))
+    expect(f).toBeDefined()
+    expect(f?.severity).toBe('medium')
+    expect(f?.url).toBeNull()
+    expect(String(f?.evidence['robots.txt pod korzeniem hosta']))
+      .toBe('https://kto.github.io/robots.txt — nie istnieje')
+    expect(f?.evidence['witryna w podkatalogu']).toBe(true)
+    expect(f?.evidence['adresów w mapie']).toBe(2)
+    expect(String(f?.evidence['co zrobić'])).toContain('zgłoś mapę ręcznie')
+  })
+
+  it('przy witrynie pod korzeniem radzi dodać robots.txt, a nie zgłaszać ręcznie', () => {
+    const f = ustalenie(zbadaj('missing', 'https://przyklad.test/'))
+    expect(f?.evidence['witryna w podkatalogu']).toBe(false)
+    expect(String(f?.evidence['co zrobić'])).toContain('dodaj robots.txt')
+  })
+
+  it('nieosiągalny robots.txt to inny powód niż brak', () => {
+    const f = ustalenie(zbadaj('unreachable', 'https://przyklad.test/'))
+    expect(String(f?.evidence['robots.txt pod korzeniem hosta'])).toContain('nieosiągalny')
+  })
+
+  /** Bez mapy nie ma czego nie odkryć — reguła melduje się jako pominięta (D17). */
+  it('bez mapy witryny melduje się jako pominięta, a nie milczy po cichu', () => {
+    const wynik = auditSite(
+      site([], { robotsState: 'missing' }),
+      ctx({ capabilities: new Set(['page-facts', 'http-response', 'link-graph', 'complete-crawl']) }),
+      SITE_ONLY,
+    )
+    expect(wynik.findings.map((f) => f.ruleId)).not.toContain('sitemap.not-discoverable')
+    expect(wynik.skipped.map((s) => s.ruleId)).toContain('sitemap.not-discoverable')
+  })
+})

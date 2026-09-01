@@ -66,6 +66,7 @@ export function site(pages: readonly PageInput[], overrides: Partial<SiteInput> 
     pages,
     sitemapUrls: [],
     robotsBlockedUrls: [],
+    robotsState: 'ok' as const,
     ...overrides,
   }
 }

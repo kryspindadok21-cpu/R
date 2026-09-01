@@ -104,6 +104,13 @@ export interface PageInput {
   readonly inSitemap: boolean
 }
 
+/**
+ * Stan `robots.txt` **pod korzeniem hosta** — bo tylko tam ktokolwiek go szuka.
+ * `missing` to HTTP 404: wolno wtedy chodzic wszedzie. `unreachable` to blad
+ * sieci albo 5xx: crawlery traktuja to jako zakaz, a nie jako zgode.
+ */
+export type RobotsState = 'ok' | 'missing' | 'unreachable'
+
 export interface SiteInput {
   readonly siteUrl: string
   readonly pages: readonly PageInput[]
@@ -111,6 +118,8 @@ export interface SiteInput {
   readonly sitemapUrls: readonly string[]
   /** Adresy zablokowane przez `robots.txt`, na ktore natrafil crawler. */
   readonly robotsBlockedUrls: readonly string[]
+  /** Stan `robots.txt` pod korzeniem hosta, nie pod adresem startowym. */
+  readonly robotsState: RobotsState
 }
 
 export type PageRule = Rule<PageInput>

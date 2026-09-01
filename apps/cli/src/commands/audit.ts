@@ -128,6 +128,7 @@ export function runAudit(
       // Adresy zablokowane przez robots.txt nie sa zapisywane jako strony,
       // wiec regula `robots.blocked-but-linked` dostaje pusta liste i milczy.
       robotsBlockedUrls: [],
+      robotsState: run.robotsState,
     },
     { capabilities, thresholds: DEFAULT_THRESHOLDS },
     ALL_RULES,
