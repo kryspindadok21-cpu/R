@@ -138,13 +138,25 @@ form.pole-obok {
 }
 .pole { display: grid; gap: .3rem; flex: 1 1 20rem; }
 label { font-weight: 600; font-size: .85rem; }
-input[type=url], input[type=number], input[type=text] {
+input[type=url], input[type=number], input[type=text], input[type=date], textarea, select {
   padding: .62rem .7rem; font: inherit; width: 100%;
   border: 1px solid var(--linia); border-radius: .5rem;
   background: var(--tlo-karta); color: var(--tekst);
 }
-input:focus-visible, button:focus-visible, a:focus-visible {
+textarea { resize: vertical; min-height: 5rem; line-height: 1.5; }
+input:focus-visible, textarea:focus-visible, select:focus-visible,
+button:focus-visible, a:focus-visible {
   outline: 2px solid var(--akcent); outline-offset: 2px;
+}
+/* Formularz w kolumnie — pola jedno pod drugim, przycisk na koncu. */
+form.pole-pod .pole + .pole { margin-top: .8rem; }
+form.pole-pod button { margin-top: .9rem; }
+
+/* Blok tekstu do przepisania: llms.txt, markdown briefu. */
+pre.zrzut {
+  margin: 0; padding: .9rem 1rem; overflow-x: auto; max-height: 32rem;
+  background: var(--tlo); border: 1px solid var(--linia); border-radius: .5rem;
+  font-size: .8rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
 }
 .podpowiedz { font-size: .8rem; color: var(--slabe); }
 

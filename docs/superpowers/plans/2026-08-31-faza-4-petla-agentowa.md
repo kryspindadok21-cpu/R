@@ -19,7 +19,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 6. `apps/cli` — `seo agent plan`, `board`, `measure` | ukończone, AC7 zielone | — |
 | 7. **`apps/web` — panel w przeglądarce** (poza pierwotnym planem) | ukończone, 23 testy przez prawdziwy HTTP | `c6d91df` |
 | 8. `packages/db` — migracja `0006`: wymiar `page` z GSC | ukończone (odkryty brak, patrz niżej) | — |
-| 9. Odbiór Fazy 4 | **ukończony w zakresie, jaki da się sprawdzić bez GSC**; 1180 testów zielonych | — |
+| 9. Odbiór Fazy 4 | **ukończony w zakresie, jaki da się sprawdzić bez GSC**; 1180 testów zielonych | `20e19a0` |
+| 10. **Panel: tracker AI, silnik treści i `llms.txt`** (poza pierwotnym planem) | ukończone, 29 testów panelu przez prawdziwy HTTP; 1191 testów zielonych | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".
@@ -36,6 +37,42 @@ Polityki i wyłączniki idą przed bazą, bo to one decydują, jakie stany zadan
 w ogóle istnieją.
 
 ## Odstępstwa od planu odnotowane w trakcie
+
+- **Panel dostał warstwy, które były wyłącznie w linii poleceń.** Tracker
+  widoczności w AI, silnik treści i `llms.txt` istniały jako komendy, ale
+  właściciel pracuje w przeglądarce — więc dla niego nie istniały wcale.
+  Trzy nowe sekcje (`/geo/:id`, `/tresc/:id`, `/llms-txt/:id`) wołają
+  **te same funkcje**, co CLI, przez `@seo/cli/lib`; własna kopia sklejania
+  rozjechałaby się przy pierwszej zmianie. Pisanie draftu i publikacja
+  **zostają w terminalu świadomie**: draft kosztuje wywołania modelu,
+  a publikacja dotyka repozytorium — jedno i drugie ma wymagać wpisania
+  polecenia, a nie przypadkowego kliknięcia.
+
+- **Każda sekcja panelu degraduje się z podaniem powodu, a nie po cichu.**
+  Bez klucza silnika strona GEO wypisuje, czego brakuje (marki, promptów,
+  klucza), i **nie pokazuje przycisku pomiaru**. Bez danych z Search Console
+  strona treści mówi „ta warstwa nie ma z czego liczyć" zamiast wyświetlać
+  formularz, który i tak zwróciłby zero. To ta sama zasada, co reguła milcząca
+  bez `requires` (D17): cicha pustka jest fałszywym poczuciem porządku.
+
+- **Testy panelu zdejmują klucze silników z otoczenia.** Bez tego suita
+  zachowywałaby się inaczej na maszynie, gdzie właściciel wyeksportował
+  `SEO_GROQ_KEY`, a trasa `/geo/:id/run` poszłaby **naprawdę do sieci**.
+  Testy działają bez sieci i to nie jest wygoda, tylko warunek.
+
+- **Trasy z segmentem w środku dostały dopasowanie wzorcem.** Wcześniej
+  `/agent/:id/measure` wycinało się arytmetyką na indeksach
+  (`slice(7, length - 8)`). Działało, ale każda nowa trasa była nową okazją
+  do pomyłki o jeden znak — a taka pomyłka daje 404 na trasie, która istnieje.
+
+- **`HEAD` obsługiwane jak `GET`.** Znalezione przy sprawdzaniu panelu przez
+  `curl -I`: każde narzędzie sprawdzające adres dostawało 404 na stronie,
+  która istnieje, i meldowało panel jako zepsuty.
+
+- **Data z Search Console sprawdzana kształtem, nie parsowaniem.** Formularz
+  klastrowania odrzuca wszystko poza `RRRR-MM-DD`. Przepuszczenie tego przez
+  `new Date()` przesunęłoby część dat o dzień i nikt by tego nie zobaczył (D3).
+
 
 - **Znaleziony i naprawiony błąd: strażnik przed zdegenerowanym bootstrapem
   przestawał działać przez szum zmiennoprzecinkowy.** Gdy każda strona zmienia się

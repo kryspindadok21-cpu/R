@@ -48,6 +48,32 @@ export function repos(db: Db, scope: TenantScope) {
      * Console. Zwykla srednia arytmetyczna z dni dalaby temu samemu dniowi
      * z dwoma wyswietleniami taka sama wage, co dniowi z dwoma tysiacami.
      */
+    /**
+     * Zakres dat, ktory faktycznie mamy dla fraz.
+     *
+     * Panel podstawia go w formularzu klastrowania. Wyliczanie zakresu z
+     * dzisiejszej daty byloby zgadywaniem: Search Console konczy dane
+     * z opoznieniem, a przy pustej bazie dawaloby okno, w ktorym nic nie ma,
+     * i uzytkownik dostalby zero klastrow bez slowa wyjasnienia.
+     *
+     * `null` znaczy: nie ma **ani jednego** wiersza — to stan do pokazania
+     * wprost, a nie zakres do udawania.
+     */
+    queryDateRange: (siteId: string): { from: string; to: string } | null => {
+      const wiersz = db.select({
+        from: sql<string | null>`min(${s.gscQueryDaily.date})`,
+        to: sql<string | null>`max(${s.gscQueryDaily.date})`,
+      }).from(s.gscQueryDaily)
+        .where(and(
+          eq(s.gscQueryDaily.tenantId, t), eq(s.gscQueryDaily.siteId, siteId),
+          eq(s.gscQueryDaily.dataState, 'final'),
+        )).get()
+
+      return wiersz?.from == null || wiersz.to == null
+        ? null
+        : { from: wiersz.from, to: wiersz.to }
+    },
+
     queriesWithPosition: (siteId: string, from: string, to: string, limit: number) =>
       db.select({
         query: s.gscQueryDaily.query,

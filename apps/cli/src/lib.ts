@@ -12,7 +12,22 @@ export {
 export { NoCrawlError, runAudit } from './commands/audit.js'
 export { buildAuditReportData, runAuditReport } from './commands/audit-report.js'
 export { crawlStartUrl, runCrawlCommand, systemClock } from './commands/crawl.js'
-export { buildGeoReport, runGeoReport } from './commands/geo.js'
+export {
+  activePromptSet, buildGeoReport, NoEntityError, NoPromptSetError, runGeoEntity,
+  runGeoPrompts, runGeoReport, runGeoRun,
+  type EntityOptions, type GeoRunResult, type PromptsOptions,
+} from './commands/geo.js'
+/**
+ * `UnknownSiteError` istnieje w dwoch modulach polecen i nazwy sie zderzaja.
+ * Alias jest tu swiadomy: panel lapie **jeden** typ dla obu sciezek, wiec musi
+ * widziec oba pod rozroznialnymi nazwami, a nie jeden przyslonic drugim.
+ */
+export {
+  NoBriefError, NoClusterError, runBrief, runKeywordsCluster,
+  UnknownSiteError as UnknownContentSiteError,
+  type BriefCommandResult, type ClusterCommandResult,
+} from './commands/content.js'
 export { openInitialized, runInit } from './commands/init.js'
+export { buildLlmsTxtContent, runLlmsTxt } from './commands/llms-txt.js'
 export { dbLedger } from './ledger.js'
 export { loadConfig, type Config } from './config.js'

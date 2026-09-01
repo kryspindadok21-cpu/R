@@ -3,7 +3,10 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import type { AddressInfo } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { openInitialized } from '@seo/cli/lib'
+import { tenantScope } from '@seo/core'
+import { closeDatabase, repos } from '@seo/db'
 import { createPanel, PANEL_MAX_PAGES } from './server.js'
 
 /**
@@ -53,7 +56,20 @@ beforeAll(async () => {
 
 afterAll(async () => { await new Promise((r) => strona.close(r)) })
 
+/**
+ * Klucze silnikow **zdejmowane na czas testow**.
+ *
+ * Bez tego suita zachowywalaby sie inaczej na maszynie, gdzie wlasciciel
+ * wyeksportowal `SEO_GROQ_KEY` — i, co gorsza, trasa `/geo/:id/run` poszlaby
+ * naprawde do sieci. Testy dzialaja bez sieci i to nie jest wygoda, tylko
+ * warunek: jedyne prawdziwe wywolanie API w calym projekcie to `seo gsc smoke`.
+ */
+const KLUCZE_SILNIKOW = [
+  'SEO_GEMINI_KEY', 'SEO_GROQ_KEY', 'SEO_OPENROUTER_KEY', 'SEO_ANTHROPIC_KEY',
+] as const
+
 beforeEach(async () => {
+  for (const klucz of KLUCZE_SILNIKOW) vi.stubEnv(klucz, undefined)
   dir = mkdtempSync(join(tmpdir(), 'panel-'))
   panel = createPanel({
     dbPath: join(dir, 'seo.db'), tenantId: 'local', gscKeyFile: undefined,
@@ -65,6 +81,7 @@ beforeEach(async () => {
 afterEach(async () => {
   await new Promise((r) => panel.close(r))
   rmSync(dir, { recursive: true, force: true })
+  vi.unstubAllEnvs()
 })
 
 async function analizuj(url: string, maxPages = 5): Promise<string> {
@@ -76,6 +93,29 @@ async function analizuj(url: string, maxPages = 5): Promise<string> {
   })
   expect(odpowiedz.status).toBe(303)
   return odpowiedz.headers.get('location') as string
+}
+
+/** Frazy prosto do bazy — panel czyta ta sama sciezka, co po `seo gsc sync`. */
+function zasiej(
+  siteId: string,
+  wiersze: readonly { query: string; clicks: number; impressions: number; position: number }[],
+): void {
+  const scope = tenantScope('local')
+  const { db } = openInitialized({
+    dbPath: join(dir, 'seo.db'), tenantId: 'local', gscKeyFile: undefined,
+  })
+  try {
+    const r = repos(db, scope)
+    const run = r.write.startSyncRun(siteId, '2026-03-01', '2026-03-01', 'final', 'date,query')
+    r.write.upsertQueryDaily(siteId, run, wiersze.map((w) => ({
+      date: '2026-03-01',
+      query: w.query,
+      clicks: w.clicks,
+      impressions: w.impressions,
+      ctr: w.impressions === 0 ? 0 : w.clicks / w.impressions,
+      position: w.position,
+    })))
+  } finally { closeDatabase(db) }
 }
 
 async function poczekajNaKoniec(sciezka: string): Promise<string> {
@@ -280,5 +320,204 @@ describe('panel', () => {
     const odpowiedz = await fetch(`${panelUrl}/`)
     expect(odpowiedz.headers.get('x-frame-options')).toBe('DENY')
     expect(odpowiedz.headers.get('referrer-policy')).toBe('no-referrer')
+  })
+
+  it('llms.txt powstaje z zapisanego crawla i da sie go pobrac', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const podglad = await (await fetch(`${panelUrl}/llms-txt/${siteId}`)).text()
+    expect(podglad).toContain('<h1>llms.txt</h1>')
+    expect(podglad).toContain('Strona glowna')
+
+    const plik = await fetch(`${panelUrl}/llms-txt/${siteId}?format=txt`)
+    expect(plik.headers.get('content-type')).toContain('text/plain')
+    expect(plik.headers.get('content-disposition')).toContain('llms.txt')
+    const tresc = await plik.text()
+    expect(tresc.startsWith('#')).toBe(true)
+    expect(tresc).toContain('/oferta')
+  })
+
+  it('tracker GEO mowi wprost, czego brakuje do pomiaru', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const tresc = await (await fetch(`${panelUrl}/geo/${siteId}`)).text()
+    expect(tresc).toContain('<h1>Widoczność w AI</h1>')
+    expect(tresc).toContain('brakuje danych')
+    expect(tresc).toContain('definicji własnej marki')
+    expect(tresc).toContain('choć jednego promptu')
+    // Przycisk pomiaru nie moze istniec, dopoki nie ma czego mierzyc.
+    expect(tresc).not.toContain('Zmierz widoczność')
+  })
+
+  it('marka i prompty zapisuja sie z panelu, a kolejna zmiana zaklada nowa wersje', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const zapisz = async (variants: string): Promise<Response> => fetch(
+      `${panelUrl}/geo/${siteId}/encja`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ name: 'Mentiometry', variants, wlasna: '1' }),
+        redirect: 'manual',
+      },
+    )
+
+    const pierwsza = await zapisz('mentiometry')
+    expect(pierwsza.status).toBe(303)
+    expect(decodeURIComponent(pierwsza.headers.get('location') as string))
+      .toContain('wersja 1')
+
+    // D29: zmiana wariantow zaklada nowa wersje, a stara zostaje w bazie.
+    const druga = await zapisz('mentiometry, mentiometry.com')
+    expect(decodeURIComponent(druga.headers.get('location') as string))
+      .toContain('wersja 2')
+
+    const prompty = await fetch(`${panelUrl}/geo/${siteId}/prompty`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ prompty: 'jak zmierzyć widoczność w AI\n\nnajlepszy audyt SEO' }),
+      redirect: 'manual',
+    })
+    expect(prompty.status).toBe(303)
+    // Pusta linia miedzy promptami nie jest promptem.
+    expect(decodeURIComponent(prompty.headers.get('location') as string))
+      .toContain('dodano 2, w zestawie 2')
+
+    const strona = await (await fetch(`${panelUrl}/geo/${siteId}`)).text()
+    expect(strona).toContain('Mentiometry')
+    expect(strona).toContain('wersja 2')
+    expect(strona).toContain('jak zmierzyć widoczność w AI')
+    expect(strona).toContain('najlepszy audyt SEO')
+  })
+
+  it('pomiar bez klucza konczy sie bledem z powodem, a nie cisza', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const uruchom = await fetch(`${panelUrl}/geo/${siteId}/run`, {
+      method: 'POST', redirect: 'manual',
+    })
+    expect(uruchom.status).toBe(303)
+
+    const wynik = await poczekajNaKoniec(uruchom.headers.get('location') as string)
+    expect(wynik).toContain('Nie udało się')
+    // Powod jest wypisany co do silnika — D17 obowiazuje takze tutaj.
+    expect(wynik).toContain('groq')
+  })
+
+  it('silnik tresci odmawia liczenia bez danych z Search Console', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const tresc = await (await fetch(`${panelUrl}/tresc/${siteId}`)).text()
+    expect(tresc).toContain('<h1>Silnik treści</h1>')
+    expect(tresc).toContain('brak danych z Search Console')
+    expect(tresc).toContain('Ta warstwa nie ma z czego liczyć')
+    // Bez danych nie pokazujemy formularza, ktory i tak nie mialby czego policzyc.
+    expect(tresc).not.toContain('Policz klastry')
+  })
+
+  it('klastrowanie odrzuca date w zlym ksztalcie zamiast ja parsowac', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const odpowiedz = await fetch(`${panelUrl}/tresc/${siteId}/klastry`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ from: '1 marca 2026', to: '2026-03-31' }),
+      redirect: 'manual',
+    })
+    expect(odpowiedz.status).toBe(400)
+    expect(await odpowiedz.text()).toContain('RRRR-MM-DD')
+  })
+
+  it('strona witryny prowadzi do wszystkich czterech warstw', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const tresc = await (await fetch(`${panelUrl}/strona/${siteId}`)).text()
+    for (const sciezka of ['/raport/', '/agent/', '/geo/', '/tresc/', '/llms-txt/']) {
+      expect(tresc).toContain(`href="${sciezka}${siteId}"`)
+    }
+  })
+
+  it('nieznana strona pod nowymi trasami konczy sie 404, nie wyjatkiem', async () => {
+    for (const sciezka of ['/geo/brak', '/tresc/brak', '/llms-txt/brak', '/brief/brak']) {
+      const odpowiedz = await fetch(`${panelUrl}${sciezka}`)
+      expect(odpowiedz.status).toBe(404)
+    }
+  })
+
+  it('z frazami w bazie panel liczy klastry i robi z nich brief', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    // Frazy wstrzykniete prosto do bazy — `seo gsc sync` wymaga sieci i konta
+    // serwisowego, a tu sprawdzamy panel, nie Google. Daty sa tekstem
+    // przepisanym doslownie, dokladnie tak, jak przychodza z API (D3).
+    zasiej(siteId, [
+      { query: 'audyt seo warszawa', clicks: 12, impressions: 900, position: 8.2 },
+      { query: 'audyt seo cennik', clicks: 6, impressions: 640, position: 11.4 },
+      { query: 'audyt seo firma', clicks: 3, impressions: 410, position: 14.1 },
+      { query: 'audyt seo ile kosztuje', clicks: 2, impressions: 280, position: 17.9 },
+    ])
+
+    const przed = await (await fetch(`${panelUrl}/tresc/${siteId}`)).text()
+    expect(przed).toContain('Policz klastry')
+    expect(przed).toContain('2026-03-01')
+
+    const klastry = await fetch(`${panelUrl}/tresc/${siteId}/klastry`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ from: '2026-03-01', to: '2026-03-01' }),
+      redirect: 'manual',
+    })
+    expect(klastry.status).toBe(303)
+    const cel = klastry.headers.get('location') as string
+    // D33: metoda zapasowa melduje sie wprost, a nie udaje pomiaru SERP.
+    expect(decodeURIComponent(cel)).toContain('uwaga=')
+
+    const zKlastrami = await (await fetch(`${panelUrl}${cel}`)).text()
+    expect(zKlastrami).toContain('podobieństwo słów')
+    expect(zKlastrami).toContain('metoda zapasowa')
+    expect(zKlastrami).toContain('audyt seo')
+    expect(zKlastrami).toContain('Zrób brief')
+
+    const slug = /name="slug" value="([^"]+)"/.exec(zKlastrami)?.[1] as string
+    expect(slug).toBeDefined()
+
+    const brief = await fetch(`${panelUrl}/tresc/${siteId}/brief`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ slug }),
+      redirect: 'manual',
+    })
+    expect(brief.status).toBe(303)
+
+    const tresc = await (await fetch(`${panelUrl}${brief.headers.get('location')}`)).text()
+    expect(tresc).toContain('audyt seo')
+    expect(tresc).toContain('pre class="zrzut"')
+    // D38: dla pokrytego tematu domyslna decyzja jest odswiezenie, nie nowa strona.
+    expect(tresc).toMatch(/odświeżyć istniejącą|napisać nową/)
+
+    const lista = await (await fetch(`${panelUrl}/tresc/${siteId}`)).text()
+    expect(lista).toContain('/brief/')
+  })
+
+  it('HEAD na istniejacym adresie nie udaje 404', async () => {
+    const gotowe = await poczekajNaKoniec(await analizuj(stronaUrl))
+    const siteId = /href="\/strona\/([^"]+)"/.exec(gotowe)?.[1] as string
+
+    const glowa = await fetch(`${panelUrl}/strona/${siteId}`, { method: 'HEAD' })
+    expect(glowa.status).toBe(200)
+    expect(glowa.headers.get('content-type')).toContain('text/html')
+
+    const plik = await fetch(`${panelUrl}/llms-txt/${siteId}?format=txt`, { method: 'HEAD' })
+    expect(plik.status).toBe(200)
+    expect(plik.headers.get('content-type')).toContain('text/plain')
+    expect(plik.headers.get('content-disposition')).toContain('llms.txt')
   })
 })

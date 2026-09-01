@@ -13,9 +13,18 @@
 
 export type JobState = 'w-toku' | 'gotowe' | 'blad'
 
+/**
+ * Rodzaj zadania decyduje, dokad prowadzi strona „gotowe" i ile realnie trwa.
+ * Crawl 25 stron to okolo pol minuty; przebieg trackera AI to kilkadziesiat
+ * wywolan modelu i idzie kilka minut. Jeden wspolny szacunek klamalby
+ * w obie strony.
+ */
+export type JobKind = 'analiza' | 'geo'
+
 export interface Job {
   readonly id: string
   readonly siteUrl: string
+  readonly rodzaj: JobKind
   state: JobState
   step: string
   siteId: string | null
@@ -28,11 +37,12 @@ export class JobRegistry {
   readonly #jobs = new Map<string, Job>()
   #counter = 0
 
-  create(siteUrl: string): Job {
+  create(siteUrl: string, rodzaj: JobKind = 'analiza'): Job {
     this.#counter += 1
     const job: Job = {
       id: `${Date.now().toString(36)}-${this.#counter}`,
       siteUrl,
+      rodzaj,
       state: 'w-toku',
       step: 'start',
       siteId: null,

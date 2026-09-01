@@ -26,11 +26,25 @@ export interface LlmsTxtResult {
   readonly skippedPages: number
 }
 
-export function runLlmsTxt(
+export interface LlmsTxtContent {
+  readonly content: string
+  readonly pages: number
+  readonly skippedPages: number
+}
+
+/**
+ * Sama tresc pliku, bez dotykania dysku.
+ *
+ * Panel pokazuje `llms.txt` w przegladarce i oddaje go do pobrania — zapis do
+ * pliku po stronie serwera bylby tam smieciem na dysku uzytkownika. Rozdzielenie
+ * budowania od zapisu znaczy, ze panel i linia polecen skladaja **ten sam** plik;
+ * dwie sciezki dawalyby dwie prawdy o tym, co narzedzie wystawia modelom.
+ */
+export function buildLlmsTxtContent(
   db: Db,
   scope: TenantScope,
-  options: LlmsTxtOptions,
-): LlmsTxtResult {
+  options: Omit<LlmsTxtOptions, 'outPath'>,
+): LlmsTxtContent {
   const site = repos(db, scope).read.findSiteByUri(options.siteUrl)
   if (!site) throw new NoCrawlError(options.siteUrl)
 
@@ -55,9 +69,23 @@ export function runLlmsTxt(
     pages,
   })
 
-  mkdirSync(dirname(options.outPath), { recursive: true })
-  writeFileSync(options.outPath, tresc, 'utf8')
-
   const uzyte = pages.filter((p) => p.httpStatus === 200 && p.indexable).length
-  return { outPath: options.outPath, pages: uzyte, skippedPages: pages.length - uzyte }
+  return { content: tresc, pages: uzyte, skippedPages: pages.length - uzyte }
+}
+
+export function runLlmsTxt(
+  db: Db,
+  scope: TenantScope,
+  options: LlmsTxtOptions,
+): LlmsTxtResult {
+  const zbudowane = buildLlmsTxtContent(db, scope, options)
+
+  mkdirSync(dirname(options.outPath), { recursive: true })
+  writeFileSync(options.outPath, zbudowane.content, 'utf8')
+
+  return {
+    outPath: options.outPath,
+    pages: zbudowane.pages,
+    skippedPages: zbudowane.skippedPages,
+  }
 }

@@ -106,7 +106,8 @@ ${lista}
   <div class="karta">
     <h3>Widoczność w AI</h3>
     <p class="podpowiedz">Ile razy modele wymieniają Twoją markę na pytania klientów,
-    z przedziałem ufności przy każdej liczbie. Wymaga darmowego klucza do silnika.</p>
+    z przedziałem ufności przy każdej liczbie. Markę i pytania ustawiasz
+    w panelu; sam pomiar wymaga darmowego klucza do silnika.</p>
     <span class="plakietka uwaga">potrzebny klucz</span>
   </div>
   <div class="karta">
@@ -208,11 +209,28 @@ export function stronaWitryny(s: SiteDetail): string {
     <p class="podpowiedz">Okazje uszeregowane arytmetyką, z polityką i wyłącznikami.</p>
     <a class="przycisk cichy" href="/agent/${id}">Otwórz tablicę</a>
   </div>
-  ${s.hasGeo ? `<div class="karta">
+  <div class="karta">
     <h3>Widoczność w AI</h3>
-    <p class="podpowiedz">Ile razy modele wymieniają markę, z przedziałem ufności.</p>
-    <a class="przycisk cichy" href="/raport-geo/${id}">Otwórz raport GEO</a>
-  </div>` : ''}
+    <p class="podpowiedz">${s.hasGeo
+      ? 'Ile razy modele wymieniają markę, z przedziałem ufności przy każdej liczbie.'
+      : 'Ustaw markę i pytania klientów, a policzymy, jak często modele Cię wymieniają.'}</p>
+    <a class="przycisk cichy" href="/geo/${id}">${s.hasGeo ? 'Otwórz tracker' : 'Ustaw tracker'}</a>
+    ${s.hasGeo ? `<a class="przycisk cichy" href="/raport-geo/${id}"
+       style="margin-left:.4rem">Raport GEO</a>` : ''}
+  </div>
+  <div class="karta">
+    <h3>Silnik treści</h3>
+    <p class="podpowiedz">${s.hasClusters
+      ? 'Tematy z fraz Search Console i briefy: co pokryć i czy w ogóle pisać nową stronę.'
+      : 'Klastry fraz i briefy. Liczy na prawdziwych wyświetleniach, więc potrzebuje Search Console.'}</p>
+    <a class="przycisk cichy" href="/tresc/${id}">Otwórz treść</a>
+  </div>
+  <div class="karta">
+    <h3>llms.txt</h3>
+    <p class="podpowiedz">Spis treści witryny dla modeli językowych, złożony
+    z zapisanego crawla — bez jednego nowego żądania do Twojego serwera.</p>
+    <a class="przycisk cichy" href="/llms-txt/${id}">Zobacz plik</a>
+  </div>
   <div class="karta">
     <h3>Przeanalizuj ponownie</h3>
     <p class="podpowiedz">Nowy crawl i audyt na tym samym adresie.</p>
@@ -255,35 +273,64 @@ export function stronaZadania(job: Job): string {
 
   if (job.state === 'gotowe' && job.siteId !== null) {
     const sekundy = Math.round(((job.finishedAt ?? Date.now()) - job.startedAt) / 1000)
-    return szkielet({ tytul: 'Gotowe', aktywne: 'start' }, `
-<h1>Gotowe</h1>
-<p class="wiodacy">${escapeHtml(job.siteUrl)} · zajęło ${sekundy} s</p>
-<div class="siatka siatka-2">
+    const id = encodeURIComponent(job.siteId)
+
+    const dalej = job.rodzaj === 'geo'
+      ? `<div class="karta">
+    <h3>Raport widoczności</h3>
+    <p class="podpowiedz">Udział w głosie, cytowania i pozycja wzmianki —
+    każda liczba z przedziałem ufności.</p>
+    <a class="przycisk" href="/raport-geo/${id}">Otwórz raport GEO</a>
+  </div>
   <div class="karta">
+    <h3>Tracker</h3>
+    <p class="podpowiedz">Prompty, marki i historia przebiegów.</p>
+    <a class="przycisk cichy" href="/geo/${id}">Wróć do trackera</a>
+  </div>`
+      : `<div class="karta">
     <h3>Przegląd witryny</h3>
     <p class="podpowiedz">Liczby, najczęstsze ustalenia i co robić dalej.</p>
-    <a class="przycisk" href="/strona/${encodeURIComponent(job.siteId)}">Otwórz przegląd</a>
+    <a class="przycisk" href="/strona/${id}">Otwórz przegląd</a>
   </div>
   <div class="karta">
     <h3>Raport techniczny</h3>
     <p class="podpowiedz">Pełna lista z adresami i dowodami.</p>
-    <a class="przycisk cichy" href="/raport/${encodeURIComponent(job.siteId)}">Otwórz raport</a>
-  </div>
+    <a class="przycisk cichy" href="/raport/${id}">Otwórz raport</a>
+  </div>`
+
+    return szkielet({ tytul: 'Gotowe', aktywne: 'start' }, `
+<h1>Gotowe</h1>
+<p class="wiodacy">${escapeHtml(job.siteUrl)} · zajęło ${sekundy} s</p>
+<div class="siatka siatka-2">
+${dalej}
 </div>
 `)
   }
 
   const sekundy = Math.round((Date.now() - job.startedAt) / 1000)
-  const procent = Math.min(95, Math.round((sekundy / 40) * 100))
-  return szkielet({ tytul: 'Analizuję…', aktywne: 'start', odswiez: 2 }, `
-<h1>Analizuję…</h1>
+  // Szacunek na rodzaj zadania. Crawl 25 stron to okolo pol minuty; przebieg
+  // trackera to kilkadziesiat wywolan modelu i idzie kilka minut. Wspolny pasek
+  // dobity do 95% po trzydziestu sekundach klamalby przez reszte czekania.
+  const oczekiwane = job.rodzaj === 'geo' ? 240 : 40
+  const procent = Math.min(95, Math.round((sekundy / oczekiwane) * 100))
+
+  const nota = job.rodzaj === 'geo'
+    ? `Każde pytanie idzie do silnika osobno, a każdy prompt powtarzamy trzy razy —
+  jeden przebieg to próba losowa, nie pomiar. Stąd czekanie: liczymy przedział
+  ufności, a nie pojedynczą odpowiedź.`
+    : `Crawler czeka sekundę między żądaniami — to nie jest wolność narzędzia, tylko
+  uprzejmość wobec strony, którą badasz.`
+
+  return szkielet({
+    tytul: job.rodzaj === 'geo' ? 'Pytam modele…' : 'Analizuję…', aktywne: 'start', odswiez: 2,
+  }, `
+<h1>${job.rodzaj === 'geo' ? 'Pytam modele…' : 'Analizuję…'}</h1>
 <p class="wiodacy">${escapeHtml(job.siteUrl)} · ${sekundy} s</p>
 <div class="karta">
   <p><strong>${escapeHtml(job.step)}</strong></p>
   <div class="postep-tlo"><div class="postep-pasek" style="width:${procent}%"></div></div>
   <p class="podpowiedz" style="margin-top:.8rem">Ta strona odświeża się sama co dwie sekundy.
-  Crawler czeka sekundę między żądaniami — to nie jest wolność narzędzia, tylko
-  uprzejmość wobec strony, którą badasz.</p>
+  ${nota}</p>
 </div>
 <p style="margin-top:1.25rem"><a href="/">← wróć do panelu</a></p>
 `)
@@ -436,6 +483,28 @@ darmowych kluczy albo danych z Search Console.</p>
     <code>(wpływ × pewność × dopasowanie) / (nakład × ryzyko)</code>.
     Każdy czynnik niesie źródło — widać, co zmierzone, a co zadeklarowane.</p>
   </div></div>
+  <div class="krok" style="margin-top:1rem"><span class="krok-numer">4</span><div>
+    <strong>Pobierz <code>llms.txt</code>.</strong>
+    <p class="podpowiedz">Spis treści witryny dla modeli językowych, złożony
+    z zapisanego crawla — bez ani jednego nowego żądania do Twojego serwera.
+    Jest na stronie każdej witryny.</p>
+  </div></div>
+</div>
+
+<h2>Co robisz w panelu, a co w terminalu</h2>
+<div class="karta">
+  <ul style="margin:0; padding-left:1.2rem">
+    <li><strong>W panelu:</strong> analiza witryny, raport, tablica agenta i pomiar
+    skutku zmian, ustawienie marki i pytań do trackera AI oraz sam pomiar,
+    klastry fraz, briefy, <code>llms.txt</code>.</li>
+    <li><strong>W terminalu:</strong> pobranie danych z Search Console
+    (<code>pnpm seo gsc sync</code>), pisanie draftu (<code>pnpm seo draft</code>)
+    i publikacja przez pull request (<code>pnpm seo publish</code>).</li>
+  </ul>
+  <p class="podpowiedz" style="margin-top:.8rem">Pisanie i publikacja zostają
+  w terminalu świadomie: draft kosztuje wywołania modelu, a publikacja dotyka
+  Twojego repozytorium. Jedno i drugie ma wymagać wpisania polecenia, a nie
+  przypadkowego kliknięcia.</p>
 </div>
 
 <h2>Silniki językowe</h2>

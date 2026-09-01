@@ -20,6 +20,7 @@ export const READ_METHOD_ARGS: Record<string, (f: ForeignFixture) => unknown[]> 
   listDailyRange: (f) => [f.siteId, '2000-01-01', '2100-01-01'],
   topQueries: (f) => [f.siteId, '2000-01-01', '2100-01-01', 50],
   queriesWithPosition: (f) => [f.siteId, '2000-01-01', '2100-01-01', 50],
+  queryDateRange: (f) => [f.siteId],
   pageMetricsInRange: (f) => [f.siteId, '2000-01-01', '2100-01-01'],
   listReconciliations: (f) => [f.siteId, '2000-01-01', '2100-01-01'],
   getReconciliation: (f) => [f.siteId, f.date],
