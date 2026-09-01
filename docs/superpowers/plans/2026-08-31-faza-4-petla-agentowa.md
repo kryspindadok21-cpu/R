@@ -23,7 +23,7 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 10. **Panel: tracker AI, silnik treści i `llms.txt`** (poza pierwotnym planem) | ukończone, 29 testów panelu przez prawdziwy HTTP; 1191 testów zielonych | `cc0d2ac` |
 | 11. **Instrukcja dostępu do GSC + klucz w domyślnym miejscu** | ukończone, 1196 testów zielonych | `ce18881` |
 | 12. **Dogfooding: audyt własnej strony, reguła `sitemap.not-discoverable`, `llms.txt`** | ukończone, 62 reguły, 1201 testów zielonych | `86ff7cc`, `e9d7f7c` |
-| **DO ZROBIENIA PRZEZ WŁAŚCICIELA** | lista w `docs/co-teraz.md` — projekt czeka na punkty 1–6 | — |
+| **DO ZROBIENIA PRZEZ WŁAŚCICIELA** | punkty 1–4 zamknięte 2026-09-01 (property, mapa, API, konto `seo-bot`); zostaje klucz JSON i `gsc smoke` na komputerze — `docs/co-teraz.md` | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".

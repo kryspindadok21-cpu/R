@@ -1,78 +1,27 @@
 # Co teraz — lista dla właściciela
 
-Krótka lista rzeczy, których **nie da się zrobić za Ciebie**, w kolejności
-wykonania. Reszta projektu na nie czeka. Po odhaczeniu wszystkiego skasuj ten
-plik albo zostaw jako ślad.
-
-Stan na 2026-09-01. Kod: Fazy 0–4 zamknięte, panel obsługuje wszystkie cztery
-warstwy, 1201 testów zielonych.
+Stan na 2026-09-01, 23:00. **Cała część do zrobienia z telefonu jest zamknięta.**
+Zostały trzy rzeczy, wszystkie na komputerze.
 
 ---
 
-## 0. Na komputerze, zanim cokolwiek
+## ✅ Zrobione 2026-09-01
 
-```bash
-git pull origin claude/kodowanie-projektu-vuxkes
-pnpm install
-```
+| | Co | Dowód |
+|---|---|---|
+| 1 | Property `https://kryspindadok21-cpu.github.io/R/` dodana i zweryfikowana | „Jesteś zweryfikowanym właścicielem"; usługa dodana 1 września 2026 |
+| 2 | Mapa witryny zgłoszona ręcznie w Search Console | — |
+| 3 | Projekt w Google Cloud + `Google Search Console API` **włączone** | — |
+| 4 | Konto serwisowe `seo-bot` dodane do property z uprawnieniem **Pełne** | widoczne na liście *Użytkownicy (2)* |
 
-Gałąź ma cztery commity, których Twój lokalny klon jeszcze nie widział.
-
----
-
-## 1. ~~Search Console — potwierdź własność~~  ✅ ZROBIONE 2026-09-01
-
-Property `https://kryspindadok21-cpu.github.io/R/` jest zweryfikowana i widoczna
-na liście. Plik potwierdzający leży pod
-`https://kryspindadok21-cpu.github.io/R/google87481e6c21f429cf.html` — **nie
-kasuj go**, Google sprawdza go ponownie i skasowanie unieważnia weryfikację.
+**Nie kasuj** `site/google87481e6c21f429cf.html` — Google sprawdza go ponownie
+i usunięcie unieważnia weryfikację.
 
 ---
 
-## 2. Zgłoś mapę witryny ręcznie  ⟶ telefon albo komputer
+## 5. Klucz JSON  ⟶ komputer
 
-Search Console → **Mapy witryn** → wklej:
-
-```
-https://kryspindadok21-cpu.github.io/R/sitemap.xml
-```
-
-**To nie jest opcjonalne.** Nasz audyt zgłasza to jako `sitemap.not-discoverable`:
-`robots.txt` z repozytorium ląduje pod `/R/robots.txt`, a wyszukiwarki czytają
-wyłącznie korzeń hosta, którego nie kontrolujesz. Linia `Sitemap:` w naszym pliku
-jest martwa. Ręczne zgłoszenie to jedyna droga, żeby Google dowiedział się o tych
-czterech stronach.
-
----
-
-## 3. Konto serwisowe w Google Cloud  ⟶ telefon albo komputer
-
-<https://console.cloud.google.com>, konto Google to samo, co w Search Console.
-
-1. ~~Projekt~~ i ~~`Google Search Console API` → **Włącz**~~ — ✅ zrobione
-   2026-09-01. To był krok, który najczęściej się pomija; skoro jest za Tobą,
-   reszta jest mechaniczna.
-2. ☰ → *Dane logowania* → **Utwórz dane logowania** → *Konto usługi* → nazwa →
-   Utwórz → **Dalej** → **Gotowe**. **Żadnej roli IAM** — dostęp do danych
-   nadaje się w Search Console, nie w Cloud.
-
-Klucza **jeszcze nie pobieraj** — patrz punkt 5.
-
----
-
-## 4. Nadaj temu kontu dostęp  ⟶ telefon albo komputer
-
-Skopiuj adres konta serwisowego (widoczny na liście kont, kończy się na
-`.iam.gserviceaccount.com`).
-
-Search Console → **Ustawienia** → *Użytkownicy i uprawnienia* →
-**Dodaj użytkownika** → wklej adres → uprawnienie **Pełny**.
-
----
-
-## 5. Klucz JSON  ⟶ TYLKO komputer
-
-Google Cloud → Twoje konto usługi → *Klucze* → **Dodaj klucz** →
+Google Cloud → konto usługi `seo-bot` → *Klucze* → **Dodaj klucz** →
 *Utwórz nowy klucz* → **JSON**. Pobierze się sam.
 
 ```powershell
@@ -80,46 +29,48 @@ mkdir -Force $HOME\.seo
 Move-Item $HOME\Downloads\<pobrany-plik>.json $HOME\.seo\gsc.sa.json
 ```
 
-**Nie rób tego z telefonu** i nie wysyłaj sobie tego pliku mailem ani przez
-Drive'a. To jest klucz prywatny konta serwisowego — przepuszczenie go przez cudzy
-serwer to dokładnie ten rodzaj wycieku, którego pilnuje `pnpm check:secrets`.
-
-Nic nie eksportujesz — narzędzie samo szuka klucza pod `~/.seo/gsc.sa.json`.
+Nie wysyłaj tego pliku mailem ani przez Drive'a — to klucz prywatny konta
+serwisowego. Nic nie eksportujesz: narzędzie samo szuka klucza pod
+`~/.seo/gsc.sa.json`.
 
 ---
 
-## 6. Sprawdź, że działa  ⟶ komputer
+## 6. Sprawdzenie  ⟶ komputer
 
 ```bash
+git pull origin claude/kodowanie-projektu-vuxkes
+pnpm install
 pnpm seo gsc smoke --site https://kryspindadok21-cpu.github.io/R/
 pnpm seo gsc sync  --site https://kryspindadok21-cpu.github.io/R/
 ```
 
-`smoke` to **jedno** prawdziwe wywołanie API — jedyne w całym projekcie poza
-crawlem. Przejdzie ono, przejdzie reszta.
+**Czego się spodziewać:**
 
-**Czego się spodziewać:** `sync` zwróci **zero wierszy** i to jest poprawne.
-Search Console liczy od dnia weryfikacji property, pierwsze dane pojawiają się po
-dwóch–trzech dniach i tylko wtedy, gdy strona jest zaindeksowana i ktoś ją
-wyświetla. Panel powie o tym wprost, zamiast udawać. To brak danych, nie brak
-dostępu.
+- `smoke` przechodzi → wszystko spięte poprawnie.
+- `smoke` zwraca **403** → konto serwisowe i włączone API są w **dwóch różnych
+  projektach** Google Cloud. To jedyna pułapka, jaka została: sprawdź, w którym
+  projekcie leży `seo-bot`, i włącz `Google Search Console API` w tym samym.
+- `sync` zwraca **zero wierszy** → poprawne, nie awaria. Property dodana
+  1 września 2026, Search Console liczy od dnia dodania, pierwsze wiersze
+  po dwóch–trzech dniach i tylko gdy strona jest zaindeksowana i ktoś ją
+  wyświetla. Panel powie o tym wprost.
 
 ---
 
-## 7. Darmowy klucz do silnika AI  ⟶ komputer, opcjonalne, ale warte kwadransa
+## 7. Darmowy klucz do silnika AI  ⟶ komputer, opcjonalne
 
-Tego **nie blokuje Search Console**. Odblokowuje całą warstwę pomiaru
-widoczności w AI, która działa od razu i nie czeka na żadne dane historyczne.
+**Jedyna warstwa, która da coś do oglądania tego samego wieczora** — nie czeka
+na żadne dane historyczne.
 
-<https://console.groq.com> → załóż konto → *API Keys* → utwórz klucz.
-Darmowy limit to 14 400 żądań dziennie, na tygodniowy pomiar z ogromnym zapasem.
+<https://console.groq.com> → konto → *API Keys* → utwórz klucz.
+Darmowy limit 14 400 żądań dziennie, na tygodniowy pomiar z ogromnym zapasem.
 
 ```powershell
 setx SEO_GROQ_KEY "gsk_..."
 ```
 
-Potem otwórz nową konsolę, `pnpm panel`, wejdź w swoją stronę → **Widoczność w
-AI**: ustaw markę, dopisz pytania klientów, kliknij *Zmierz*.
+Nowa konsola → `pnpm panel` → Twoja strona → **Widoczność w AI**: ustaw markę,
+dopisz pytania klientów, kliknij *Zmierz*.
 
 ---
 
