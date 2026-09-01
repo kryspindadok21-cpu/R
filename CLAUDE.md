@@ -181,6 +181,17 @@ osobowych.** Jeśli lista rośnie ponad ~20 punktów, scal pokrewne zamiast dopi
 - Zależy mu, żeby **jakość rosła z czasem** — dlatego ten plik. Gdy coś
   skoryguje, dopisz wniosek tutaj, zanim zniknie razem z rozmową.
 
+### Czego nie zapisujemy
+
+- **To repozytorium jest publiczne.** Nie trafiają do niego cudze strony,
+  klienci ani oceny ich pracy — nawet gdy adres jest jawny, a ocena życzliwa.
+  Zauważona 2026-09-01: opisałem w `docs/` stronę, którą właściciel robi
+  dla klienta. Adres był publiczny, ale opis w jego repozytorium to już
+  relacja z klientem, nie notatka projektowa.
+- **Strony widziane przy okazji nie są tematem pracy.** Jeśli coś pojawi się
+  na zrzucie ekranu albo w konfiguracji, a właściciel o to nie prosił — nie
+  analizuj tego i nie proponuj tego jako poligonu.
+
 ### Decyzje trwałe
 
 - **Zakup domen odłożony na sam koniec** (2026-08-28). Do tego czasu pracujemy
