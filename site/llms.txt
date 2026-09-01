@@ -1,0 +1,17 @@
+# kryspindadok21-cpu.github.io
+
+## Strona główna
+
+- [Audyt techniczny i widoczność w wyszukiwarkach AI](https://kryspindadok21-cpu.github.io/R/): Notatki z budowy narzędzia, które sprawdza stan techniczny strony i mierzy, czy jej treść jest w ogóle widoczna dla modeli AI.
+
+## audyt-techniczny
+
+- [Audyt techniczny: kolejność sprawdzeń](https://kryspindadok21-cpu.github.io/R/audyt-techniczny/): Dlaczego audyt techniczny zaczyna się od indeksacji, a nie od długości tytułów, i co dokładnie sprawdzić w każdej z czterech warstw.
+
+## o-projekcie
+
+- [O projekcie: narzędzie do audytu i pomiaru](https://kryspindadok21-cpu.github.io/R/o-projekcie/): Czym jest budowane narzędzie, jak działa jego crawler, jakie ma bezpieczniki i dlaczego nie podaje oceny w skali punktowej.
+
+## widocznosc-w-ai
+
+- [Widoczność w wyszukiwarkach AI: co ją blokuje](https://kryspindadok21-cpu.github.io/R/widocznosc-w-ai/): Część crawlerów, z których korzystają modele językowe, nie wykonuje JavaScriptu. Strona może rankować w Google i nie istnieć w odpowiedziach AI.

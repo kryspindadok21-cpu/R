@@ -1,3 +1,14 @@
+# UWAGA: na GitHub Pages ten plik jest martwy.
+#
+# Witryna stoi pod https://kryspindadok21-cpu.github.io/R/, wiec ten plik
+# laduje pod /R/robots.txt. Wyszukiwarki czytaja WYLACZNIE
+# https://kryspindadok21-cpu.github.io/robots.txt — poziom hosta, ktorego
+# nie kontrolujemy. Wszystko ponizej jest wiec bez skutku, z linia Sitemap
+# wlacznie, a mape trzeba zglosic recznie w Search Console.
+#
+# Zostaje w repozytorium, bo po przeniesieniu na wlasna domene zacznie
+# dzialac bez zmian. Nasz wlasny audyt zglasza to jako `sitemap.not-discoverable`.
+
 User-agent: *
 Allow: /
 
