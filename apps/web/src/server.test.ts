@@ -310,10 +310,29 @@ describe('panel', () => {
     expect(tresc).toMatch(/plakietka (dobra|neutralna)/)
   })
 
-  it('pomoc nie zdradza sciezki do klucza, tylko fakt jego obecnosci', async () => {
-    const tresc = await (await fetch(`${panelUrl}/pomoc`)).text()
-    expect(tresc).toContain('SEO_GSC_KEY_FILE')
-    expect(tresc).not.toContain('.sa.json')
+  /**
+   * Wczesniej ten test sprawdzal, ze na stronie nie ma ciagu `.sa.json`. To byl
+   * **wskaznik zastepczy**, a nie sedno: `~/.seo/gsc.sa.json` to udokumentowane
+   * miejsce, takie samo dla kazdego, i uzytkownik musi je zobaczyc, zeby wiedziec,
+   * gdzie polozyc plik. Wyciekiem byloby wypisanie **rozwiazanej** sciezki —
+   * ta niesie nazwe konta w systemie. Test sprawdza teraz dokladnie to.
+   */
+  it('pomoc podaje fakt obecnosci klucza, nigdy rozwiazanej sciezki do niego', async () => {
+    const tajna = join(dir, 'skarbiec', 'konto-wlasciciela.sa.json')
+    const zKluczem = createPanel({
+      dbPath: join(dir, 'seo.db'), tenantId: 'local', gscKeyFile: tajna,
+    })
+    await new Promise<void>((r) => zKluczem.listen(0, '127.0.0.1', r))
+    const adres = `http://127.0.0.1:${(zKluczem.address() as AddressInfo).port}`
+
+    try {
+      const tresc = await (await fetch(`${adres}/pomoc`)).text()
+      expect(tresc).toContain('klucz znaleziony')
+      expect(tresc).not.toContain(tajna)
+      expect(tresc).not.toContain('konto-wlasciciela')
+    } finally {
+      await new Promise((r) => zKluczem.close(r))
+    }
   })
 
   it('naglowki bezpieczenstwa sa ustawione', async () => {
@@ -519,5 +538,16 @@ describe('panel', () => {
     expect(plik.status).toBe(200)
     expect(plik.headers.get('content-type')).toContain('text/plain')
     expect(plik.headers.get('content-disposition')).toContain('llms.txt')
+  })
+
+  it('pomoc prowadzi przez dodanie dostepu do Search Console, gdy klucza brak', async () => {
+    const tresc = await (await fetch(`${panelUrl}/pomoc`)).text()
+    expect(tresc).toContain('brak klucza')
+    expect(tresc).toContain('Konto serwisowe w Google Cloud')
+    expect(tresc).toContain('~/.seo/gsc.sa.json')
+    expect(tresc).toContain('Użytkownicy i uprawnienia')
+    // Sciezka do klucza to instrukcja, a nie sekret — ale sam klucz nigdy nie wycieka.
+    expect(tresc).not.toContain('client_secret')
+    expect(tresc).not.toContain('BEGIN PRIVATE KEY')
   })
 })

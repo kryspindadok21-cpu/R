@@ -517,11 +517,41 @@ panel ponownie.</p>
 
 <h2>Search Console</h2>
 <div class="karta">
-  <p>${plakietka(stan.gscKlucz ? 'klucz wskazany' : 'brak klucza', stan.gscKlucz ? 'dobra' : 'uwaga')}</p>
+  <p>${plakietka(stan.gscKlucz ? 'klucz znaleziony' : 'brak klucza', stan.gscKlucz ? 'dobra' : 'uwaga')}</p>
   <p class="podpowiedz">Bez fraz z Search Console nie ma klastrów, briefów ani pomiaru
   różnicą w różnicach — te warstwy liczą na prawdziwych wyświetleniach i pozycjach,
-  a nie na szacunkach. Klucz konta serwisowego wskazuje
-  <code>SEO_GSC_KEY_FILE</code>.</p>
+  a nie na szacunkach.</p>
+  ${stan.gscKlucz ? `<p class="podpowiedz">Klucz jest na miejscu. Dane pobierasz
+  w terminalu: <code>pnpm seo gsc sync --site &lt;adres-property&gt;</code>.</p>`
+  : `<div class="krok"><span class="krok-numer">1</span><div>
+    <strong>Konto serwisowe w Google Cloud.</strong>
+    <p class="podpowiedz">Nowy projekt, włącz <em>Google Search Console API</em>,
+    utwórz konto usługi i pobierz jego klucz w formacie JSON. Bez roli IAM —
+    dostęp do danych nadaje się w Search Console, nie w Cloud.</p>
+  </div></div>
+  <div class="krok" style="margin-top:1rem"><span class="krok-numer">2</span><div>
+    <strong>Klucz na dysk.</strong>
+    <p class="podpowiedz">Zapisz pobrany plik jako <code>~/.seo/gsc.sa.json</code>
+    i zawęź prawa: <code>chmod 600 ~/.seo/gsc.sa.json</code>.
+    Nic nie musisz eksportować — panel szuka klucza właśnie tam.</p>
+  </div></div>
+  <div class="krok" style="margin-top:1rem"><span class="krok-numer">3</span><div>
+    <strong>Dostęp w Search Console.</strong>
+    <p class="podpowiedz">Adres konta znajdziesz w pliku, w polu
+    <code>client_email</code>. W Search Console: <em>Ustawienia</em> →
+    <em>Użytkownicy i uprawnienia</em> → <em>Dodaj użytkownika</em> →
+    uprawnienie <em>Pełny</em>.</p>
+  </div></div>
+  <div class="krok" style="margin-top:1rem"><span class="krok-numer">4</span><div>
+    <strong>Sprawdź jednym wywołaniem.</strong>
+    <p class="podpowiedz"><code>pnpm seo gsc smoke --site &lt;adres-property&gt;</code> —
+    to jedyne prawdziwe wywołanie API w całym projekcie poza crawlem.
+    Przejdzie ono, przejdzie reszta.</p>
+  </div></div>
+  <p class="nota">Nie masz własnej domeny? Nie jest potrzebna. Dodaj property typu
+  <em>prefiks adresu URL</em> dla strony na GitHub Pages i potwierdź własność
+  tagiem HTML. Pamiętaj tylko, że Search Console <strong>nie ma danych wstecz</strong>:
+  zbieranie zaczyna się w dniu dodania property.</p>`}
 </div>
 
 <h2>Czego ten panel świadomie nie robi</h2>

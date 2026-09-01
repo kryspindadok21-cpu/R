@@ -20,7 +20,8 @@ Aktualizowany po każdym ukończonym zadaniu. Nowa sesja zaczyna od tej tabeli.
 | 7. **`apps/web` — panel w przeglądarce** (poza pierwotnym planem) | ukończone, 23 testy przez prawdziwy HTTP | `c6d91df` |
 | 8. `packages/db` — migracja `0006`: wymiar `page` z GSC | ukończone (odkryty brak, patrz niżej) | — |
 | 9. Odbiór Fazy 4 | **ukończony w zakresie, jaki da się sprawdzić bez GSC**; 1180 testów zielonych | `20e19a0` |
-| 10. **Panel: tracker AI, silnik treści i `llms.txt`** (poza pierwotnym planem) | ukończone, 29 testów panelu przez prawdziwy HTTP; 1191 testów zielonych | — |
+| 10. **Panel: tracker AI, silnik treści i `llms.txt`** (poza pierwotnym planem) | ukończone, 29 testów panelu przez prawdziwy HTTP; 1191 testów zielonych | `cc0d2ac` |
+| 11. **Instrukcja dostępu do GSC + klucz w domyślnym miejscu** | ukończone, 1196 testów zielonych; czeka na wykonanie po stronie właściciela | — |
 
 **Jak wznowić po przerwie:** `pnpm install`, potem `pnpm test` (musi być zielone),
 potem pierwsze zadanie ze stanem innym niż „ukończone".

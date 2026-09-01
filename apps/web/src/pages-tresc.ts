@@ -63,10 +63,14 @@ export function stronaTresci(stan: TrescStan): string {
   więc nie ma draftów. To nie jest awaria: to odmowa policzenia czegoś,
   czego nie da się policzyć.</p>
   <p class="podpowiedz">Co trzeba zrobić raz: utworzyć konto serwisowe w Google
-  Cloud, włączyć <code>Search Console API</code>, nadać temu kontu dostęp
-  do witryny w Search Console, zapisać klucz w <code>~/.seo/gsc.sa.json</code>,
-  a potem w terminalu <code>pnpm seo gsc sync</code>.</p>
-  <p style="margin-top:1rem"><a class="przycisk cichy" href="/pomoc">Jak to działa</a></p>
+  Cloud, włączyć <code>Search Console API</code>, zapisać jego klucz jako
+  <code>~/.seo/gsc.sa.json</code>, dodać adres tego konta w Search Console
+  (<em>Ustawienia</em> → <em>Użytkownicy i uprawnienia</em>), a potem w terminalu
+  <code>pnpm seo gsc sync --site &lt;adres-property&gt;</code>.</p>
+  <p class="podpowiedz">Search Console <strong>nie ma danych wstecz</strong> —
+  zbieranie zaczyna się w dniu dodania property. Im wcześniej to zrobisz,
+  tym wcześniej będzie co liczyć.</p>
+  <p style="margin-top:1rem"><a class="przycisk cichy" href="/pomoc">Pełna instrukcja krok po kroku</a></p>
 </div>
 
 <h2>Co się odblokuje</h2>
