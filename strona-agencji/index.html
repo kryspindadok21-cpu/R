@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strony dla pracowni mebli na wymiar | [[IMIE_NAZWISKO]] [[MIASTO]]</title>
+<meta name="description" content="Jednostronicowe strony internetowe dla pracowni mebli na wymiar. 10 dni roboczych, 1 490 zł, połowa po odbiorze. Bezpłatne sprawdzenie firmy w Google. [[MIASTO]] i okolice.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://[[DOMENA]]/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Strony dla pracowni mebli na wymiar — [[MIASTO]]">
+<meta property="og:description" content="10 dni roboczych, 1 490 zł, połowa po odbiorze. Bezpłatne sprawdzenie firmy w Google.">
+<meta property="og:url" content="https://[[DOMENA]]/">
+<meta property="og:locale" content="pl_PL">
+<style>
+:root{
+  --tekst:#1A1A1A;
+  --tekst-pom:#5A5A5A;
+  --tlo:#FFFFFF;
+  --tlo-alt:#F5F3F0;
+  --ciemny:#0B2540;
+  --akcent:#C2410C;
+  --akcent-ciemny:#9A330A;
+  --linia:#E2DDD7;
+  --maxw:1100px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:18px;line-height:1.6;color:var(--tekst);background:var(--tlo);
+}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.tekst{max-width:65ch}
+h1,h2,h3{line-height:1.2;font-weight:700}
+h1{font-size:32px;line-height:1.15}
+h2{font-size:26px;margin-bottom:16px}
+h3{font-size:20px;margin-bottom:8px}
+p{margin-bottom:16px}
+section{padding:56px 0}
+.alt{background:var(--tlo-alt)}
+.mikro{font-size:15px;line-height:1.5;color:var(--tekst-pom);margin-top:12px}
+
+/* ---------- PRZYCISK: jedyne miejsce z kolorem akcentu ---------- */
+.btn{
+  display:inline-block;background:var(--akcent);color:#fff;text-decoration:none;
+  font-size:18px;font-weight:600;line-height:1;padding:20px 28px;border-radius:6px;
+  border:0;cursor:pointer;text-align:center;
+}
+.btn:hover,.btn:focus{background:var(--akcent-ciemny)}
+.btn:focus-visible{outline:3px solid var(--ciemny);outline-offset:2px}
+@media(max-width:700px){.btn{display:block;width:100%}}
+
+/* ---------- 0. PASEK GORNY ---------- */
+.top{border-bottom:1px solid var(--linia);background:#fff}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+.marka{font-weight:700;font-size:16px}
+.marka span{font-weight:400;color:var(--tekst-pom)}
+.tel-top{font-weight:700;font-size:16px;color:var(--tekst);text-decoration:none;white-space:nowrap}
+@media(max-width:520px){.marka span{display:none}}
+
+/* ---------- 1. EKRAN PIERWSZY ---------- */
+.hero{padding:64px 0 56px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.hero h1{margin-bottom:20px}
+.hero .pod{font-size:20px;margin-bottom:28px;max-width:60ch}
+.dowod{background:var(--ciemny);color:#fff;border-radius:10px;padding:28px}
+.dowod h3{font-size:17px;text-transform:uppercase;letter-spacing:.06em;color:#B9C7D6;margin-bottom:16px}
+.dowod ol{list-style:none;counter-reset:d}
+.dowod li{counter-increment:d;padding:10px 0 10px 38px;position:relative;border-top:1px solid rgba(255,255,255,.15);font-size:16px;line-height:1.45}
+.dowod li:first-child{border-top:0}
+.dowod li::before{content:counter(d);position:absolute;left:0;top:10px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);text-align:center;line-height:26px;font-size:14px;font-weight:700}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:32px}h1{font-size:30px}.hero .pod{font-size:18px}}
+@media(min-width:861px){h1{font-size:44px}.hero .pod{font-size:20px}}
+
+/* ---------- 2. DLA KOGO ---------- */
+.dlakogo{text-align:center}
+.dlakogo p{max-width:70ch;margin:0 auto 12px}
+
+/* ---------- 3. SPRAWDZ SIEBIE ---------- */
+.check{list-style:none;max-width:70ch}
+.check li{border-top:1px solid var(--linia)}
+.check li:last-child{border-bottom:1px solid var(--linia)}
+.check label{display:flex;gap:16px;align-items:flex-start;padding:20px 4px;cursor:pointer}
+.check input{width:26px;height:26px;flex:0 0 26px;margin-top:2px;accent-color:var(--akcent);cursor:pointer}
+.wynik{display:none;margin-top:28px;padding:20px;background:#fff;border-left:5px solid var(--akcent);border-radius:0 6px 6px 0;max-width:65ch}
+.wynik.on{display:block}
+
+/* ---------- 4. AUDYT ---------- */
+.audyt-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.audyt-grid ol{padding-left:22px;margin-bottom:20px}
+.audyt-grid li{margin-bottom:14px}
+.kartka{background:#fff;border:1px solid var(--linia);border-radius:8px;padding:26px;font-size:15px;line-height:1.5}
+.kartka .kh{font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:13px;margin-bottom:14px;color:var(--tekst-pom)}
+.kartka .kw{border-top:1px dashed var(--linia);padding:9px 0;display:flex;justify-content:space-between;gap:14px}
+.kartka .kw b{white-space:nowrap}
+@media(max-width:860px){.audyt-grid{grid-template-columns:1fr;gap:28px}}
+
+/* ---------- 5. JAK TO WYGLADA ---------- */
+.kroki{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:28px}
+.krok .nr{font-size:44px;font-weight:700;color:var(--linia);line-height:1}
+.krok .czas{font-size:15px;color:var(--tekst-pom);margin-bottom:8px}
+@media(max-width:860px){.kroki{grid-template-columns:1fr;gap:24px}}
+
+/* ---------- 6. KTO TO ROBI ---------- */
+.kto-grid{display:grid;grid-template-columns:320px 1fr;gap:44px;align-items:start}
+.kto-grid img{border-radius:10px;background:var(--tlo-alt)}
+.dane{margin-top:20px;font-size:16px;color:var(--tekst-pom)}
+@media(max-width:860px){.kto-grid{grid-template-columns:1fr;gap:24px}.kto-grid img{max-width:260px}}
+
+/* ---------- 7. CENNIK ---------- */
+.kotwica{max-width:65ch;color:var(--tekst-pom);font-size:16px;margin-bottom:28px}
+.pakiety{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:32px}
+.pak{background:#fff;border:1px solid var(--linia);border-radius:10px;padding:26px;display:flex;flex-direction:column}
+.pak.wybor{border:2px solid var(--akcent)}
+.etykieta{display:inline-block;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:4px;background:var(--tlo-alt);color:var(--tekst);margin-bottom:14px;align-self:flex-start}
+.pak.wybor .etykieta{background:var(--ciemny);color:#fff}
+.pak .nazwa{font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-pom)}
+.pak .cena{font-size:34px;font-weight:700;margin:6px 0 18px}
+.pak ul{list-style:none;font-size:16px;line-height:1.5}
+.pak li{padding:8px 0 8px 24px;position:relative;border-top:1px solid var(--linia)}
+.pak li:first-child{border-top:0}
+.pak li::before{content:"·";position:absolute;left:6px;font-weight:700;font-size:20px;line-height:1.2}
+.abon{background:#fff;border:1px solid var(--linia);border-radius:10px;padding:26px;margin-bottom:28px}
+.abon table{width:100%;border-collapse:collapse;font-size:16px}
+.abon td{padding:12px 8px;border-top:1px solid var(--linia);vertical-align:top}
+.abon tr:first-child td{border-top:0}
+.abon td:first-child{font-weight:700;white-space:nowrap}
+.abon td:nth-child(2){white-space:nowrap;font-weight:700}
+@media(max-width:860px){.pakiety{grid-template-columns:1fr}.abon td{display:block;border-top:0;padding:2px 0}.abon tr{display:block;border-top:1px solid var(--linia);padding:12px 0}}
+
+/* ---------- 8. FAQ ---------- */
+.faq{max-width:70ch}
+details{border-top:1px solid var(--linia)}
+details:last-of-type{border-bottom:1px solid var(--linia)}
+summary{padding:20px 4px;cursor:pointer;font-weight:700;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:24px;line-height:1;color:var(--tekst-pom)}
+details[open] summary::after{content:"–"}
+details .odp{padding:0 4px 20px;max-width:65ch}
+
+/* ---------- 9. FORMULARZ ---------- */
+.form-sekcja{background:var(--ciemny);color:#fff}
+.form-sekcja h2{color:#fff}
+.form-box{max-width:520px}
+.form-sekcja label.pole{display:block;font-size:16px;font-weight:700;margin-bottom:8px}
+.form-sekcja input[type=text],.form-sekcja input[type=tel]{
+  width:100%;height:56px;font-size:18px;padding:0 16px;border:2px solid transparent;border-radius:6px;
+  background:#fff;color:var(--tekst);margin-bottom:22px;font-family:inherit;
+}
+.form-sekcja input:focus{outline:none;border-color:var(--akcent)}
+.zgoda{display:flex;gap:14px;align-items:flex-start;font-size:15px;line-height:1.5;margin-bottom:22px;color:#D7E0EA}
+.zgoda input{width:24px;height:24px;flex:0 0 24px;margin-top:2px;accent-color:var(--akcent)}
+.zgoda a{color:#fff}
+.form-sekcja .mikro{color:#B9C7D6}
+.hp{position:absolute;left:-9999px}
+.ok{background:rgba(255,255,255,.08);border-left:5px solid var(--akcent);border-radius:0 8px 8px 0;padding:26px;margin-bottom:32px}
+.ok h2{margin-bottom:12px}
+#polityka{font-size:16px}
+#polityka h3{font-size:19px;margin:26px 0 8px}
+#polityka p,#polityka li{margin-bottom:10px}
+#polityka ul{padding-left:22px}
+
+/* ---------- 10. STOPKA ---------- */
+footer{background:var(--ciemny);color:#D7E0EA;padding:36px 0;text-align:center;font-size:16px;border-top:1px solid rgba(255,255,255,.12)}
+footer a{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- 0. PASEK GORNY -->
+<div class="top">
+  <div class="wrap">
+    <div class="marka">[[IMIE_NAZWISKO]] <span>· strony dla pracowni meblowych</span></div>
+    <a class="tel-top" href="tel:[[TELEFON_LINK]]">[[TELEFON]]</a>
+  </div>
+</div>
+
+<!-- 1. EKRAN PIERWSZY -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Ludzie w Twoim mieście szukają kuchni na wymiar. Znajdują Twoją konkurencję.</h1>
+      <p class="pod">Robię jednostronicowe strony dla pracowni mebli na wymiar. Dziesięć dni roboczych. 1&nbsp;490&nbsp;zł. Połowa na start, połowa po odbiorze. Jeśli po odbiorze strona Ci się nie spodoba — drugiej połowy nie płacisz.</p>
+      <a class="btn" href="#formularz">Sprawdź moją firmę za darmo</a>
+      <p class="mikro">Bez zobowiązań. Odpisuję w 24 godziny. Nie wysyłam newslettera.</p>
+    </div>
+    <div class="dowod">
+      <h3>Co dostajesz za darmo</h3>
+      <ol>
+        <li>Twoja pozycja w Google na trzy hasła z Twojego miasta</li>
+        <li>Stan Twojej wizytówki w Mapach Google — opinie, zdjęcia, właściciel</li>
+        <li>Wynik szybkości Twojej strony na telefonie, zmierzony przez Google</li>
+        <li>Ile zdjęć Twoich realizacji da się dziś znaleźć w internecie</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- 2. DLA KOGO TO JEST -->
+<section class="alt dlakogo">
+  <div class="wrap">
+    <p>Pracujesz w drewnie i płycie. Robisz kuchnie, szafy wnękowe, zabudowy. Masz od jednego do pięciu ludzi i telefon pełen zdjęć swoich realizacji, których nikt poza Tobą nie widział. To jest strona dla Ciebie.</p>
+    <p><strong>Jeśli prowadzisz sklep, restaurację albo gabinet — nie jestem właściwą osobą.</strong></p>
+  </div>
+</section>
+
+<!-- 3. SPRAWDZ SIEBIE W 60 SEKUND -->
+<section>
+  <div class="wrap">
+    <h2>Sprawdź swoją firmę. Zajmie 60 sekund i nie musisz nikomu ufać.</h2>
+    <ul class="check" id="check">
+      <li><label><input type="checkbox"> <span>Wpisz w Google „kuchnie na wymiar” i nazwę swojego miasta. <strong>Nie ma Cię w pierwszej dziesiątce?</strong></span></label></li>
+      <li><label><input type="checkbox"> <span>Otwórz swoją stronę na telefonie. <strong>Musisz powiększać palcami, żeby przeczytać tekst?</strong></span></label></li>
+      <li><label><input type="checkbox"> <span>Spójrz na adres swojej strony w przeglądarce. <strong>Zamiast kłódki widzisz napis „Nie zabezpieczona”?</strong></span></label></li>
+      <li><label><input type="checkbox"> <span>Wpisz w Google nazwę swojej firmy i spójrz na ramkę z prawej. <strong>Widzisz przycisk „Czy jesteś właścicielem tej firmy?”</strong></span></label></li>
+    </ul>
+    <div class="wynik" id="wynik">
+      <p><strong>Każdy zaznaczony kwadrat to klienci, którzy dziś dzwonią gdzie indziej.</strong> Sprawdzę to u Ciebie dokładnie i wypiszę na jednej kartce. Za darmo.</p>
+      <a class="btn" href="#formularz">Sprawdź moją firmę za darmo</a>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CO DOSTAJESZ ZA DARMO -->
+<section class="alt">
+  <div class="wrap">
+    <h2>Sprawdzenie firmy w Google — jedna kartka, zero zobowiązań</h2>
+    <div class="audyt-grid">
+      <div>
+        <p>Dostajesz kartkę A4 z czterema konkretami o Twojej firmie:</p>
+        <ol>
+          <li>Na której pozycji jesteś w Google na trzy hasła z Twojego miasta — i ile firm jest nad Tobą.</li>
+          <li>Ile masz opinii i zdjęć w Mapach Google i czy Twoja wizytówka jest w ogóle przypisana do Ciebie.</li>
+          <li>Wynik szybkości Twojej strony na telefonie, zmierzony narzędziem Google — liczba od 0 do 100.</li>
+          <li>Ile zdjęć Twoich realizacji da się dziś znaleźć w internecie i gdzie one leżą.</li>
+        </ol>
+        <p>Robię to w 15 minut i wysyłam PDF-em. <strong>Nie ma tam ceny ani oferty.</strong> Nie musisz oddzwaniać. Nie zapisuję Cię na żadną listę.</p>
+        <a class="btn" href="#formularz">Sprawdź moją firmę za darmo</a>
+        <p class="mikro">Potrzebuję tylko nazwy firmy i numeru telefonu. Odpisuję w 24 godziny.</p>
+      </div>
+      <div class="kartka">
+        <div class="kh">Bezpłatne sprawdzenie firmy w internecie</div>
+        <div class="kw"><span>„kuchnie na wymiar + miasto”</span><b>poza 30</b></div>
+        <div class="kw"><span>„meble na wymiar + miasto”</span><b>poz. 14</b></div>
+        <div class="kw"><span>Opinie w Mapach Google</span><b>6</b></div>
+        <div class="kw"><span>Zdjęcia w wizytówce</span><b>2</b></div>
+        <div class="kw"><span>Wizytówka przypisana do właściciela</span><b>NIE</b></div>
+        <div class="kw"><span>Szybkość strony na telefonie</span><b>28/100</b></div>
+        <div class="kw"><span>Bezpieczne połączenie (kłódka)</span><b>NIE MA</b></div>
+        <div class="kw"><span>Zdjęcia realizacji w internecie</span><b>47</b></div>
+        <p class="mikro">Przykładowe wypełnienie. Twoje liczby będą inne — mierzę je u Ciebie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. JAK TO WYGLADA -->
+<section>
+  <div class="wrap">
+    <h2>Cała Twoja robota to godzina. Resztę robię ja.</h2>
+    <div class="kroki">
+      <div class="krok">
+        <div class="nr">1</div>
+        <h3>Rozmowa</h3>
+        <div class="czas">15 minut</div>
+        <p>Dzwonimy albo przyjeżdżam do warsztatu. Pytam o trzy rzeczy: co robisz najchętniej, ile kosztuje u Ciebie kuchnia i w jakich miejscowościach chcesz mieć zlecenia.</p>
+      </div>
+      <div class="krok">
+        <div class="nr">2</div>
+        <h3>Zdjęcia</h3>
+        <div class="czas">45 minut Twojego czasu, raz</div>
+        <p>Wysyłasz mi zdjęcia swoich realizacji prosto z telefonu. Nie musisz ich układać ani opisywać. Wybieram, kadruję i poprawiam ja.</p>
+      </div>
+      <div class="krok">
+        <div class="nr">3</div>
+        <h3>Strona</h3>
+        <div class="czas">10 dni roboczych</div>
+        <p>Dostajesz link, oglądasz, mówisz co zmienić. Poprawiam. Dopiero potem płacisz drugą połowę.</p>
+      </div>
+    </div>
+    <p class="tekst"><strong>Nie musisz nic pisać, nic wybierać ani niczego się uczyć.</strong></p>
+  </div>
+</section>
+
+<!-- 6. KTO TO ROBI -->
+<section class="alt">
+  <div class="wrap">
+    <h2>Kto to robi</h2>
+    <div class="kto-grid">
+      <img src="zdjecie.jpg" width="320" height="320" alt="[[IMIE_NAZWISKO]]">
+      <div class="tekst">
+        <p>Nazywam się [[IMIE_NAZWISKO]]. Mieszkam w [[MIASTO]].</p>
+        <p>Zacząłem robić strony dla pracowni meblowych w 2026 roku i mówię to wprost, bo prędzej czy później i tak byś to sprawdził. Nie mam dwudziestu logotypów „zaufali nam” ani opinii, których nie da się zweryfikować.</p>
+        <p>Mam za to trzy rzeczy, które możesz sprawdzić dziś:</p>
+        <ul style="padding-left:22px;margin-bottom:16px">
+          <li style="margin-bottom:10px">sprawdzenie Twojej firmy dostajesz za darmo, zanim cokolwiek zapłacisz — i po nim wiesz, jak pracuję;</li>
+          <li style="margin-bottom:10px">płacisz połowę z góry, a drugą połowę dopiero wtedy, gdy strona Ci się podoba;</li>
+          <li>pracuję tylko z pracowniami mebli na wymiar, więc znam Twoją branżę lepiej niż agencja, która dziś robi stronę dentysty, a jutro siłowni.</li>
+        </ul>
+        <p class="dane">[[IMIE_NAZWISKO]] · [[DANE_FIRMY]] · <a href="tel:[[TELEFON_LINK]]" style="color:inherit">[[TELEFON]]</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CENNIK -->
+<section>
+  <div class="wrap">
+    <h2>Cennik. Bez wycen „na oko” i bez rozmów o budżecie.</h2>
+    <p class="kotwica">Agencja z dużego miasta policzy za stronę firmową 6 000–12 000 zł. Nie musisz mi wierzyć: wpisz w Google „strona internetowa dla firmy cennik” i otwórz trzy pierwsze wyniki. Poniżej moje ceny.</p>
+
+    <div class="pakiety">
+      <div class="pak wybor">
+        <span class="etykieta">Od tego zaczyna 9 na 10 warsztatów</span>
+        <div class="nazwa">Start</div>
+        <div class="cena">1 490 zł</div>
+        <ul>
+          <li>jedna strona z galerią Twoich realizacji</li>
+          <li>do 15 Twoich zdjęć — wybieram, kadruję i poprawiam ja</li>
+          <li>formularz i klikalny numer telefonu</li>
+          <li>odzyskanie i uzupełnienie wizytówki w Mapach Google</li>
+          <li>dwie rundy poprawek</li>
+          <li>10 dni roboczych</li>
+          <li>50% na start, 50% po odbiorze</li>
+        </ul>
+      </div>
+      <div class="pak">
+        <div class="nazwa">Standard</div>
+        <div class="cena">2 900 zł</div>
+        <ul>
+          <li>wszystko z pakietu START</li>
+          <li>trzy dodatkowe podstrony: kuchnie, szafy, zabudowy</li>
+          <li>do 30 zdjęć</li>
+          <li>teksty pod trzy miasta w okolicy</li>
+          <li>15 dni roboczych</li>
+          <li>bez opieki w cenie</li>
+        </ul>
+      </div>
+      <div class="pak">
+        <span class="etykieta">Najwięcej za złotówkę</span>
+        <div class="nazwa">Komplet</div>
+        <div class="cena">3 900 zł</div>
+        <ul>
+          <li>wszystko z pakietu STANDARD</li>
+          <li><strong>wejście poza kolejnością: 5 dni roboczych zamiast 15</strong></li>
+          <li>gotowe opisy Twojej firmy do Map Google, Facebooka, OLX i Oferteo</li>
+          <li>nagranie wideo: jak samemu dodać zdjęcie do wizytówki</li>
+          <li><strong>pierwszy miesiąc opieki w cenie</strong> (wartość 390 zł)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="abon">
+      <h3>Opieka po wdrożeniu — od 31. dnia po odbiorze strony</h3>
+      <table>
+        <tr><td>OPIEKA</td><td>390 zł/mies.</td><td>hosting, kopie zapasowe, poprawki treści, prowadzenie wizytówki w Mapach Google — do 1,5 godziny mojej pracy miesięcznie</td></tr>
+        <tr><td>WIDOCZNOŚĆ</td><td>690 zł/mies.</td><td>wszystko z OPIEKI + praca nad pozycją w Google + raport co miesiąc — do 3 godzin miesięcznie</td></tr>
+        <tr><td>WZROST+</td><td>1 190 zł/mies.</td><td>wszystko z WIDOCZNOŚCI + dwie nowe podstrony miesięcznie — do 6 godzin miesięcznie</td></tr>
+      </table>
+      <p class="mikro">Wypowiadasz w każdej chwili, z miesięcznym okresem. Bez kar umownych. Nie prowadzę umów na 12 miesięcy — jeśli po dwóch miesiącach nie widzisz sensu, nie chcę Cię trzymać papierem.</p>
+    </div>
+
+    <a class="btn" href="#formularz">Sprawdź moją firmę za darmo</a>
+    <p class="mikro">Najpierw bezpłatne sprawdzenie, dopiero potem rozmowa o pakiecie.</p>
+  </div>
+</section>
+
+<!-- 8. CZESTE PYTANIA -->
+<section class="alt">
+  <div class="wrap">
+    <h2>Częste pytania</h2>
+    <div class="faq">
+      <details>
+        <summary>Mam już stronę, tylko starą.</summary>
+        <div class="odp">Wtedy zwykle nie trzeba robić nowej od zera. Na bezpłatnym sprawdzeniu zobaczysz liczbę szybkości Twojej strony i pozycję w Google. Jeśli wystarczy poprawka, powiem to i policzę mniej niż 1 490 zł.</div>
+      </details>
+      <details>
+        <summary>Mam robotę na pół roku do przodu, po co mi to.</summary>
+        <div class="odp">Bo strona nie robi więcej zleceń, tylko lepsze. Kiedy masz z czego wybierać, przestajesz brać zlecenia za 8 tysięcy i bierzesz te za 30. Poza tym strona zrobiona we wrześniu pracuje na wiosnę, a nie na przyszły tydzień.</div>
+      </details>
+      <details>
+        <summary>Kuzyn mi zrobi za darmo.</summary>
+        <div class="odp">Może i zrobi. Zadaj mu dwa pytania: kto ją poprawi w marcu, kiedy przestanie działać formularz, i czy zajmie się wizytówką w Mapach Google. Jeśli odpowie na oba — bierz kuzyna, mówię to serio.</div>
+      </details>
+      <details>
+        <summary>Nie wierzę w SEO.</summary>
+        <div class="odp">Ja też nie wierzę w SEO jako w obietnicę pierwszego miejsca. Wierzę w to, że firma, która ma przypisaną wizytówkę, 30 zdjęć i 40 opinii, dostaje więcej telefonów niż firma, która ma 2 zdjęcia i 6 opinii. To nie jest wiara, to jest do policzenia.</div>
+      </details>
+      <details>
+        <summary>Co, jeśli mi się nie spodoba?</summary>
+        <div class="odp"><p>Zanim zacznę, zatwierdzasz mailem szkic: listę sekcji, teksty i wybrane zdjęcia. Potem masz dwie rundy poprawek w cenie i 5 dni roboczych od dostania linku na zgłoszenie zastrzeżeń.</p>
+        <p>Jeśli po dwóch rundach poprawek strona nadal Ci nie odpowiada — <strong>nie płacisz drugiej raty, a stronę zdejmuję w 24 godziny</strong>. Zaliczka 745 zł zostaje u mnie jako zapłata za wykonaną pracę i to jest cały Twój koszt.</p>
+        <p>Odbiór sprawdzamy razem, po sześciu punktach, które da się zmierzyć: adres z kłódką, wynik szybkości Google minimum 80 na telefonie, działający formularz (wysyłamy testowe zgłoszenie przy Tobie), klikalny numer, wszystkie zatwierdzone sekcje, teksty zgodne z zatwierdzonymi.</p></div>
+      </details>
+      <details>
+        <summary>Ile naprawdę mnie to będzie kosztować przez rok?</summary>
+        <div class="odp">1 490 zł za stronę + 11 miesięcy opieki po 390 zł = 5 780 zł w pierwszym roku, przy najtańszym wariancie. Podaję pełną liczbę, żebyś nie odkrył jej sam za pół roku.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FORMULARZ -->
+<section class="form-sekcja" id="formularz">
+  <div class="wrap">
+    <div class="ok" id="ok" hidden>
+      <h2>Mam. Sprawdzę Twoją firmę w ciągu 24 godzin i zadzwonię z konkretami.</h2>
+      <p>Dzwonię z numeru <strong>[[TELEFON]]</strong>. Jeśli nie odbierzesz, wysyłam SMS-a i tyle — nie dzwonię po raz drugi ani trzeci.</p>
+      <p><a class="btn" href="tel:[[TELEFON_LINK]]">Albo zadzwoń teraz: [[TELEFON]]</a></p>
+    </div>
+    <h2 id="naglowek-form">Zostaw nazwę firmy i numer. Resztę zrobię ja.</h2>
+    <div class="form-box">
+      <form name="audyt" method="POST" data-netlify="true" netlify-honeypot="firma-www" action="/?ok=1">
+        <input type="hidden" name="form-name" value="audyt">
+        <p class="hp"><label>Nie wypełniaj: <input name="firma-www"></label></p>
+
+        <label class="pole" for="nazwa">Nazwa firmy</label>
+        <input id="nazwa" name="nazwa" type="text" required autocomplete="organization" placeholder="np. DREWNOSTYL Meble na Wymiar">
+
+        <label class="pole" for="telefon">Numer telefonu</label>
+        <input id="telefon" name="telefon" type="tel" required autocomplete="tel" placeholder="512 000 111">
+
+        <label class="zgoda">
+          <input type="checkbox" name="zgoda" required>
+          <span>Zgadzam się na kontakt telefoniczny i SMS w sprawie bezpłatnego sprawdzenia mojej firmy. Zgodę mogę wycofać w każdej chwili. Administratorem danych jest [[IMIE_NAZWISKO]], [[DANE_FIRMY]]. Pełna informacja: <a href="#polityka">Polityka prywatności</a>.</span>
+        </label>
+
+        <button class="btn" type="submit">Chcę bezpłatne sprawdzenie firmy</button>
+      </form>
+      <p class="mikro">Dzwonię raz. Jeśli nie odbierzesz, wysyłam SMS-a i tyle. Nie zapisuję nikogo na newsletter, bo go nie prowadzę. Twój numer nie trafia do nikogo poza mną.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POLITYKA PRYWATNOSCI -->
+<section id="polityka">
+  <div class="wrap tekst">
+    <h2>Polityka prywatności</h2>
+
+    <h3>Kto jest administratorem danych</h3>
+    <p>Administratorem Twoich danych osobowych jest [[IMIE_NAZWISKO]], [[ADRES]], e-mail: <a href="mailto:[[EMAIL]]">[[EMAIL]]</a>, telefon [[TELEFON]]. [[DANE_FIRMY]].</p>
+
+    <h3>Jakie dane zbieram i skąd</h3>
+    <p>Z formularza na tej stronie: nazwa firmy i numer telefonu — podajesz je sam.</p>
+    <p>Ze źródeł publicznie dostępnych (Mapy Google, rejestr CEIDG, rejestr REGON, strony internetowe firm): nazwa firmy, adres, numer telefonu, adres e-mail. Dotyczy to firm, do których zwracam się z ofertą współpracy.</p>
+
+    <h3>Po co i na jakiej podstawie</h3>
+    <ul>
+      <li>Kontakt w sprawie bezpłatnego sprawdzenia firmy i przedstawienie oferty — mój prawnie uzasadniony interes, czyli marketing bezpośredni własnych usług (art. 6 ust. 1 lit. f RODO).</li>
+      <li>Wysyłka informacji handlowej drogą elektroniczną oraz kontakt telefoniczny w celu marketingowym — wyłącznie na podstawie Twojej dobrowolnej zgody (art. 6 ust. 1 lit. a RODO).</li>
+      <li>Wykonanie umowy i rozliczenia, gdy zostaniesz klientem — art. 6 ust. 1 lit. b oraz lit. c RODO.</li>
+    </ul>
+
+    <h3>Jak długo przechowuję dane</h3>
+    <p>Dane pozyskane ze źródeł publicznych — do wniesienia sprzeciwu, nie dłużej niż 24 miesiące od pozyskania. Dane ze zgody — do jej wycofania. Dane klientów — przez okres wymagany przepisami podatkowymi.</p>
+
+    <h3>Komu przekazuję dane</h3>
+    <p>Dostawcy hostingu tej strony (Netlify) w zakresie technicznego przechowywania zgłoszeń z formularza oraz dostawcy poczty elektronicznej. Nie sprzedaję i nie udostępniam danych nikomu innemu.</p>
+
+    <h3>Twoje prawa</h3>
+    <p>Masz prawo dostępu do danych, sprostowania, usunięcia, ograniczenia przetwarzania, przeniesienia oraz sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie. Zgodę możesz wycofać w każdej chwili, bez podawania powodu — wystarczy jedno zdanie na adres <a href="mailto:[[EMAIL]]">[[EMAIL]]</a>. Masz też prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych, ul. Stawki 2, 00-193 Warszawa.</p>
+
+    <h3>Ciasteczka i analityka</h3>
+    <p>Ta strona nie używa plików cookies do śledzenia ani do analityki. Nie ma na niej narzędzi analitycznych ani wtyczek serwisów społecznościowych. Nie profiluję i nie podejmuję decyzji w sposób zautomatyzowany.</p>
+  </div>
+</section>
+
+<!-- 10. STOPKA -->
+<footer>
+  <div class="wrap">
+    <p>[[IMIE_NAZWISKO]], [[ADRES]]</p>
+    <p>[[DANE_FIRMY]] · <a href="tel:[[TELEFON_LINK]]">[[TELEFON]]</a> · <a href="mailto:[[EMAIL]]">[[EMAIL]]</a></p>
+    <p><a href="#polityka">Polityka prywatności</a></p>
+  </div>
+</footer>
+
+<script>
+/* Po wyslaniu formularza Netlify wraca na adres /?ok=1 - pokazujemy podziekowanie. */
+(function(){
+  if(location.search.indexOf('ok=1')===-1) return;
+  var ok=document.getElementById('ok'); if(!ok) return;
+  ok.hidden=false;
+  document.querySelector('#formularz form').style.display='none';
+  document.getElementById('naglowek-form').style.display='none';
+  ok.scrollIntoView();
+})();
+
+/* Sekcja 3: po zaznaczeniu dowolnego kwadratu pokazuje sie podsumowanie z przyciskiem. */
+(function(){
+  var lista = document.getElementById('check');
+  var wynik = document.getElementById('wynik');
+  if(!lista || !wynik) return;
+  lista.addEventListener('change', function(){
+    var zaznaczone = lista.querySelectorAll('input:checked').length;
+    wynik.className = zaznaczone > 0 ? 'wynik on' : 'wynik';
+  });
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ProfessionalService",
+  "name":"[[IMIE_NAZWISKO]] — strony dla pracowni mebli na wymiar",
+  "description":"Jednostronicowe strony internetowe i widoczność w Google dla pracowni mebli na wymiar.",
+  "url":"https://[[DOMENA]]/",
+  "telephone":"[[TELEFON_LINK]]",
+  "email":"[[EMAIL]]",
+  "priceRange":"1490-4900 PLN",
+  "areaServed":"[[MIASTO]] i okolice",
+  "address":{"@type":"PostalAddress","streetAddress":"[[ADRES]]","addressLocality":"[[MIASTO]]","addressCountry":"PL"}
+}
+</script>
+
+</body>
+</html>
