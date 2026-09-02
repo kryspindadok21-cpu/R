@@ -1,0 +1,22 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# SEKRETY — nigdy w repo
+.env
+.env.local
+.env*.local
+
+# lokalna baza
+data/
+*.db
+*.db-shm
+*.db-wal
+
+.netlify/
+.DS_Store
+coverage/
