@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>robots.txt w podkatalogu nie działa — i dlaczego tego nie widać</title>
-<meta name="description" content="Na GitHub Pages robots.txt ląduje pod /repo/robots.txt, gdzie żaden crawler go nie czyta. Plik się otwiera, linia Sitemap wygląda poprawnie i nie działa. Pomiar i obejście.">
+<title>robots.txt w podkatalogu nie działa — dlaczego i co zrobić</title>
+<meta name="description" content="Na GitHub Pages robots.txt ląduje pod /repo/robots.txt, gdzie żaden crawler go nie czyta. Plik się otwiera, a linia Sitemap jest martwa. Pomiar i obejście.">
 <link rel="canonical" href="https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/">
 <link rel="stylesheet" href="/R/styl.css">
 <meta property="og:type" content="article">
-<meta property="og:title" content="robots.txt w podkatalogu nie działa — i dlaczego tego nie widać">
+<meta property="og:title" content="robots.txt w podkatalogu nie działa — dlaczego i co zrobić">
 <meta property="og:description" content="Plik się otwiera, linia Sitemap wygląda poprawnie i nie działa. Pomiar na żywej stronie i obejście.">
 <meta property="og:url" content="https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"robots.txt w podkatalogu nie działa — i dlaczego tego nie widać","datePublished":"2026-09-01","inLanguage":"pl","mainEntityOfPage":"https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/"}
+{"@context":"https://schema.org","@type":"Article","headline":"robots.txt w podkatalogu nie działa — dlaczego i co zrobić","datePublished":"2026-09-01","inLanguage":"pl","mainEntityOfPage":"https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/"}
 </script>
 </head>
 <body>
@@ -36,7 +36,7 @@
 </header>
 
 <main class="szkielet">
-  <h1>robots.txt w podkatalogu nie działa — i dlaczego tego nie widać</h1>
+  <h1>robots.txt w podkatalogu nie działa — dlaczego i co zrobić</h1>
 
   <p class="wstep"><code>robots.txt</code> jest plikiem poziomu hosta. Witryna
   serwowana z podkatalogu — na GitHub Pages, pod <code>/blog/</code> na cudzym
@@ -45,7 +45,7 @@
 
   <p class="data">Notatka z 1 września 2026</p>
 
-  <h2>Objaw</h2>
+  <h2>Objaw: plik otwiera się i zwraca status 200</h2>
 
   <p>Ta strona stoi pod adresem
   <code>https://kryspindadok21-cpu.github.io/R/</code>. Plik
@@ -86,7 +86,7 @@ https://kryspindadok21-cpu.github.io/R/robots.txt    → 200</code></pre>
   dokładnie ta sama informacja, podana w miejscu, w które mało kto zagląda,
   i w formie, która nie brzmi jak ostrzeżenie.</p>
 
-  <h2>Obejście</h2>
+  <h2>Obejście: mapę zgłasza się ręcznie</h2>
 
   <p>Mapę zgłasza się ręcznie: Search Console → <em>Mapy witryn</em> → pełny
   adres pliku. To jedyna droga, dopóki witryna stoi w podkatalogu. Zajmuje
