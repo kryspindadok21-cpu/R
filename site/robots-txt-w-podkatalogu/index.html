@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>robots.txt w podkatalogu nie działa — i dlaczego tego nie widać</title>
+<meta name="description" content="Na GitHub Pages robots.txt ląduje pod /repo/robots.txt, gdzie żaden crawler go nie czyta. Plik się otwiera, linia Sitemap wygląda poprawnie i nie działa. Pomiar i obejście.">
+<link rel="canonical" href="https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/">
+<link rel="stylesheet" href="/R/styl.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="robots.txt w podkatalogu nie działa — i dlaczego tego nie widać">
+<meta property="og:description" content="Plik się otwiera, linia Sitemap wygląda poprawnie i nie działa. Pomiar na żywej stronie i obejście.">
+<meta property="og:url" content="https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"robots.txt w podkatalogu nie działa — i dlaczego tego nie widać","datePublished":"2026-09-01","inLanguage":"pl","mainEntityOfPage":"https://kryspindadok21-cpu.github.io/R/robots-txt-w-podkatalogu/"}
+</script>
+</head>
+<body>
+<header class="gorny">
+  <div class="szkielet">
+    <a class="znak" href="/R/">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="9.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.4 12.6 L9.6 8.2 L12.4 13.4 L15.8 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Audyt i widoczność</span>
+    </a>
+    <nav class="glowna">
+      <a href="/R/audyt-techniczny/">Audyt techniczny</a>
+      <a href="/R/widocznosc-w-ai/">Widoczność w AI</a>
+      <a href="/R/robots-txt-w-podkatalogu/">robots.txt w podkatalogu</a>
+      <a href="/R/o-projekcie/">O projekcie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="szkielet">
+  <h1>robots.txt w podkatalogu nie działa — i dlaczego tego nie widać</h1>
+
+  <p class="wstep"><code>robots.txt</code> jest plikiem poziomu hosta. Witryna
+  serwowana z podkatalogu — na GitHub Pages, pod <code>/blog/</code> na cudzym
+  hostingu, pod <code>/docs/</code> — dostaje plik, którego żaden crawler nie
+  przeczyta. Podstępne jest to, że nic nie wygląda na zepsute.</p>
+
+  <p class="data">Notatka z 1 września 2026</p>
+
+  <h2>Objaw</h2>
+
+  <p>Ta strona stoi pod adresem
+  <code>https://kryspindadok21-cpu.github.io/R/</code>. Plik
+  <code>robots.txt</code> z repozytorium wdraża się razem z resztą, więc ląduje
+  pod <code>/R/robots.txt</code>. Otwiera się w przeglądarce, zwraca status 200,
+  ma w środku poprawnie zapisaną linię <code>Sitemap:</code>. Wszystko wygląda
+  na skonfigurowane.</p>
+
+  <p>Wyszukiwarki pytają wyłącznie o korzeń hosta. Pomiar z tego samego dnia:</p>
+
+  <pre><code>https://kryspindadok21-cpu.github.io/robots.txt      → 404
+https://kryspindadok21-cpu.github.io/R/robots.txt    → 200</code></pre>
+
+  <p>Ten pierwszy adres należy do GitHuba, nie do właściciela repozytorium.
+  Nie da się go nadpisać. Drugi jest nasz i nikt go nie czyta.</p>
+
+  <h2>Dlaczego to boli akurat przy mapie witryny</h2>
+
+  <p>Sam brak <code>robots.txt</code> pod korzeniem nie jest problemem — status
+  404 znaczy „wolno chodzić wszędzie" i tak też jest traktowany. Problem dotyczy
+  <strong>odkrywania mapy witryny</strong>.</p>
+
+  <p>Wyszukiwarka poznaje adres mapy na dwa sposoby: z linii
+  <code>Sitemap:</code> w <code>robots.txt</code> pod korzeniem hosta albo
+  przez konwencję <code>/sitemap.xml</code>, też pod korzeniem hosta. Przy
+  witrynie w podkatalogu <strong>oba miejsca należą do kogoś innego</strong>.
+  Mapa istnieje, jest poprawna i pozostaje nieodkryta.</p>
+
+  <p>Dla nowej witryny bez linków przychodzących mapa bywa jedyną drogą do
+  indeksu. Różnica między zgłoszeniem jej a niezgłoszeniem to nie jest niuans —
+  to różnica między indeksacją w tydzień a w kwartał.</p>
+
+  <h2>Google mówi to wprost, tylko cicho</h2>
+
+  <p>W Search Console, przy property typu „prefiks adresu URL" wskazującej
+  podkatalog, raport <code>robots.txt</code> jest wyszarzony z adnotacją:
+  <em>„Dostępne tylko w usługach domeny najwyższego poziomu"</em>. To jest
+  dokładnie ta sama informacja, podana w miejscu, w które mało kto zagląda,
+  i w formie, która nie brzmi jak ostrzeżenie.</p>
+
+  <h2>Obejście</h2>
+
+  <p>Mapę zgłasza się ręcznie: Search Console → <em>Mapy witryn</em> → pełny
+  adres pliku. To jedyna droga, dopóki witryna stoi w podkatalogu. Zajmuje
+  kilkanaście sekund i nie wymaga własnej domeny.</p>
+
+  <p>Samego pliku <code>robots.txt</code> nie trzeba kasować — po przeniesieniu
+  witryny na własną domenę zacznie działać bez zmian. Warto natomiast dopisać
+  w nim komentarz, że w obecnym miejscu jest bezskuteczny. Plik, który wygląda
+  na działający i nie działa, jest gorszy niż jego brak: buduje fałszywe
+  poczucie, że temat jest załatwiony.</p>
+
+  <h2>Dlaczego audyty tego nie łapią</h2>
+
+  <p>Typowy audyt sprawdza, czy <code>robots.txt</code> istnieje i czy nie
+  blokuje ważnych ścieżek. Tu plik istnieje i niczego nie blokuje — więc
+  sprawdzenie przechodzi. Żeby zobaczyć problem, trzeba porównać <em>adres
+  startowy witryny</em> ze <em>stanem pliku pod korzeniem hosta</em>, a to są
+  dwie różne informacje, zwykle zbierane osobno.</p>
+
+  <p>W narzędziu opisywanym na tej stronie odpowiada za to reguła
+  <code>sitemap.not-discoverable</code>. Zgłasza się dopiero wtedy, gdy mapa
+  istnieje — bez mapy nie ma czego nie odkryć i reguła melduje się jako
+  pominięta, zamiast milczeć. Dowód w raporcie zawiera adres sprawdzonego
+  pliku, jego stan, liczbę adresów w mapie i inną radę dla witryny pod korzeniem
+  niż dla witryny w podkatalogu.</p>
+
+  <blockquote>Ta reguła powstała 1 września 2026, po tym jak crawler zgłosił
+  <code>robots.txt: missing</code> na tej właśnie stronie, a audyt przeszedł
+  bez uwag. Narzędzie zobaczyło objaw i nie umiało go nazwać — to był brak
+  reguły, nie brak problemu.</blockquote>
+
+  <h2>Kogo to jeszcze dotyczy</h2>
+
+  <p>Każdej witryny, której adres startowy ma ścieżkę dłuższą niż
+  <code>/</code>: dokumentacji pod <code>/docs/</code>, bloga doklejonego pod
+  <code>/blog/</code> do cudzego serwisu, sklepu pod <code>/shop/</code>,
+  wersji językowej postawionej jako osobna witryna pod <code>/de/</code>.
+  Wszędzie tam <code>robots.txt</code> i konwencja <code>/sitemap.xml</code>
+  są poza zasięgiem właściciela treści.</p>
+
+  <p>O kolejności sprawdzeń w audycie technicznym piszę w notatce o
+  <a href="/R/audyt-techniczny/">audycie technicznym</a>, a o drugiej połowie
+  problemu — widoczności dla modeli językowych — w notatce o
+  <a href="/R/widocznosc-w-ai/">widoczności w wyszukiwarkach AI</a>.</p>
+</main>
+
+<footer class="dolny">
+  <div class="szkielet">
+    <p><a href="/R/">Wróć na stronę główną</a></p>
+  </div>
+</footer>
+</body>
+</html>
