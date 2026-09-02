@@ -57,7 +57,25 @@ pnpm seo gsc sync  --site https://kryspindadok21-cpu.github.io/R/
 
 ---
 
-## 7. Darmowy klucz do silnika AI  ⟶ komputer, opcjonalne
+## 7a. Darmowy klucz PageSpeed Insights  ⟶ komputer, 2 minuty
+
+Sprawdzone 2026-09-02: bez klucza PSI zwraca **429** przy pierwszym żądaniu.
+Limit anonimowy jest praktycznie zerowy, więc `seo psi` nie ma jak działać.
+
+Klucz jest darmowy i bierze się go z **tego samego projektu**, w którym
+siedzi `seo-bot`: Google Cloud → *Dane logowania* → **Utwórz dane logowania**
+→ *Klucz interfejsu API*. Włącz też `PageSpeed Insights API` w Bibliotece.
+
+```powershell
+setx SEO_PSI_KEY "AIza..."
+```
+
+Odblokowuje pomiar Core Web Vitals — dane terenowe i laboratoryjne osobno,
+nigdy zmieszane w jednej liczbie.
+
+---
+
+## 7b. Darmowy klucz do silnika AI  ⟶ komputer, opcjonalne
 
 **Jedyna warstwa, która da coś do oglądania tego samego wieczora** — nie czeka
 na żadne dane historyczne.
