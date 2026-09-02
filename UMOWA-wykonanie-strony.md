@@ -88,8 +88,11 @@ zwanymi dalej łącznie "Stronami".
 
 § 3. TERMIN WYKONANIA
 
-1. Wykonawca wykona przedmiot umowy w terminie [10 / 15 / 5]
+1. Wykonawca wykona przedmiot umowy w terminie [15 / 20 / 8]
    dni roboczych, liczonych zgodnie z § 2 ust. 3.
+   (Terminy dla klientów nr 1-3. Dla klientów nr 4-5: [10 / 15 / 6].
+   Od klienta nr 6: [7 / 12 / 5]. Wpisujesz jedną liczbę - właściwą
+   dla wybranego pakietu i dla swojego etapu.)
 
 2. Wykonawca informuje Zamawiającego o zagrożeniu dotrzymania
    terminu najpóźniej w połowie okresu, o którym mowa w ust. 1,

@@ -3,7 +3,7 @@
 Data: 2026-09-02 · Nisza: pracownie mebli na wymiar (1–5 osób, promień 60 km)
 Kanał: wizyta osobista · Oferta wejściowa: 1 490 zł + abonament 390 zł/mies. od 31. dnia
 
-> **UWAGA — ten plik był poprawiany po Części 3.** Obowiązujące ceny: **1 490 / 2 900 / 3 900 zł** jednorazowo oraz **390 / 690 / 1 190 zł** miesięcznie. Obowiązujący termin dla pierwszych trzech klientów: **10 dni roboczych**. Pełne uzasadnienie zmian w Części 3, poprawki P3 i P4.
+> **UWAGA — ten plik był poprawiany po Części 3.** Obowiązujące ceny: **1 490 / 2 900 / 3 900 zł** jednorazowo oraz **390 / 690 / 1 190 zł** miesięcznie. Obowiązujący termin dla pierwszych trzech klientów: **15 dni roboczych** (korekta po ataku RED TEAMu: pierwsze wdrożenie to 20–25 h, nie 8). Pełne uzasadnienie zmian w Części 3, poprawki P3 i P4.
 
 ---
 
@@ -588,7 +588,7 @@ ON:  [odpowiada]
 TY:  To wchodzi wariant podstawowy. Jedna strona z galerią
      Pana realizacji plus odzyskanie i uzupełnienie wizytówki
      w Mapach Google. Tysiąc czterysta dziewięćdziesiąt złotych,
-     dziesięć dni roboczych, połowa na start, połowa po odbiorze.
+     piętnaście dni roboczych, połowa na start, połowa po odbiorze.
      Przed startem zatwierdza Pan mailem szkic. Potem ma Pan dwie rundy
      poprawek i pięć dni roboczych na uwagi. Jeśli po dwóch rundach
      strona nadal Panu nie odpowiada, drugiej raty Pan nie płaci,
@@ -637,6 +637,53 @@ Zasady:
 2. **Nie zwiększasz częstotliwości.** Odstępy 0 / +3 / +8 / +17 są sztywne. Skracanie ich nie przyspiesza decyzji, tylko przyspiesza blokadę.
 3. **Kończysz na piątym.** Po piątym firma idzie do `UŚPIONY` i wraca po 60 dniach z innym audytem (bo w międzyczasie coś się u niej zmieniło).
 4. **Nie bierzesz tego do siebie i nie zmieniasz niszy.** Brak odpowiedzi to statystyka, nie ocena Ciebie. Zmiana niszy po 20 milczeniach to najdroższy błąd, jaki możesz popełnić w pierwszych 30 dniach (patrz lista 10 błędów w Części 3).
+
+### 5.9 WARIANT B — kanał, w którym to ON zaprasza kontakt
+
+**Kiedy przechodzisz na ten wariant:** gdy Test 1 z Tygodnia 0 wypadnie źle — właściciel obecny w mniej niż 2 z 5 warsztatów — albo gdy Test 4 pokaże mniej niż 40 firm w realnym zasięgu. To nie jest plan awaryjny na złe samopoczucie. To jest przełącznik uruchamiany jednym wynikiem liczbowym.
+
+**Na czym polega:** zamiast szukać stolarza w warsztacie, znajdujesz miejsce, w którym **on sam prosi o kontakt**, i odpowiadasz na jego zaproszenie.
+
+| Gdzie szukasz | Czego szukasz | Dlaczego to działa |
+|---|---|---|
+| **OLX**, kategoria Usługi → Budowa i remont | jego ogłoszenia „meble na wymiar", „wycena gratis", „przyjmę zlecenia" | ogłoszenie zawiera numer i **jest zaproszeniem do kontaktu** |
+| **Oferteo**, **Fixly** | profile wykonawców w kategorii meblowej | płaci za leady, więc ma budżet i szuka zleceń |
+| **Grupy lokalne na Facebooku** | posty „wolne terminy od zaraz", „polecam się", odpowiedzi na cudze „szukam stolarza" | najgorętszy możliwy sygnał — dziura w kalendarzu |
+| **Marketplace / Allegro Lokalnie** | wystawione realizacje | to samo co OLX |
+
+### Co się zmienia w sekwencji
+
+| Dotknięcie | Wariant A (wizyta) | **Wariant B (zaproszenie)** |
+|---|---|---|
+| **1** | wizyta w warsztacie, audyt z ręki, podpis zgody | **odpowiedź na jego ogłoszenie** — dzwonisz na numer z ogłoszenia albo piszesz w wątku, w którym prosił o kontakt. Zgodę na maila zbierasz **ustnie w tej rozmowie i potwierdzasz SMS-em**, który zostaje jako ślad |
+| **2** | mail z audytem tego samego wieczoru | **bez zmian** |
+| **3** | telefon +3 dni | **wizyta w warsztacie, umówiona** — tu wraca kontakt osobisty, tylko już na zaproszenie |
+| **4** | druga wartość za darmo, +8 dni | **bez zmian** |
+| **5** | zamknięcie pętli, +17 dni | **bez zmian** |
+
+### Co zostaje bez żadnych zmian
+
+Audyt (D4) — ten sam. Karta oceny leada (D3) — ta sama. Skrypt rozmowy o cenie (D10) — ten sam. Cennik, umowa, gwarancja, strona — bez zmian. **Podmieniasz jeden element sekwencji, nie system.**
+
+### Blok prawny dla Wariantu B — przeczytaj, zanim zadzwonisz
+
+Ogłoszenie z numerem telefonu i zaproszeniem „zadzwoń, wycenię" **jest zaproszeniem do kontaktu w sprawie tej usługi, którą on oferuje — nie zgodą na Twoją ofertę handlową**. Różnica jest istotna i nie wolno jej zamazywać.
+
+Bezpieczna konstrukcja pierwszej rozmowy: dzwonisz, mówisz wprost, kim jesteś i po co, **i pytasz o zgodę, zanim cokolwiek zaoferujesz**:
+
+```
+Dzień dobry, dzwonię pod ogłoszenie z OLX. Od razu mówię uczciwie:
+nie zamawiam kuchni. Robię strony dla pracowni meblowych i sprawdziłem
+Państwa firmę w Google - wyszły cztery rzeczy, spisałem je na jednej
+kartce. Chcę zapytać o jedno: mogę to Państwu wysłać mailem?
+Jak nie, to kończę i nie zabieram czasu.
+```
+
+Trzy rzeczy, które ten skrypt załatwia naraz: nie udajesz klienta (to byłaby ściema z §5.4), pytasz o zgodę **przed** wysłaniem czegokolwiek, i dajesz łatwe wyjście, więc rozmowa nie jest nagabywaniem. **Zgodę udzieloną ustnie potwierdzasz SMS-em** w rodzaju: *„Potwierdzam zgodę na wysłanie audytu na adres [mail]. Wycofać można jednym słowem na ten numer."* — SMS jest Twoim dowodem.
+
+**Czego w Wariancie B nie robisz:** nie piszesz w publicznym komentarzu pod cudzym postem oferty sprzedaży, nie wysyłasz wiadomości prywatnej przed uzyskaniem zgody, nie udajesz zainteresowanego zamówieniem mebli, żeby wyciągnąć numer.
+
+**SPRAWDŹ, ŻE JEST DOBRZE (Wariant B):** po 10 telefonach masz co najmniej 4 zgody potwierdzone SMS-em. Jeśli mniej — problem jest w pierwszym zdaniu, nie w kanale: skracasz je do dwóch zdań i mierzysz na kolejnych 10.
 
 **SPRAWDŹ, ŻE JEST DOBRZE:** przejdź całą sekwencję na sucho z drugą osobą, która czyta kwestie „ONA/ON", a Ty odpowiadasz bez zaglądania w kartkę. Odbiór zaliczony, gdy: (1) skrypt do drzwi wypowiadasz w 40 sekund lub krócej, (2) po podaniu ceny milczysz przez pełne 5 sekund, licząc w głowie, (3) na „nie, dziękuję" wychodzisz w mniej niż 10 sekund bez ani jednej próby przekonywania. Jeśli którykolwiek z tych trzech testów nie przechodzi, powtarzasz — bo w prawdziwym warsztacie będzie gorzej, nie lepiej.
 
@@ -700,7 +747,7 @@ Znajdują Twoją konkurencję.
 
 PODTYTUŁ:
 Robię jednostronicowe strony dla pracowni mebli na wymiar.
-Dziesięć dni roboczych. 1 490 zł. Połowa na start, połowa po odbiorze.
+Piętnaście dni roboczych. 1 490 zł. Połowa na start, połowa po odbiorze.
 Jeśli po dwóch rundach poprawek strona Ci się nie spodoba — drugiej raty nie płacisz.
 
 PRZYCISK:
@@ -820,7 +867,7 @@ Cała Twoja robota to godzina. Resztę robię ja.
    Wysyłasz mi zdjęcia swoich realizacji prosto z telefonu.
    Nie musisz ich układać ani opisywać. Wybieram, kadruję i poprawiam ja.
 
-3. STRONA — 10 dni roboczych
+3. STRONA — 15 dni roboczych
    Dostajesz link, oglądasz, mówisz co zmienić. Poprawiam.
    Dopiero potem płacisz drugą połowę.
 
@@ -887,7 +934,7 @@ cennik" i otwórz trzy pierwsze wyniki. Poniżej moje ceny.
 │  · odzyskanie i uzupełnienie wizytówki     │
 │    w Mapach Google                         │
 │  · dwie rundy poprawek                     │
-│  · 10 dni roboczych                        │
+│  · 15 dni roboczych                        │
 │  · 50% na start, 50% po odbiorze           │
 └────────────────────────────────────────────┘
 
@@ -898,7 +945,7 @@ cennik" i otwórz trzy pierwsze wyniki. Poniżej moje ceny.
 │    (kuchnie / szafy / zabudowy)            │
 │  · do 30 zdjęć                             │
 │  · teksty pod trzy miasta w okolicy        │
-│  · 15 dni roboczych                        │
+│  · 20 dni roboczych                        │
 │  · bez opieki w cenie                      │
 └────────────────────────────────────────────┘
 
@@ -907,7 +954,7 @@ cennik" i otwórz trzy pierwsze wyniki. Poniżej moje ceny.
 │                                            │
 │  · wszystko z pakietu STANDARD             │
 │  · WEJŚCIE POZA KOLEJNOŚCIĄ:               │
-│    5 dni roboczych zamiast 15              │
+│    8 dni roboczych zamiast 20              │
 │  · gotowe opisy Twojej firmy do Map Google,│
 │    Facebooka, OLX i Oferteo                │
 │  · nagranie wideo: jak samemu dodać zdjęcie│

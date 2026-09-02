@@ -3,6 +3,49 @@
 
 ---
 
+## TYDZIEŃ 0 — PIĘĆ TESTÓW. TO ROBISZ NAJPIERW.
+
+Nie wychodzisz sprzedawać, dopóki nie przejdziesz bramki. Koszt: 0 zł. Czas: 7 dni.
+
+```
+[ ] T4. PRZELICZENIE RYNKU (60 min)
+       Policzyłem firmy w zasięgu 45 min komunikacją, nie w promieniu
+       60 km. Wyszło: .......... firm.
+       OBALONE, jeśli mniej niż 40 -> Wariant B kanału (D5.9).
+
+[ ] T2. STOPER NA STRONIE (dni 5-6)
+       Zbudowałem całą stronę dla wymyślonej firmy, ze stoperem.
+       Zajęło mi: .......... godzin.
+       OBALONE, jeśli ponad 25 h -> obiecuję 20 dni, nie 15.
+
+[ ] T3. REAKCJA NA AUDYT (45 min)
+       Pokazałem audyt trzem osobom z mikrofirmą. Liczę PYTANIA,
+       nie komplementy.
+       Pytania zadali: ....... z 3.
+       OBALONE, jeśli mniej niż 2 -> wymieniam cztery liczby
+       na zrzut ekranu wyszukiwania bez jego firmy.
+
+[ ] T1 + T5. WTORKOWY PORANEK, 7:30-9:30 - JEDNO WYJŚCIE, DWA TESTY
+       5 warsztatów. Bez audytu, bez oferty. Jedno pytanie:
+       "Szukam kogoś do zabudowy - zastanę właściciela?"
+       Wszystkie pięć jednego ranka, bez wracania do domu.
+
+       Właściciel był obecny w ....... z 5.
+       T1 OBALONE, jeśli mniej niż 2 -> Wariant B kanału (D5.9).
+
+       Czy zrobiłem wszystkie pięć?           TAK / NIE
+       Czy wieczorem wypełniłem licznik dnia?  TAK / NIE
+       T5 OBALONE przy jakimkolwiek NIE -> tnę limit do 2 wizyt
+       dziennie, zawsze przed południem.
+
+BRAMKA - wieczór dnia 7:
+[ ] Wiem, którym wariantem kanału startuję: A / B
+[ ] Wiem, jaki termin obiecuję pierwszym trzem klientom: 15 / 20 dni
+[ ] Wiem, ile wizyt dziennie robię: 3-4 / 2
+```
+
+---
+
 ## 🛑 STOP-WARUNEK
 
 **Nie wychodzisz z domu, dopóki nie masz odhaczonych wszystkich pozycji z bloków 1, 2 i 3.**

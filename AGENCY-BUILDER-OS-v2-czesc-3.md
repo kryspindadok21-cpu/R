@@ -276,17 +276,39 @@ Potwierdzone: MAKSIMUM było najgorzej płatnym pakietem w całym cenniku, miał
 
 > **Element odróżniający droższy pakiet musi być zasobem wielokrotnego użytku albo pozycją w kolejce — nigdy moimi godzinami.** W pakiet jednorazowy nie wliczam więcej niż **jeden** miesiąc abonamentu.
 
+### ⚠️ KOREKTA PO ATAKU RED TEAMU: 8 h to nie jest czas pierwszego wdrożenia
+
+Policzyłem stawki na ośmiu godzinach i w tym samym dokumencie napisałem w P4, że pierwsze wdrożenie zajmie 2–3× więcej. To była sprzeczność między liczbą a moją własną uwagą obok niej. **Osiem godzin to stan docelowy, nie punkt startu.**
+
+**Krzywa uczenia — ile realnie zajmie pakiet START** [SZACUNEK — założenie: zero doświadczenia na starcie; trzy koszty jednorazowe znikają po kolei: nauka narzędzi (Netlify, Squoosh, wizytówka, Search Console) ok. 6 h, ustalenie własnego procesu ok. 4 h, błędy pierwszego wdrożenia ok. 4 h]:
+
+| Klient nr | Godziny | Stawka | Co znika w stosunku do poprzedniego |
+|---|---|---|---|
+| **1** | **20–25 h (licz 22)** | **68 zł/h** | — |
+| 2 | 15 h | 99 zł/h | nauka narzędzi: robisz je drugi raz, nie pierwszy |
+| 3 | 11 h | 135 zł/h | własny proces: wiesz, w jakiej kolejności |
+| 4 | 9 h | 166 zł/h | błędy: przestajesz cofać zrobioną robotę |
+| **5 i dalej** | **8 h** | **186 zł/h** | nic — to jest stan ustalony |
+
+**Trzy skutki, które musisz przyjąć do wiadomości, zanim wyjdziesz do pierwszego klienta:**
+
+1. **Na pierwszym kliencie zarabiasz 68 zł za godzinę.** To jest cena wejścia do zawodu i nie ma jej jak ominąć. Nie negocjujesz jej w górę u klienta — odrabiasz ją na kliencie drugim i trzecim.
+2. **Sufit mocy w pierwszym miesiącu spada z trzech wdrożeń do JEDNEGO.** 22 h przy 2,5 h produkcji dziennie to prawie dziewięć dni roboczych samej produkcji, a miesiąc ma jeszcze wizyty, telefony i budowę fundamentu. Drugie wdrożenie fizycznie się nie mieści.
+3. **Pierwszym trzem klientom proponujesz wyłącznie START.** STANDARD to przy krzywej uczenia realnie 30 h, KOMPLET 34 h — jedno takie zlecenie zjada Ci półtora miesiąca. Jeśli klient sam zażąda wyższego pakietu, sprzedajesz, ale z terminem ze stopnia 1 z tabeli poniżej.
+
+**Godziny pakietów w stanie ustalonym (od 5. klienta) — te liczby zostają:**
+
 ### Nowy cennik (już wdrożony w `index.html`)
 
-| Pakiet | Cena | Godziny [SZACUNEK] | Stawka | Co go różni |
-|---|---|---|---|---|
-| **START** | 1 490 zł | **8,0 h** | **186 zł/h** | 1 strona, do 15 zdjęć, wizytówka, 2 rundy poprawek, 10 dni |
-| **STANDARD** (wabik) | 2 900 zł | **15,0 h** | **193 zł/h** | + 3 podstrony, do 30 zdjęć, teksty pod 3 miasta, 15 dni, **bez opieki** |
-| **KOMPLET** | 3 900 zł | **17,0 h** | **229 zł/h** | + wejście poza kolejnością (5 dni), gotowe opisy do Map/FB/OLX/Oferteo, nagranie wideo, **1 miesiąc opieki** |
+| Pakiet | Cena | Godziny — stan ustalony [SZACUNEK] | Stawka | Godziny — klient nr 1 | Stawka nr 1 | Co go różni |
+|---|---|---|---|---|---|---|
+| **START** | 1 490 zł | **8,0 h** | **186 zł/h** | **22 h** | **68 zł/h** | 1 strona, do 15 zdjęć, wizytówka, 2 rundy poprawek |
+| **STANDARD** (wabik) | 2 900 zł | **15,0 h** | **193 zł/h** | 30 h | 97 zł/h | + 3 podstrony, do 30 zdjęć, teksty pod 3 miasta, **bez opieki** |
+| **KOMPLET** | 3 900 zł | **17,0 h** | **229 zł/h** | 34 h | 115 zł/h | + wejście poza kolejnością, gotowe opisy do Map/FB/OLX/Oferteo, **1 miesiąc opieki** |
 
-Skąd 8,0 h w START: rozmowa i brief 0,5 · zdjęcia (wybór, kadr, kompresja 15 szt.) 1,5 · teksty 1,5 · złożenie strony z szablonu 1,5 · wizytówka Google 1,0 · wdrożenie i testy 0,5 · dwie rundy poprawek 1,0 · papiery i rachunek 0,5.
+Skąd 8,0 h w START **w stanie ustalonym, od 5. klienta**: rozmowa i brief 0,5 · zdjęcia (wybór, kadr, kompresja 15 szt.) 1,5 · teksty 1,5 · złożenie strony z szablonu 1,5 · wizytówka Google 1,0 · wdrożenie i testy 0,5 · dwie rundy poprawek 1,0 · papiery i rachunek 0,5.
 
-**Dlaczego wabik teraz działa na klienta, a nie na Ciebie:** STANDARD za 2 900 zł nie ma opieki, nie ma priorytetu i nie ma opisów. KOMPLET za 1 000 zł więcej dokłada rzeczy, które **kosztują Cię 2 godziny**, a klient wycenia je znacznie wyżej — bo dostaje pozycję w kolejce i gotowce, które sam musiałby pisać. Twoja stawka **rośnie** z każdym wyższym pakietem: 186 → 193 → 229 zł/h. To jest test, który każdy przyszły cennik musi przejść.
+**Dlaczego wabik nadal działa na klienta, a nie na Ciebie:** STANDARD za 2 900 zł nie ma opieki, nie ma priorytetu i nie ma opisów. KOMPLET za 1 000 zł więcej dokłada rzeczy, które **kosztują Cię 2 godziny**, a klient wycenia je znacznie wyżej. Twoja stawka **rośnie** z każdym wyższym pakietem: 186 → 193 → 229 zł/h. To jest test, który każdy przyszły cennik musi przejść.
 
 ### Abonamenty — sufit godzin wpisany do oferty
 
@@ -298,19 +320,32 @@ Skąd 8,0 h w START: rozmowa i brief 0,5 · zdjęcia (wybór, kadr, kompresja 15
 
 Sufit jest teraz **napisany na stronie i w umowie**. Bez niego abonament za 390 zł zamienia się w etat.
 
-### Sufit mocy przerobowych — reguła, której nie łamiesz
+### Sufit mocy przerobowych — reguła, której nie łamiesz (stan ustalony, od 5. klienta)
 
 Przy 52 h miesięcznie: **maksymalnie 3 nowe wdrożenia START miesięcznie (24 h) + 8 abonamentów OPIEKA (12 h) = 36 h**, reszta to zapas na obsunięcia. Czwarty klient w miesiącu dostaje termin w kolejnym miesiącu — i **mówisz mu to wprost**, bo kolejka jest sygnałem, że masz robotę.
+
+**Sufit w pierwszych miesiącach jest inny i niższy — to jest wersja obowiązująca dla Ciebie dziś:**
+
+| Miesiąc | Klienci nr | Godziny na wdrożenia | Ile wdrożeń się mieści |
+|---|---|---|---|
+| **1.** | 1 | 22 h | **1** |
+| 2. | 2–3 | 26 h | **2** |
+| 3. | 4–6 | 26 h | **3** |
+| 4. i dalej | 7+ | 24 h | **3** |
 
 ## P4. Termin — rozstrzygnięcie
 
 RED TEAM miał rację, zignorowałem to. Poprawka:
 
-| Kiedy | Co obiecujesz na zewnątrz | Twój cel wewnętrzny |
-|---|---|---|
-| Klienci **1–3** | **10 dni roboczych** | 6 dni |
-| Klient **4 i dalej** | **7 dni roboczych** | 5 dni |
-| KOMPLET (dowolny numer) | 5 dni roboczych — to jest jego przywilej, więc go pilnujesz przed innymi | 4 dni |
+| Numer klienta | START — obiecujesz | STANDARD | KOMPLET | Cel wewnętrzny (START) |
+|---|---|---|---|---|
+| **1–3** | **15 dni roboczych** | 20 dni | 8 dni | 10 dni |
+| **4–5** | **10 dni roboczych** | 15 dni | 6 dni | 7 dni |
+| **od 6** | **7 dni roboczych** | 12 dni | 5 dni | 5 dni |
+
+**Terminy wzrosły w stosunku do poprzedniej wersji, bo wzrósł czas wdrożenia.** 22 godziny przy 2,5 h produkcji dziennie to 8,8 dnia roboczego samej pracy — obietnica 10 dni nie zostawiała ani jednego dnia zapasu na to, że klient przyśle zdjęcia w piątek zamiast we wtorek. To nie jest ostrożność, to jest arytmetyka.
+
+**Strona i skrypt podają terminy ze stopnia, na którym jesteś.** Po trzecim odbiorze wchodzisz w `index.html` i podmieniasz trzy liczby: `15 dni roboczych` → `10`, `20 dni roboczych` → `15`, `8 dni roboczych zamiast 20` → `6 dni roboczych zamiast 15`. Po piątym — analogicznie na stopień trzeci. To jest dwuminutowa zmiana i jedyne miejsce, w którym wolno Ci skrócić obietnicę.
 
 Bufor 4 dni na pierwszych trzech klientach jest po to, że **pierwsze wdrożenie zajmie Ci 2–3 razy więcej, niż zakładasz** [SZACUNEK — założenie: zero doświadczenia, pierwsze zderzenie z hostingiem, domeną i weryfikacją wizytówki]. Obietnica krótsza od możliwości to jedyny sposób, żeby spalić pierwszego klienta.
 
@@ -663,10 +698,14 @@ Kolejność, w jakiej je zdobywasz — od najpewniejszego:
 | Opisy do Map/FB/OLX/Oferteo | — | — | **tak** |
 | Nagranie wideo „jak dodać zdjęcie" | — | — | **tak** |
 | Opieka w cenie | — | — | **1 miesiąc (390 zł)** |
-| Termin | 10 dni rob. (od 4. klienta: 7) | 15 dni rob. | **5 dni rob.** |
+| Termin — klienci 1–3 | 15 dni rob. | 20 dni rob. | **8 dni rob.** |
+| Termin — klienci 4–5 | 10 dni rob. | 15 dni rob. | **6 dni rob.** |
+| Termin — od 6. klienta | 7 dni rob. | 12 dni rob. | **5 dni rob.** |
 | Rundy poprawek | 2 | 2 | 3 |
-| **Twoje godziny** [SZACUNEK] | 8,0 h | 15,0 h | 17,0 h |
-| **Twoja stawka** | 186 zł/h | 193 zł/h | **229 zł/h** |
+| **Godziny — stan ustalony** [SZACUNEK] | 8,0 h | 15,0 h | 17,0 h |
+| **Stawka — stan ustalony** | 186 zł/h | 193 zł/h | **229 zł/h** |
+| **Godziny — klient nr 1** | **22 h** | 30 h | 34 h |
+| **Stawka — klient nr 1** | **68 zł/h** | 97 zł/h | 115 zł/h |
 
 **Jak działa kotwica:** nad cennikiem na stronie stoi zdanie o cenach agencyjnych 6 000–12 000 zł [SZACUNEK — **nie podawaj tego jako pewnika; zdanie na stronie zawiera instrukcję sprawdzenia i klient może to zrobić w minutę**]. Pierwsza liczba, którą widzi klient, jest cudza i wysoka. Twoja 1 490 zł ląduje pod nią.
 

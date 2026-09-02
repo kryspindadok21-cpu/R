@@ -78,7 +78,7 @@ TY:  Proponuję rzecz najprostszą z możliwych. Jedna strona
      telefonu i kwadrans na przejrzenie, jak wygląda. Resztę
      robię ja. Nie musi Pan nic pisać ani niczego wybierać.
 
-     Tysiąc czterysta dziewięćdziesiąt złotych. Dziesięć dni
+     Tysiąc czterysta dziewięćdziesiąt złotych. Piętnaście dni
      roboczych. Połowa na start, połowa po odbiorze.
 
      [MILCZYSZ. Liczysz w głowie do pięciu. Nie dodajesz
@@ -278,7 +278,8 @@ To jest lista rzeczy, których nie obejdziesz, i **razem zajmują większość T
 
 | Sufit | Na kwartał | Skąd |
 |---|---|---|
-| **Moce przerobowe** | **9 wdrożeń** (3 miesięcznie × 3) | P3, Część 3 — sufit operacyjny, nie arytmetyczny |
+| **Moce przerobowe — stan ustalony** | **9 wdrożeń** (3 miesięcznie × 3) | P3, Część 3 |
+| **Moce przerobowe — pierwszy kwartał** | **6 wdrożeń** (1 + 2 + 3, krzywa uczenia) | P3, Część 3, tabela sufitów w pierwszych miesiącach |
 | **Limit przychodu** | **7 wdrożeń START** (10 813,50 ÷ 1 490 = 7,25) | [DANE — biznes.gov.pl, 2.09.2026] |
 
 **Odpowiedź wprost: twardszy jest limit przychodu — ale tylko o dwa wdrożenia i tylko dopóki nie masz abonamentów.** Od trzeciego abonamentu przewaga limitu robi się druzgocąca:
@@ -303,7 +304,8 @@ Plan startuje **2 września**, czyli w III kwartale, w którym Twój licznik prz
 |---|---|
 | **Cel** | **2 podpisy** |
 | Minimum, poniżej którego wchodzisz w korekty z 12.4 | 1 podpis |
-| Sufit wynikający z mocy przerobowych | 3 podpisy |
+| Sufit wynikający z mocy przerobowych | **2 podpisy, ale tylko 1 wdrożenie** — pierwsze zajmuje 22 h, drugie wchodzi w październik |
+| Co spełnia Cel #1 „pierwsza faktura w 30 dni" | **zaliczka**, nie odbiór. Odbiór pierwszego klienta wypada realnie ok. 15 października i to jest w porządku |
 | Przychód przy celu | 2 980 zł = **27,6% limitu kwartalnego** |
 | Przychód przy suficie | 4 470 zł = 41,3% limitu |
 
@@ -313,68 +315,129 @@ Plan startuje **2 września**, czyli w III kwartale, w którym Twój licznik prz
 
 Nie w tym miesiącu i nie w tym kwartale. Przy tempie 3 wdrożeń na kwartał licznik przekracza próg alarmowy 80% w **I kwartale 2027**, a przekroczenie następuje w **II kwartale 2027** — i wtedy przechodzisz na CEIDG. Pełna tabela kwartał po kwartale jest w Części 3, sekcja P2.
 
-## 12.1 Plan dzień po dniu — 2 września – 1 października 2026
+## 12.0b TYDZIEŃ 0 — pięć testów przed planem. Plan 30 dni startuje dopiero po nich.
 
-Blok dzienny: **4 h**, w tym ok. **2,5 h pracy produkcyjnej** i 1,5 h na dojazdy, telefony i papiery.
+Pięć założeń, na których stoi cały system, nie zostało sprawdzonych u nikogo prawdziwego. Tydzień 0 kosztuje **0 zł** i zajmuje **7 dni**, a może uratować Ci trzy tygodnie. **Nie zaczynasz Dnia 1, dopóki nie przejdziesz bramki na końcu tego tygodnia.**
 
-### TYDZIEŃ 0 — fundament. Nie wychodzisz jeszcze do nikogo.
+Kalendarz: Tydzień 0 to **2–8 września**. Plan 30 dni startuje **9 września** i kończy się **8 października**.
 
-| Dzień | Data | Zadanie na 4 h | Efekt na koniec dnia |
+### TEST 1 + TEST 5 — ten sam wtorkowy poranek (8 września, 7:30–9:30)
+
+To jest **jedno wyjście, nie dwa**. Test 1 mierzy rynek, Test 5 mierzy Ciebie, a oba mierzy się na tych samych pięciu warsztatach tego samego ranka.
+
+| | |
+|---|---|
+| **Koszt** | 0 zł |
+| **Czas** | 2 godziny, wtorek rano |
+| **Co robisz** | Wybierasz 5 warsztatów w realnym zasięgu. Idziesz **bez audytu, bez kartek, bez oferty**. Przy każdym zadajesz jedno prawdziwe pytanie i wychodzisz: *„Dzień dobry, szukam kogoś do zabudowy — zastanę właściciela?"*. Zapisujesz trzy rzeczy: czy było otwarte, czy ktokolwiek był, czy był właściciel. **Wszystkie pięć jednego ranka, bez wracania do domu pomiędzy.** |
+| **TEST 1 obalony, jeśli** | właściciel jest obecny w **mniej niż 2 z 5** warsztatów, albo w 3+ przypadkach słyszysz „szefa nie ma, jeździ po montażach" |
+| **TEST 5 obalony, jeśli** | przerwiesz po trzecim warsztacie, albo wieczorem nie wypełnisz licznika dnia z kartki |
+| **Co wtedy (Test 1)** | Przechodzisz na **WARIANT B kanału** — D5.9 w Części 2. Nie zmieniasz niszy, zmieniasz pierwsze dotknięcie |
+| **Co wtedy (Test 5)** | Tniesz dzienny limit z 3–4 wizyt do 2 i robisz je zawsze przed południem, zanim zdążysz się rozmyślić. Wytrwałości nie naprawia się postanowieniem, tylko mniejszą porcją |
+
+### TEST 2 — Stoper na stronie (dni 5–6 Tygodnia 0)
+
+| | |
+|---|---|
+| **Koszt** | 0 zł |
+| **Czas** | tyle, ile zajmie — o to właśnie chodzi |
+| **Co robisz** | Budujesz kompletną stronę dla wymyślonej pracowni. Zdjęcia bierzesz z publicznego profilu dowolnej firmy **wyłącznie na swój dysk — nic nie publikujesz**. Włączasz stoper, zatrzymujesz przy każdej przerwie. Idziesz do końca: podmiana 8 pól, kompresja 15 zdjęć, publikacja na Netlify, test formularza, PageSpeed ≥ 90 |
+| **Obalone, jeśli** | przekroczysz **25 godzin** |
+| **Co wtedy** | Nie skracasz pracy — wydłużasz obietnicę. Pierwsi trzej klienci dostają **20 dni roboczych** zamiast 15, a sufit pierwszego miesiąca zostaje na jednym wdrożeniu bez dyskusji |
+
+### TEST 3 — Reakcja na audyt (dzień 7 Tygodnia 0)
+
+| | |
+|---|---|
+| **Koszt** | 0 zł |
+| **Czas** | 45 minut |
+| **Co robisz** | Pokazujesz gotowy audyt **trzem osobom prowadzącym mikrofirmę usługową** w Twoim otoczeniu — glazurnikowi, fryzjerce, mechanikowi. Nie tłumaczysz. Podajesz i milczysz |
+| **Mierzysz jedną rzecz** | **Czy padnie PYTANIE.** „A ile by to kosztowało?", „A jak to się naprawia?", „A skąd Pan to wziął?" — audyt działa. „Aha, ciekawe" i oddanie kartki — nie działa |
+| **Obalone, jeśli** | 2 z 3 nie zadaje ani jednego pytania |
+| **Co wtedy** | Problemem nie jest forma audytu, tylko dobór czterech liczb. Wymieniasz je na jedną rzecz, która boli natychmiast: **zrzut ekranu jego telefonu z wynikiem wyszukiwania, na którym jego firmy nie ma, a są trzy firmy z sąsiedniego miasta** |
+
+### TEST 4 — Przeliczenie rynku (dzień 3 Tygodnia 0)
+
+| | |
+|---|---|
+| **Koszt** | 0 zł |
+| **Czas** | 60 minut |
+| **Co robisz** | W Mapach Google liczysz firmy spełniające kryteria niszy **nie w promieniu 60 km, tylko tam, gdzie realnie dojedziesz komunikacją albo rowerem w 45 minut w jedną stronę**. Trasę dla trzech losowych adresów sprawdzasz w rozkładzie jazdy, nie na oko |
+| **Obalone, jeśli** | w realnym zasięgu jest **mniej niż 40 firm** spełniających kryteria |
+| **Co wtedy** | Albo rozszerzasz niszę o stolarkę budowlaną (schody, drzwi, tarasy) w tym samym zasięgu, albo przechodzisz na WARIANT B kanału, który nie wymaga dojazdu |
+
+### 🚦 BRAMKA — wieczór 8 września
+
+| Wynik | Decyzja |
+|---|---|
+| Testy 1–5 przeszły | Startujesz plan 30 dni 9 września, bez zmian |
+| Obalony Test 1 lub 4 | Startujesz 9 września, ale **kanałem B** (D5.9). Reszta systemu bez zmian |
+| Obalony Test 2 | Startujesz, terminy 20 dni roboczych, sufit 1 wdrożenie |
+| Obalony Test 3 | Startujesz dopiero po przerobieniu audytu — to jeden dzień, nie tydzień |
+| Obalony Test 5 | Startujesz z limitem 2 wizyt dziennie zamiast 3–4 i przesuwasz cel na 1 podpis |
+
+## 12.1 Plan dzień po dniu — 9 września – 8 października 2026
+
+Blok dzienny: **4 h**, w tym ok. **2,5 h pracy produkcyjnej**. Fundament (arkusz, karta zgody, lista firm, strona, audyty) jest już zbudowany w Tygodniu 0 — te 30 dni to sprzedaż i jedno wdrożenie.
+
+### TYDZIEŃ 1 — pierwsze wyjścia. Cel: 16 wizyt.
+
+| Dzień | Data | Zadanie na 4 h | Cel dnia |
 |---|---|---|---|
-| 1 | śr 02.09 | Blok 1 z kartki: limit **kwartalny** z biznes.gov.pl, arkusz ewidencji z sumą narastająco w kwartale, wzór rachunku, telefon do KIS | Wiesz, ile wolno Ci zarobić w kwartale i czym to rozliczysz |
-| 2 | czw 03.09 | Blok 2 z kartki: karta zgody dla osoby bez firmy — wydruk 20 szt.; przeczytanie D5.0 | Masz papier, który odblokowuje maile i telefony |
-| 3 | pt 04.09 | Mapy Google: dwa miasta, 4 frazy, 40 firm do arkusza | 40 wierszy z sygnałami bólu |
-| 4 | **sob 05.09** | REGON + CEIDG po PKD, uzupełnienie listy do 60 firm (2 h) | 60 wierszy |
-| 5 | **niedz 06.09** | Ocena kartą D3 pierwszych 20 firm; formuła statusu w arkuszu (2 h) | Znasz swoje 3 firmy GORĄCE |
-| 6 | pon 07.09 | Strona agencji: 8 tokenów, zdjęcie, Squoosh, Netlify, test formularza | Strona żyje, mail z formularza przychodzi |
-| 7 | wt 08.09 | 5 audytów PDF na telefon; test audytu na obcej osobie; skrypt do drzwi na stoper | Blok 3 i 6 z kartki odhaczone |
+| 1 | śr 09.09 | Pierwsze prawdziwe wizyty z audytem w telefonie | 3 wizyty |
+| 2 | czw 10.09 | 3 wizyty + wieczorem maile do tych, którzy podpisali zgodę | 3 wizyty |
+| 3 | pt 11.09 | 3 wizyty + 5 nowych audytów na przyszły tydzień | 3 wizyty |
+| 4 | **sob 12.09** | Uzupełnienie listy o trzecie miasto, ocena kolejnych 20 firm (2 h) | 80 firm w arkuszu |
+| 5 | **niedz 13.09** | 5 audytów PDF, wpisanie liczb tygodnia do licznika (2 h) | Znasz swoje prawdziwe wskaźniki |
+| 6 | pon 14.09 | 4 wizyty | 4 wizyty |
+| 7 | wt 15.09 | 3 wizyty + **pierwsze telefony (dotknięcie 3)** | 3 wizyty, 2–4 telefony |
 
-### TYDZIEŃ 1 — pierwsze wyjścia. Cel: 15 wizyt.
+### TYDZIEŃ 2 — skala. Cel: 17 wizyt i pierwsza rozmowa o cenie.
 
 | Dzień | Data | Zadanie | Cel dnia |
 |---|---|---|---|
-| 8 | śr 09.09 | **Trening na 2 firmach spoza niszy** (kwiaciarnia, szewc), potem 2 prawdziwe wizyty | 2 wizyty |
-| 9 | czw 10.09 | 3 wizyty + wieczorem maile do tych, którzy podpisali | 3 wizyty |
-| 10 | pt 11.09 | 3 wizyty + 5 nowych audytów na przyszły tydzień | 3 wizyty |
-| 11 | **sob 12.09** | Uzupełnienie listy o trzecie miasto; ocena kolejnych 20 firm (2 h) | 80 firm w arkuszu |
-| 12 | **niedz 13.09** | 5 audytów PDF; przegląd tygodnia, wpisanie liczb do licznika (2 h) | Znasz swoje prawdziwe wskaźniki |
-| 13 | pon 14.09 | 4 wizyty | 4 wizyty |
-| 14 | wt 15.09 | 3 wizyty + **pierwsze telefony (dotknięcie 3)** do tych z 9–10.09 | 3 wizyty, 2–4 telefony |
+| 8 | śr 16.09 | 4 wizyty | 4 wizyty |
+| 9 | czw 17.09 | 3 wizyty + telefony | 3 wizyty |
+| 10 | pt 18.09 | 3 wizyty + dotknięcia 4 (druga wartość za darmo) | 3 wizyty |
+| 11 | **sob 19.09** | 5 audytów + przygotowanie umowy pod konkretnego klienta (2 h) | Umowa gotowa do druku |
+| 12 | **niedz 20.09** | Przegląd, licznik, plan tygodnia (2 h) | — |
+| 13 | pon 21.09 | 4 wizyty | 4 wizyty |
+| 14 | wt 22.09 | 3 wizyty + **🔍 PUNKT KONTROLNY wieczorem** | Wypełnione wszystkie 9 wierszy tabeli 12.2 |
 
-### 🔍 PUNKT KONTROLNY — wieczór dnia 14 (15.09)
+> **🔍 PUNKT KONTROLNY — wieczór dnia 14 (22.09).** Wpisujesz liczby i porównujesz z tabelą 12.2. Jeśli którykolwiek wskaźnik jest poniżej progu — wchodzisz w diagnozę z 12.4, **nie zmieniając niszy**.
 
-Wpisujesz liczby i **porównujesz z tabelą z 12.2**. Jeśli którykolwiek wskaźnik jest poniżej progu — wchodzisz w sekcję 12.4, **nie zmieniając niszy**.
-
-### TYDZIEŃ 2 — skala i pierwsza rozmowa o cenie. Cel: 15 wizyt + 1 sprzedaż.
+### TYDZIEŃ 3 — pierwsza sprzedaż. Cel: 13 wizyt i podpis.
 
 | Dzień | Data | Zadanie | Cel dnia |
 |---|---|---|---|
-| 15 | śr 16.09 | 4 wizyty | 4 wizyty |
-| 16 | czw 17.09 | 3 wizyty + telefony + **pierwsza rozmowa o cenie wg D10** | 1 rozmowa o cenie |
-| 17 | pt 18.09 | 3 wizyty + dotknięcia 4 (druga wartość za darmo) | 3 wizyty |
-| 18 | **sob 19.09** | Przygotowanie umowy i rachunku pod konkretnego klienta (2 h) | Umowa gotowa do druku |
-| 19 | **niedz 20.09** | 5 audytów; Apps Script do PageSpeed (2 h) | Automat na następny tydzień |
-| 20 | pon 21.09 | 3 wizyty + **podpisanie pierwszej umowy, jeśli jest gotowa** | ✍️ **PIERWSZY PODPIS** |
-| 21 | wt 22.09 | 2 wizyty + wystawienie rachunku na zaliczkę + odbiór zdjęć od klienta | 💰 **PIERWSZA FAKTURA** |
+| 15 | śr 23.09 | 3 wizyty + **pierwsza rozmowa o cenie wg D10** | 1 rozmowa o cenie |
+| 16 | czw 24.09 | 3 wizyty + telefony do zaległych zgód | 3 wizyty |
+| 17 | pt 25.09 | 2 wizyty + **podpisanie umowy, jeśli klient gotowy** | ✍️ **PIERWSZY PODPIS** |
+| 18 | **sob 26.09** | 5 audytów (2 h) | — |
+| 19 | **niedz 27.09** | Przegląd, licznik (2 h) | — |
+| 20 | pon 28.09 | **Rachunek na zaliczkę + odbiór zdjęć od klienta** + 2 wizyty | 💰 **PIERWSZA FAKTURA — Cel #1 spełniony** |
+| 21 | wt 29.09 | Wdrożenie blok 1: selekcja i kompresja zdjęć (2,5 h) + 1 wizyta | ok. 3 h z 22 |
 
-### TYDZIEŃ 3 — wdrożenie pierwszego klienta i dalszy outreach.
+### TYDZIEŃ 4 — wdrożenie. To są te 22 godziny.
 
-| Dzień | Data | Zadanie | Cel dnia |
+| Dzień | Data | Zadanie | Postęp wdrożenia |
 |---|---|---|---|
-| 22 | śr 23.09 | Wdrożenie: selekcja i kompresja zdjęć, szkic do zatwierdzenia mailem | Szkic zatwierdzony |
-| 23 | czw 24.09 | Wdrożenie: teksty i złożenie strony (2,5 h) + 1 wizyta | Strona złożona |
-| 24 | pt 25.09 | Wdrożenie: wizytówka Google, publikacja + 2 wizyty | Link wysłany klientowi |
-| 25 | **sob 26.09** | Audyty i uzupełnianie listy (2 h) | 100 firm w arkuszu |
-| 26 | **niedz 27.09** | Przegląd, licznik, plan tygodnia (2 h) | — |
-| 27 | pon 28.09 | 3 wizyty + telefony do zaległych zgód | 3 wizyty |
-| 28 | wt 29.09 | Runda poprawek u klienta + 2 wizyty | Poprawki wdrożone |
+| 22 | śr 30.09 | Wdrożenie blok 2: dokończenie zdjęć, szkic do zatwierdzenia mailem + 2 wizyty | ok. 6 h / 22 |
+| 23 | czw 01.10 | **NOWY KWARTAŁ — licznik przychodu zeruje się dziś.** Wdrożenie blok 3: teksty | ok. 9 h / 22 |
+| 24 | pt 02.10 | Wdrożenie blok 4: złożenie strony z szablonu | ok. 12 h / 22 |
+| 25 | **sob 03.10** | Wdrożenie blok 5: poprawki układu, kompresja reszty zdjęć (2,5 h) | ok. 14 h / 22 |
+| 26 | **niedz 04.10** | Licznik, 3 audyty (2 h) | — |
+| 27 | pon 05.10 | Wdrożenie blok 6: wizytówka Google + 2 wizyty | ok. 17 h / 22 |
+| 28 | wt 06.10 | Wdrożenie blok 7: publikacja, HTTPS, test formularza, PageSpeed | ok. 20 h / 22 |
 
-### TYDZIEŃ 4 — odbiór, druga rata, drugi klient.
+### DNI 29–30 — link do klienta i podsumowanie.
 
-| Dzień | Data | Zadanie | Cel dnia |
+| Dzień | Data | Zadanie | Cel |
 |---|---|---|---|
-| 29 | śr 30.09 | **Odbiór po sześciu punktach z § 4**, przy kliencie. Rachunek na II ratę | ✅ Odbiór |
-| 30 | czw 01.10 | Podsumowanie 30 dni. Wpisanie prawdziwych wskaźników. **Nowy kwartał — licznik przychodu zeruje się dziś**, pełne 10 813,50 zł do dyspozycji na IV kwartał | Plan na kolejne 30 dni |
+| 29 | śr 07.10 | **Wysłanie linku klientowi** (zaczyna biec jego 5 dni roboczych na uwagi) + 3 wizyty | ok. 22 h / 22 |
+| 30 | czw 08.10 | Podsumowanie 30 dni. Wpisanie **prawdziwych** wskaźników w miejsce moich szacunków. Decyzja o drugim wdrożeniu | Plan na kolejne 30 dni |
+
+> **Odbiór i druga rata wypadają POZA tym oknem** — klient ma 5 dni roboczych na uwagi, potem runda poprawek, więc realnie **około 15 października**. To jest w porządku i było przewidziane: Cel #1 („pierwsza faktura w 30 dni") spełnia **zaliczka z dnia 20**, nie odbiór.
 
 ## 12.2 Wskaźniki z wartościami docelowymi
 
@@ -409,52 +472,84 @@ Współczynniki, które musisz umieć wyliczyć na koniec miesiąca — **to one
 
 **Wniosek, który zmienia priorytety:** próg opłacalności mierzysz w **abonamentach, nie we wdrożeniach**. Pięć abonamentów OPIEKA to 7,5 godziny Twojej pracy miesięcznie i pokrywa pełny ZUS. Pięć wdrożeń miesięcznie to 40 godzin i nie pokrywa niczego na stałe.
 
-## 12.4 CO ROBIĆ, GDY PO 14 DNIACH JEST ZERO ODPOWIEDZI
+## 12.4 DIAGNOZA ZERA — co robić, gdy nie ma sprzedaży
 
-**Najpierw diagnoza — bo trzy różne problemy wyglądają tak samo.** Sprawdź, na którym etapie urywa się lejek:
+> **Ta sekcja została napisana od nowa po ataku RED TEAMu.** Poprzednia wersja kazała diagnozować po 14 dniach na podstawie odczuć. Poniższa liczy.
 
-| Gdzie się urywa | Objaw w liczbach | To NIE jest problem z niszą, tylko z: |
+### Najpierw arytmetyka: po ilu wizytach zero cokolwiek znaczy
+
+Załóż zdrowy lejek, w którym 3% wizyt kończy się sprzedażą. Prawdopodobieństwo, że przy takim lejku **nie sprzedasz nic**, wynosi 0,97 podniesione do potęgi równej liczbie wizyt:
+
+| Wizyt bez sprzedaży | Szansa, że to zwykły pech przy **zdrowym** lejku |
+|---|---|
+| 30 | **40%** |
+| 60 | **16%** |
+| 100 | **5%** |
+| 150 | **1%** |
+
+Przy 60 wizytach w miesiącu zero sprzedaży **niczego nie dowodzi** — jest 16% szans, że wszystko działa i po prostu nie trafiło. A 100 wizyt w 30 dni przy 4 h dziennie i bez auta jest nieosiągalne.
+
+> **Po 30 dniach nie masz próby wystarczającej, żeby ocenić ofertę. Nie oceniaj jej. Oceniaj wskaźniki pośrednie — tylko one mają dość obserwacji.**
+
+| Etap lejka | Ile obserwacji po 30 dniach | Czy wolno wyciągać wnioski |
 |---|---|---|
-| A | Odwiedziłeś 15, rozmawiałeś z 2 | logistyką — nie zastajesz właścicieli |
-| B | Rozmawiałeś z 6, zgód 0–1 | audytem albo momentem proszenia o zgodę |
-| C | Zgód 4, telefonów odebranych 0 | godzinami dzwonienia |
-| D | Rozmów o cenie 2, podpisów 0 | rozmową sprzedażową — najprawdopodobniej mówisz po podaniu ceny |
+| wizyta → rozmowa | ~60 | ✅ tak |
+| rozmowa → zgoda | ~24 | ✅ tak |
+| zgoda → telefon odebrany | ~18 | ✅ tak, ostrożnie |
+| rozmowa o cenie → podpis | ~8 | ❌ **nie — to jest szum** |
 
-### Trzy korekty kursu — w tej kolejności, jedna na raz
+Każdy, kto po ośmiu rozmowach handlowych zmienia cenę albo niszę, podejmuje decyzję na szumie.
 
-**KOREKTA 1 (jeśli objaw A) — zmieniasz godzinę i dzień, nie niszę.**
-Przez kolejne 5 dni chodzisz **wyłącznie między 7:00 a 8:30** i **wyłącznie we wtorki, środy i czwartki**. Poniedziałek rano warsztat rozkręca tydzień, piątek po 13:00 kończy. Mierzysz na 15 wizytach. Jeśli wskaźnik wizyta→rozmowa wzrośnie powyżej 40% — problem był logistyczny i temat zamknięty.
+### Diagnoza po kolejności. Zatrzymujesz się na pierwszym „tak".
 
-**KOREKTA 2 (jeśli objaw B) — zmieniasz pierwsze zdanie i moment prośby o zgodę.**
-Testujesz jedną zmianę na 20 wizytach: zamiast otwierać zdaniem o tym, co robisz, otwierasz **liczbą o jego firmie**:
-```
-Dzień dobry. Sprawdzałem wczoraj firmy meblowe w [MIASTO] w Google
-i Państwa nie ma w pierwszej trzydziestce na "kuchnie na wymiar".
-Wypisałem, kto jest nad Państwem i dlaczego. To jest za darmo,
-zajmę dwie minuty.
-```
-Drugą zmianą jest przesunięcie prośby o zgodę: prosisz o nią **od razu po oddaniu audytu**, a nie na wychodne.
+**KROK 0 — czy w ogóle wykonałeś plan?**
+Policz wizyty. **Jeśli jest ich mniej niż 40 — koniec diagnozy.** Nie masz prawa oceniać ani niszy, ani skryptu, ani ceny. Nie zadziałało nic, bo nic się nie wydarzyło. To jest najczęstsza przyczyna zera i jedyna, której nikt sobie sam nie stawia.
 
-**KOREKTA 3 (jeśli objaw C lub D) — zmieniasz kanał trzeciego dotknięcia albo zamykasz usta po cenie.**
-Przy C: zamiast dzwonić, **wracasz do warsztatu drugi raz** z jedną nową rzeczą (lista konkurencji nad nim). Druga wizyta ma [SZACUNEK] wyższą skuteczność niż telefon, kosztuje 45 minut więcej i jest tego warta przy 4 leadach.
-Przy D: nagrywasz swoją rozmowę na dyktafon w telefonie (za zgodą rozmówcy albo nagrywasz próbę z inną osobą) i **liczysz sekundy ciszy po podaniu ceny**. Jeśli jest ich mniej niż 5 — to jest cała przyczyna.
+**KROK 1 — zły Ty (wykonanie).** Wizyt < 40, licznik dnia nieuzupełniany, wizyty skupione w trzech dniach zamiast rozłożone. Objaw: plan istnieje na papierze, nie w kalendarzu.
 
-### Czego NIE robisz po 14 dniach ciszy
+**KROK 2 — zły skrypt.** Wizyt ≥ 40, ale wizyta→rozmowa poniżej 25%. Objaw: **rozmowy urywają się w pierwszych 20 sekundach**, obiekcje są różne i przypadkowe, ludzie nie biorą kartki do ręki. To nie jest rynek, to jest Twoje pierwsze zdanie.
+
+**KROK 3 — zła nisza.** Wizyta→rozmowa dobra (40%+), audyt biorą i czytają, ale **słyszysz w kółko dokładnie tę samą obiekcję** u 8 z 10. Powtarzalność jest sygnałem: jeden wzorzec odmowy = problem z popytem, dziesięć różnych powodów = problem z przekazem.
+
+**KROK 4 — zła oferta.** Dopiero gdy kroki 1–3 wypadną czysto: rozmowy się odbywają, zgody podpisują, telefony odbierają, a przy cenie następuje cisza i „muszę pomyśleć" u wszystkich ośmiu.
+
+### Co zmieniasz jako pierwsze
+
+Kolejność jest odwrotna do intuicji, bo idzie od najtańszej zmiennej o największym zasięgu.
+
+| Diagnoza | Pierwsza zmiana | Koszt zmiany |
+|---|---|---|
+| Wizyt < 40 | **Nic nie zmieniasz.** Robisz brakujące wizyty. Kolejne 14 dni to wykonanie, nie strategia | 0 zł, 0 h |
+| Urywa się na wejściu | **Pierwsze zdanie** — z tego, co robisz, na liczbę o jego firmie. Mierzysz na kolejnych 20 wizytach | 0 zł, 10 min |
+| Urywa się na zgodzie | Przesuwasz prośbę o zgodę z wyjścia na moment tuż po oddaniu audytu | 0 zł, 0 h |
+| Urywa się na telefonie | Zamiast dzwonić, wracasz do warsztatu drugi raz z jedną nową rzeczą | +45 min na lead |
+| Urywa się na cenie | Nagrywasz własną rozmowę i liczysz sekundy ciszy po kwocie. Mniej niż pięć — masz przyczynę i nie potrzebujesz żadnej innej zmiany | 0 zł |
+| Jedna powtarzalna obiekcja u 8 z 10 | **Dopiero tutaj** wolno ruszyć niszę albo ofertę | tydzień |
+
+### Czego NIE robisz
 
 | Nie robisz | Dlaczego |
 |---|---|
-| **Nie zmieniasz niszy** | 15 wizyt to za mała próba na jakikolwiek wniosek. Zmiana niszy kasuje 60 firm w arkuszu, 5 gotowych audytów i cały wyćwiczony skrypt — czyli cały dorobek dwóch tygodni |
-| **Nie obniżasz ceny** | Cisza nie oznacza „za drogo". Przy zerowej liczbie rozmów o cenie **nie masz danych**, żeby tak twierdzić |
+| **Nie zmieniasz niszy bez dowodu z Kroku 3** | Zmiana niszy kasuje 80 firm w arkuszu, gotowe audyty i wyćwiczony skrypt. Bez powtarzalnej obiekcji to nie korekta kursu, tylko ucieczka przed liczeniem |
+| **Nie obniżasz ceny** | Przy ośmiu rozmowach o cenie nie masz danych, żeby twierdzić „za drogo" |
 | **Nie zaczynasz wysyłać maili na zimno** | Nadal nielegalne i nadal nieskuteczne. Desperacja nie zmienia art. 398 |
-| **Nie dokładasz drugiego kanału** | Dwa słabo robione kanały dają mniej niż jeden robiony dobrze. Najpierw napraw ten, który masz |
+| **Nie dokładasz drugiego kanału** | Dwa słabo robione kanały dają mniej niż jeden robiony dobrze |
 
-**SPRAWDŹ, ŻE JEST DOBRZE:** wieczorem dnia 14 masz wypełnione **wszystkie dziewięć** wierszy tabeli 12.2 prawdziwymi liczbami. Jeśli którykolwiek wiersz jest pusty albo wpisany „z pamięci" — nie masz danych do żadnej decyzji i pierwszym zadaniem dnia 15 jest zacząć je zbierać, a nie zmieniać strategię.
+### Realna szansa na pierwszą fakturę w 30 dni
 
----
+**[SZACUNEK] 20–30%.**
+
+Rozbicie założenia: prawdopodobieństwo, że osoba bez doświadczenia w sprzedaży rzeczywiście wykona ~45 osobistych wizyt w 30 dni — **~40%** (większość ludzi nie wykonuje). Prawdopodobieństwo co najmniej jednej sprzedaży przy 45 wizytach: przy domknięciu 1,5% wynosi **49%**, przy 3% wynosi **75%**. Iloczyn daje **20–30%**.
+
+**To nie zależy od niszy, ceny, skryptu ani niczego, co jest w tych czterech częściach. Zależy od tego, czy liczba wizyt naprawdę się wydarzy.**
+
+Dwie rzeczy przesuwają tę liczbę bardziej niż jakakolwiek poprawka w dokumentach: **wtorkowy poranek z Testu 1** (bo albo potwierdzi kanał, albo każe go zmienić, zanim stracisz trzy tygodnie) i **to, czy w czwartek po trzeciej odmowie pójdziesz pod czwarte drzwi.**
+
+**SPRAWDŹ, ŻE JEST DOBRZE:** wieczorem dnia 14 masz wypełnione **wszystkie dziewięć** wierszy tabeli 12.2 prawdziwymi liczbami, a nie z pamięci. Drugi test: policz swoje wizyty i zanim postawisz jakąkolwiek diagnozę, sprawdź, czy przekroczyłeś próg 40. Jeśli nie — jedyna dozwolona diagnoza brzmi „nie wykonałem planu".
 
 # BRAMKA QA — PRZEJŚCIE PO WSZYSTKICH CZTERECH CZĘŚCIACH
 
-## QA.1 Sprzeczności znalezione i naprawione (39 sztuk, w dwóch turach)
+## QA.1 Sprzeczności znalezione i naprawione (52 sztuki, w trzech turach)
 
 ### Tura 1 — po poprawkach P1–P6 (22 sztuki)
 
@@ -503,6 +598,26 @@ Wyjściowy błąd: przyjąłem limit **miesięczny** na poziomie 75% minimalnego
 | 38 | C2 i C3 / karta zgody | „Dane nie są przekazywane innym podmiotom ani poza Unię Europejską" — **nieprawda**, podpisywana przez obcą osobę przy każdej wizycie | jawna lista odbiorców: Google i Netlify, siedziba w USA, prostym językiem; dopisana luka do sprawdzenia (podstawa transferu do USA) |
 | 39 | UMOWA / § 4 oraz `index.html` | PageSpeed ≥ 80 bez metody pomiaru; polityka nie wspominała o transferze poza EOG | § 4 ust. 4a–4c: kto mierzy, kiedy, trzy pomiary, **mediana wiążąca**, wynik zamrożony na dzień odbioru, spadek po zmianach klienta nie jest wadą; polityka na stronie uzupełniona o transfer poza EOG |
 
+### Tura 3 — po ataku RED TEAMu (13 sztuk)
+
+Dwa znaleziska ataku unieważniały liczby, które nadal stały w plikach. Wprowadzone.
+
+| # | Gdzie | Było | Jest |
+|---|---|---|---|
+| 40 | C3 / P3 | 8 h jako czas wdrożenia, mimo że P4 obok mówiła „2–3× więcej" — sprzeczność między liczbą a moją własną uwagą | krzywa uczenia: **22 h u klienta nr 1**, 15 / 11 / 9, **8 h dopiero od klienta nr 5**, z podstawą (trzy koszty jednorazowe: narzędzia 6 h, proces 4 h, błędy 4 h) |
+| 41 | C3 / P3, stawki | 186 zł/h jako stawka startowa | **68 zł/h u pierwszego klienta**, 99 / 135 / 166, 186 dopiero w stanie ustalonym |
+| 42 | C3 / P3, sufit mocy | 3 wdrożenia miesięcznie od początku | osobna tabela pierwszych miesięcy: **1 / 2 / 3 / 3** |
+| 43 | C3 / P3 | brak reguły o pakietach dla pierwszych klientów | **pierwszym trzem klientom proponujesz wyłącznie START** (STANDARD to realnie 30 h, KOMPLET 34 h) |
+| 44 | C3 / P4, C3 / D9, C2, C4, umowa, `index.html` | termin 10 / 15 / 5 dni | **15 / 20 / 8 dla klientów 1–3**, 10 / 15 / 6 dla 4–5, 7 / 12 / 5 od 6. — bo 22 h przy 2,5 h dziennie to 8,8 dnia roboczego samej produkcji |
+| 45 | C4 / 12.0 | moce 9 wdrożeń na kwartał | dodany wiersz: **6 wdrożeń w pierwszym kwartale** (1+2+3) |
+| 46 | C4 / 12.0, cel | „2 podpisy" bez rozróżnienia podpisu od wdrożenia | 2 podpisy, ale **1 wdrożenie**; dopisane wprost, że Cel #1 spełnia **zaliczka, nie odbiór**, a odbiór wypada ok. 15 października |
+| 47 | C4 / **nowa 12.0b** | brak — plan startował bez sprawdzenia czegokolwiek | **TYDZIEŃ 0: pięć testów po 0 zł** z kryterium „obalone" i decyzją, plus bramka na wieczór dnia 7. Test 1 i 5 zapisane wprost jako **jeden wtorkowy poranek** |
+| 48 | C4 / 12.1 | plan 2.09–1.10, pierwszy tydzień na fundament | **9.09–8.10**, startuje po Tygodniu 0; wdrożenie rozpisane na 22 h w blokach po 2,5 h przez 8 dni |
+| 49 | C4 / 12.4 | diagnoza po 14 dniach na podstawie odczuć | tabela 0,97ⁿ (30→40%, 60→16%, 100→5%, 150→1%), zasada **„oceniasz wskaźniki pośrednie, nie sprzedaż"**, liczba obserwacji na każdym etapie lejka, diagnoza Krok 0–4, tabela pierwszej zmiany |
+| 50 | C4 / 12.4, szacunek | brak szacunku w pliku; w czacie 25–35% | **20–30%** — przy domknięciu 1,5% szansa z 45 wizyt to **49%**, nie 60%, więc dolny brzeg spada do 20% |
+| 51 | C2 / **nowa D5.9** | brak planu B na kanał | **WARIANT B**: odpowiadanie na ogłoszenia stolarzy z OLX, Oferteo, Fixly i grup lokalnych; co się zmienia w sekwencji, co zostaje, blok prawny i skrypt telefonu, który nie udaje klienta |
+| 52 | KARTKA | zaczynała się od bloku 1 | **TYDZIEŃ 0 z pięcioma testami na samej górze**, z bramką i trzema decyzjami do zapisania |
+
 ## QA.2 Spójność po naprawach — sprawdzone punkt po punkcie
 
 | Co sprawdzałem | Wynik |
@@ -510,7 +625,10 @@ Wyjściowy błąd: przyjąłem limit **miesięczny** na poziomie 75% minimalnego
 | Czy nisza z D1 jest tą samą niszą w D5, D6 i D8 | ✅ pracownie mebli na wymiar wszędzie |
 | Czy ceny z D9 zgadzają się z D10 | ✅ 1 490 / 2 900 / 3 900 i 390 / 690 / 1 190 w obu |
 | Czy ceny z D9 zgadzają się z plikiem strony | ✅ identyczne co do złotówki |
-| Czy termin z P4 jest wszędzie ten sam | ✅ 10 dni roboczych w C1, C2, C3, C4, umowie i na stronie |
+| Czy termin z P4 jest wszędzie ten sam | ✅ 15 dni roboczych (klienci 1–3) w C2, C3, C4, umowie i na stronie; C1 opisuje profil decydenta, nie ofertę |
+| Czy godziny wdrożenia są wszędzie te same | ✅ 22 h u klienta nr 1 i 8 h w stanie ustalonym — w P3, D9 i 12.0 |
+| Czy plan 30 dni startuje po Tygodniu 0 | ✅ Tydzień 0 to 2–8.09, plan 9.09–8.10, bramka wieczorem 8.09 |
+| Czy Wariant B kanału jest spięty z Testem 1 | ✅ D5.9 uruchamiany wynikiem Testu 1 lub 4, obie sekcje wskazują na siebie |
 | Czy gwarancja jest identyczna w D6, D9, D10 i umowie | ✅ ten sam mechanizm: szkic → 2 rundy → 5 dni → 6 punktów → zaliczka zostaje |
 | Czy roczny koszt w FAQ zgadza się z cennikiem | ✅ 1 490 + 11 × 390 = 5 780 zł, ta sama liczba w D10 |
 | Czy plan 30 dni mieści się w sufitach z P2 i P3 | ✅ cel 2 podpisy = 27,6% limitu kwartalnego; ani limit, ani moce nie wiążą w pierwszych 30 dniach |
