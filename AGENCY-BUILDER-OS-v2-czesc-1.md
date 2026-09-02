@@ -53,7 +53,7 @@ Dodatkowo przyjmuję: nie masz ani jednego zdjęcia zrealizowanej strony, nie ma
 2. Cena zakotwiczona w jego zysku z jednego zlecenia, nie w cenniku agencji.
 3. Zaliczka 50% przed startem — bez wyjątków.
 4. Abonament wpisany w umowę od 2. miesiąca, nie sprzedawany osobno później.
-5. Termin oddania jako element oferty: „7 dni roboczych" bije „skontaktujemy się".
+5. Termin oddania jako element oferty: sztywny termin dzienny bije „skontaktujemy się".
 
 **A6 ARCHITEKT UX/PSYCHOLOG**
 1. Nagłówek strony ma nazywać stratę, nie zysk.
@@ -142,23 +142,23 @@ Wzór: WYNIK = (Wpływ × Pewność × Łatwość) ÷ 10. Maksimum 100.
 
 | # | Pomysł | Wpływ | Pewność | Łatwość | Czas do 1. zł | WYNIK | Ryzyko |
 |---|---|---|---|---|---|---|---|
-| 1 | Nisza: pracownie mebli na wymiar 1–5 osób | 9 | 8 | 9 | 14 dni | **64,8** | Sezon: jesienią bywają zapełnieni zleceniami |
-| 2 | Wizyta osobista w warsztacie z gotowym audytem | 10 | 8 | 8 | 10 dni | **64,0** | Wymaga przełamania oporu przed odmową |
-| 3 | Google Maps + filtr „brak strony" jako lista leadów | 8 | 9 | 9 | 7 dni | **64,8** | Część firm ma stronę, ale nie jest podpięta do wizytówki |
-| 4 | Oferta wejściowa: strona + wizytówka Google, 7 dni, stała cena | 9 | 8 | 8 | 10 dni | **57,6** | Ryzyko przekroczenia terminu przy pierwszym kliencie |
-| 5 | Audyt 1-stronicowy z liczbą z PageSpeed Insights | 8 | 9 | 8 | 10 dni | **57,6** | Liczba może być dobra — trzeba mieć drugi argument w zanadrzu |
+| 1 | Google Maps + filtr „brak strony" jako lista leadów | 8 | 9 | 9 | 7 dni | **64,8** | Część firm ma stronę, ale nie jest podpięta do wizytówki |
+| 2 | Nisza: pracownie mebli na wymiar 1–5 osób | 9 | 8 | 9 | 14 dni | **64,8** | Jesienią bywają zapełnieni zleceniami — rozstrzygnięte w Części 3, poprawka P1b: zajętość staje się kryterium doboru, nie ryzykiem |
+| 3 | Wizyta osobista w warsztacie z gotowym audytem | 10 | 8 | 8 | 10 dni | **64,0** | Wymaga przełamania oporu przed odmową |
+| 4 | Audyt 1-stronicowy z liczbą z PageSpeed Insights | 8 | 9 | 8 | 10 dni | **57,6** | Liczba może być dobra — trzeba mieć drugi argument w zanadrzu |
+| 5 | Oferta wejściowa: strona + wizytówka Google, 10 dni, stała cena | 9 | 8 | 8 | 10 dni | **57,6** | Ryzyko przekroczenia terminu przy pierwszym kliencie |
 | 6 | Zgoda na kontakt elektroniczny zbierana na wizycie | 8 | 9 | 8 | — | **57,6** | Klient może uznać podpis za „papierologię" |
 | 7 | Sygnał „wolne terminy" w grupach FB jako priorytet leada | 9 | 7 | 9 | 5 dni | **56,7** | Takich postów jest mało, kilka tygodniowo |
-| 8 | Abonament wpisany w umowę od 31. dnia | 9 | 7 | 8 | 45 dni | **50,4** | Klient może wypowiedzieć po pierwszym miesiącu |
+| 8 | Arkusz Google jako jedyny CRM | 6 | 10 | 9 | — | **54,0** | Rozjedzie się przy 300+ firmach, ale wtedy będziesz miał pieniądze |
 | 9 | Wyszukiwarka REGON/CEIDG po kodzie PKD | 7 | 9 | 8 | 7 dni | **50,4** | Dużo firm martwych i zawieszonych w rejestrze |
-| 10 | Jeden plik HTML zamiast systemu CMS | 8 | 9 | 7 | — | **50,4** | Klient nie edytuje treści sam — to argument ZA abonamentem |
-| 11 | Netlify Drop jako hosting startowy | 7 | 9 | 8 | — | **50,4** | Subdomena obniża wiarygodność do czasu kupna domeny |
-| 12 | Zaliczka 50% przed rozpoczęciem pracy | 9 | 8 | 7 | 10 dni | **50,4** | Część klientów odpadnie na tym warunku — i dobrze |
-| 13 | Arkusz Google jako jedyny CRM | 6 | 10 | 9 | — | **54,0** | Rozjedzie się przy 300+ firmach, ale wtedy będziesz miał pieniądze |
-| 14 | OLX jako źródło firm bez strony | 7 | 8 | 8 | 7 dni | **44,8** | Ogłoszeniodawcą bywa pracownik, nie właściciel |
-| 15 | Nagłówek strony oparty na stracie, nie na zysku | 7 | 7 | 9 | — | **44,1** | Przesadzony straszak odpycha |
-| 16 | Zdjęcia realizacji klienta jako całe portfolio strony | 8 | 8 | 6 | — | **38,4** | Zdjęcia z telefonu bywają fatalne — trzeba je poprawić |
-| 17 | Trening rozmowy na 2 firmach spoza niszy | 6 | 8 | 10 | — | **48,0** | Brak — to czysty zysk |
+| 10 | Zaliczka 50% przed rozpoczęciem pracy | 9 | 8 | 7 | 10 dni | **50,4** | Część klientów odpadnie na tym warunku — i dobrze |
+| 11 | Abonament wpisany w umowę od 31. dnia | 9 | 7 | 8 | 45 dni | **50,4** | Klient może wypowiedzieć po pierwszym miesiącu |
+| 12 | Jeden plik HTML zamiast systemu CMS | 8 | 9 | 7 | — | **50,4** | Klient nie edytuje treści sam — to argument ZA abonamentem |
+| 13 | Netlify Drop jako hosting startowy | 7 | 9 | 8 | — | **50,4** | Subdomena obniża wiarygodność do czasu kupna domeny |
+| 14 | Trening rozmowy na 2 firmach spoza niszy | 6 | 8 | 10 | — | **48,0** | Brak — to czysty zysk |
+| 15 | OLX jako źródło firm bez strony | 7 | 8 | 8 | 7 dni | **44,8** | Ogłoszeniodawcą bywa pracownik, nie właściciel |
+| 16 | Nagłówek strony oparty na stracie, nie na zysku | 7 | 7 | 9 | — | **44,1** | Przesadzony straszak odpycha |
+| 17 | Zdjęcia realizacji klienta jako całe portfolio strony | 8 | 8 | 6 | — | **38,4** | Zdjęcia z telefonu bywają fatalne — trzeba je poprawić |
 | 18 | List papierowy jako dotknięcie #4 | 6 | 7 | 6 | 21 dni | **25,2** | Znaczek i papier kosztują (nie 0 zł) |
 
 ---
@@ -238,7 +238,7 @@ Lead (czytaj: lid) to nazwisko lub firma, o której wiesz dwie rzeczy: że ma pr
 | **Gdzie fizycznie jest** | W warsztacie: hala lub garaż na obrzeżach miasta, w strefie przemysłowej, przy trasie wylotowej. Rzadko w biurze. Prawie nigdy przy komputerze. |
 | **O której odbiera telefon** | [SZACUNEK] 7:00–8:00 (przed uruchomieniem maszyn), 12:00–12:30 (przerwa), 15:30–17:30 (po robocie, w aucie). Założenie: dzień pracy warsztatu 7:00–16:00, przy pracujących maszynach nie słyszy telefonu. **Nie dzwoń między 8:30 a 11:30.** |
 | **Czego się boi (kolejność ma znaczenie)** | 1. Że zapłaci i nic z tego nie będzie — bo zna kogoś, kto zapłacił 4 000 zł i „strona leży". 2. Że będzie musiał się tym zajmować, wysyłać teksty, wybierać kolory, uczyć się obsługi. 3. Że podpisze coś, z czego nie wyjdzie. 4. Że go ktoś oszuka, bo nie zna się na tym i nie ma jak sprawdzić. 5. Wyjścia na frajera przed konkurencją. |
-| **Na co reaguje** | Na konkretną liczbę o jego firmie. Na własne zdjęcia pokazane mu na ekranie. Na sztywny termin („siedem dni roboczych", nie „szybko"). Na zdanie „nie musisz nic robić, potrzebuję od Ciebie tylko zdjęć". Na człowieka, który przyszedł osobiście. |
+| **Na co reaguje** | Na konkretną liczbę o jego firmie. Na własne zdjęcia pokazane mu na ekranie. Na sztywny termin („dziesięć dni roboczych", nie „szybko"). Na zdanie „nie musisz nic robić, potrzebuję od Ciebie tylko zdjęć". Na człowieka, który przyszedł osobiście. |
 | **Na co NIE reaguje** | Na słowa: optymalizacja, konwersja, funnel, branding, responsywność, „obecność w sieci", „wizerunek". Na PDF-a na 20 stron. Na ofertę mailową bez wcześniejszej rozmowy. Na rabat (rabat = „czyli normalnie to jest przepłacone"). |
 | **Czego chce naprawdę** | Nie „strony". Chce **droższych zleceń od klientów, którzy nie targują się o każde 500 zł**. To zdanie masz powiedzieć na rozmowie dosłownie. |
 
@@ -332,6 +332,8 @@ Sprawdzasz każdą firmę według tej listy. Każdy „TAK" to punkt bólu.
 
 ### 3.1 Tabela punktacji
 
+> **Wagi po korekcie z Części 3 (P1b):** kryterium D spadło z 15 na 10 punktów, kryterium G wzrosło z 10 na 15. Powód: we wrześniu decyduje wolna moc przerobowa warsztatu, a nie sama aktywność firmy — te dwa kryteria częściowo się dublowały. Suma nadal wynosi 100.
+
 Każdą firmę oceniasz raz. Zajmuje to 90 sekund. Nie oceniasz z pamięci — wpisujesz punkty do arkusza.
 
 | Kryterium | Co dokładnie sprawdzasz | Punktacja | Max |
@@ -339,10 +341,10 @@ Każdą firmę oceniasz raz. Zajmuje to 90 sekund. Nie oceniasz z pamięci — w
 | **A. Stan strony WWW** | Brak strony = 20 pkt. Tylko Facebook, ostatni post >6 mies. = 18 pkt. Strona sprzed 2020 lub nieresponsywna = 14 pkt. Strona działa, ale PageSpeed <50 = 10 pkt. Strona nowa i szybka = 0 pkt | 0–20 | 20 |
 | **B. Wizytówka Google** | Brak wizytówki = 15 pkt. Wizytówka nieprzejęta („Czy jesteś właścicielem") = 15 pkt. Przejęta, ale <10 opinii i <5 zdjęć = 9 pkt. Przejęta, 10–30 opinii = 4 pkt. Przejęta, 30+ opinii, aktywna = 0 pkt | 0–15 | 15 |
 | **C. Materiał na stronę (zdjęcia realizacji)** | Widzisz 20+ zdjęć jego prac na FB/Instagramie/OLX = 15 pkt. 8–19 zdjęć = 10 pkt. 3–7 zdjęć = 5 pkt. Mniej niż 3 = 0 pkt | 0–15 | 15 |
-| **D. Dowód, że firma żyje** | Post, ogłoszenie lub opinia z ostatnich 30 dni = 15 pkt. Z ostatnich 90 dni = 10 pkt. Z ostatnich 12 mies. = 4 pkt. Nic od ponad roku = 0 pkt | 0–15 | 15 |
+| **D. Dowód, że firma żyje** | Post, ogłoszenie lub opinia z ostatnich 30 dni = 10 pkt. Z ostatnich 90 dni = 6 pkt. Z ostatnich 12 mies. = 3 pkt. Nic od ponad roku = 0 pkt | 0–10 | 10 |
 | **E. Wartość zlecenia** | Robi kuchnie na wymiar = 10 pkt. Szafy i zabudowy = 7 pkt. Drobne meble, półki, blaty = 3 pkt. Naprawy i montaż = 0 pkt | 0–10 | 10 |
 | **F. Dostępność decydenta** | Publiczny numer komórkowy + adres warsztatu w promieniu 15 km = 10 pkt. Numer + warsztat 15–40 km = 7 pkt. Numer + warsztat 40–60 km = 4 pkt. Tylko formularz kontaktowy lub numer stacjonarny bez adresu = 0 pkt | 0–10 | 10 |
-| **G. Sygnał wolnych mocy** | „Wolne terminy" / „przyjmę zlecenia" w ostatnich 30 dniach = 10 pkt. Aktywnie płaci za leady na Oferteo/Fixly/OLX = 8 pkt. Brak sygnału = 0 pkt | 0–10 | 10 |
+| **G. Sygnał wolnych mocy** | „Wolne terminy" / „przyjmę zlecenia" w ostatnich 30 dniach = 15 pkt. Aktywnie płaci za leady na Oferteo/Fixly/OLX = 10 pkt. Brak sygnału = 0 pkt | 0–15 | 15 |
 | **H. Słabość konkurencji w Google** | W top10 na frazę „kuchnie na wymiar [jego miasto]" jest 5+ katalogów/profili FB zamiast stron firmowych = 5 pkt. 2–4 = 3 pkt. 0–1 = 0 pkt | 0–5 | 5 |
 | | | **RAZEM** | **100** |
 

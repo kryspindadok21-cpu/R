@@ -3,7 +3,7 @@
 Data: 2026-09-02 · Nisza: pracownie mebli na wymiar (1–5 osób, promień 60 km)
 Kanał: wizyta osobista · Oferta wejściowa: 1 490 zł + abonament 390 zł/mies. od 31. dnia
 
-> Ciągłość z Częścią 1: nisza, kanał i oferta są dokładnie te same. Ceny podane w tym pliku (1 490 / 3 900 / 4 900 zł jednorazowo, 390 / 690 / 1 190 zł miesięcznie) są wiążące dla D9 i D10 w Części 3.
+> **UWAGA — ten plik był poprawiany po Części 3.** Obowiązujące ceny: **1 490 / 2 900 / 3 900 zł** jednorazowo oraz **390 / 690 / 1 190 zł** miesięcznie. Obowiązujący termin dla pierwszych trzech klientów: **10 dni roboczych**. Pełne uzasadnienie zmian w Części 3, poprawki P3 i P4.
 
 ---
 
@@ -326,6 +326,11 @@ Administratorem danych jest [IMIĘ I NAZWISKO], prowadzący działalność
 gospodarczą pod firmą [PEŁNA NAZWA FIRMY Z CEIDG], [ADRES],
 NIP [NIP], e-mail: [E-MAIL].
 
+>>> UWAGA: ta wersja karty obowiązuje DOPIERO PO wpisie do CEIDG.
+>>> Dopóki nie masz firmy, używasz wersji dla działalności
+>>> nierejestrowanej z Części 3, poprawka P2. Tej poniżej nie da się
+>>> wtedy wypełnić i nie wolno jej używać.
+
 SKĄD MAM PAŃSTWA DANE
 Dane kontaktowe Państwa firmy (nazwa, adres, telefon, adres e-mail)
 pozyskałem ze źródeł publicznie dostępnych: z Map Google, z rejestru
@@ -406,8 +411,11 @@ Na żadnym z tych haseł nie ma dziś Państwa firmy w pierwszej dziesiątce.
 Jedna rzecz, którą można zrobić samemu i za darmo, jeszcze w tym tygodniu:
 odzyskać wizytówkę w Mapach Google. Wchodzi się na google.com/business,
 klika "Zarządzaj teraz", wpisuje nazwę firmy i przechodzi weryfikację.
-Google przysyła kod pocztą albo dzwoni. Trwa to kwadrans, a potem można
-dodać zdjęcia swoich kuchni.
+Potem Google sprawdza, że firma faktycznie jest Państwa: kodem wysłanym
+pocztą na adres firmy, telefonem albo krótkim nagraniem wideo z warsztatu.
+Ten etap potrafi zająć od kilku dni do kilku tygodni i nie zależy ani ode mnie,
+ani od Państwa. Warto złożyć wniosek teraz właśnie dlatego, że czekanie
+zaczyna się od dnia złożenia.
 
 Nie odpisujcie Państwo, jeśli nie ma potrzeby. Gdyby jednak było pytanie,
 mój numer: [TELEFON].
@@ -573,9 +581,11 @@ ON:  [odpowiada]
 TY:  To wchodzi wariant podstawowy. Jedna strona z galerią
      Pana realizacji plus odzyskanie i uzupełnienie wizytówki
      w Mapach Google. Tysiąc czterysta dziewięćdziesiąt złotych,
-     siedem dni roboczych, połowa na start, połowa po odbiorze.
-     Jeśli po odbiorze strona się Panu nie spodoba, drugiej połowy
-     Pan nie płaci i strona jest zdjęta.
+     dziesięć dni roboczych, połowa na start, połowa po odbiorze.
+     Przed startem zatwierdza Pan mailem szkic. Potem ma Pan dwie rundy
+     poprawek i pięć dni roboczych na uwagi. Jeśli po dwóch rundach
+     strona nadal Panu nie odpowiada, drugiej raty Pan nie płaci,
+     stronę zdejmuję, a zaliczka zostaje u mnie za wykonaną pracę.
      Do tego od trzydziestego pierwszego dnia jest opieka
      za trzysta dziewięćdziesiąt miesięcznie - to jest to, co sprawia,
      że strona za pół roku nadal działa i nadal jest w Google.
@@ -646,11 +656,11 @@ Zasady:
 [3] SPRAWDŹ SIEBIE W 60 SEKUND - 4 pytania z checkboxami
 [4] CO DOSTAJESZ ZA DARMO - audyt, opis + przycisk
 [5] JAK TO WYGLĄDA - 3 kroki, ramka czasowa
-[6] KTO TO ROBI - zdjęcie, imię, NIP, jedno uczciwe zdanie o starcie
+[6] KTO TO ROBI - zdjęcie, imię, dane rejestrowe, uczciwe zdanie o starcie
 [7] CENNIK - 3 pakiety, kotwica, wabik
 [8] CZĘSTE PYTANIA - 6 obiekcji
 [9] FORMULARZ - 2 pola + mikrocopy
-[10] STOPKA - NIP, telefon, mail, polityka prywatności
+[10] STOPKA - dane rejestrowe, telefon, mail, polityka prywatności
 ```
 
 ---
@@ -683,8 +693,8 @@ Znajdują Twoją konkurencję.
 
 PODTYTUŁ:
 Robię jednostronicowe strony dla pracowni mebli na wymiar.
-Siedem dni roboczych. 1 490 zł. Połowa na start, połowa po odbiorze.
-Jeśli po odbiorze strona Ci się nie spodoba — drugiej połowy nie płacisz.
+Dziesięć dni roboczych. 1 490 zł. Połowa na start, połowa po odbiorze.
+Jeśli po dwóch rundach poprawek strona Ci się nie spodoba — drugiej raty nie płacisz.
 
 PRZYCISK:
 Sprawdź moją firmę za darmo
@@ -803,7 +813,7 @@ Cała Twoja robota to godzina. Resztę robię ja.
    Wysyłasz mi zdjęcia swoich realizacji prosto z telefonu.
    Nie musisz ich układać ani opisywać. Wybieram, kadruję i poprawiam ja.
 
-3. STRONA — 7 dni roboczych
+3. STRONA — 10 dni roboczych
    Dostajesz link, oglądasz, mówisz co zmienić. Poprawiam.
    Dopiero potem płacisz drugą połowę.
 
@@ -817,7 +827,7 @@ Nie musisz nic pisać, nic wybierać ani niczego się uczyć.
 **Cel psychologiczny:** przenieść zaufanie z nieistniejącej marki na istniejącego człowieka.
 **Mechanizm 1 — twarz:** ludzki mózg ocenia wiarygodność twarzy w [DANE: rząd wielkości setek milisekund — to jest ustalenie z psychologii poznawczej; **jeśli chcesz źródło, wyszukaj „Willis Todorov first impressions 100 ms"**]. Prawdziwe zdjęcie bije każdy tekst o wartościach firmy.
 **Mechanizm 2 — uczciwa słabość jako dowód wiarygodności:** przyznanie się do bycia na początku drogi jest kontrintuicyjnie silniejsze niż udawanie doświadczenia, bo człowiek, który przyznaje się do jednej niewygodnej rzeczy, jest domyślnie uznawany za prawdomównego w pozostałych. To jest jedyna uczciwa odpowiedź na §5.4 „zero ściemy" — i działa.
-**Układ wizualny:** zdjęcie po lewej (kwadrat 320×320, prawdziwe, zrobione telefonem przy oknie, bez garnituru, patrzysz w obiektyw — **twarz skierowana lekko w prawo, w stronę tekstu i przycisku**), tekst po prawej. Pod tekstem NIP i telefon zwykłą czcionką, nie w stopce.
+**Układ wizualny:** zdjęcie po lewej (kwadrat 320×320, prawdziwe, zrobione telefonem przy oknie, bez garnituru, patrzysz w obiektyw — **twarz skierowana lekko w prawo, w stronę tekstu i przycisku**), tekst po prawej. Pod tekstem dane rejestrowe i telefon zwykłą czcionką, nie w stopce. **Do czasu wpisu do CEIDG w miejsce NIP-u wpisujesz „Działalność nierejestrowana" — patrz Część 3, poprawka P2.**
 
 **Gotowe copy:**
 ```
@@ -838,7 +848,7 @@ Mam za to trzy rzeczy, które możesz sprawdzić dziś:
 — pracuję tylko z pracowniami mebli na wymiar, więc znam Twoją branżę
   lepiej niż agencja, która dziś robi stronę dentysty, a jutro siłowni.
 
-Marcin Nowak · NIP 000-000-00-00 · 512 000 111
+Marcin Nowak · Działalność nierejestrowana · 512 000 111
 ```
 
 ---
@@ -847,8 +857,8 @@ Marcin Nowak · NIP 000-000-00-00 · 512 000 111
 
 **Cel psychologiczny:** ustawić punkt odniesienia, zanim padnie Twoja cena, i uczynić pakiet wejściowy oczywistym wyborem.
 **Mechanizm 1 — kotwiczenie:** pierwsza liczba, którą zobaczy człowiek, staje się punktem odniesienia dla wszystkich następnych. Dlatego **nad cennikiem stoi cena rynkowa, a nie Twoja**.
-**Mechanizm 2 — efekt wabika (asymetrycznie zdominowana opcja):** środkowy pakiet WZROST kosztuje 3 900 zł i nie zawiera abonamentu. Pakiet MAKSIMUM kosztuje 4 900 zł i zawiera pół roku abonamentu WIDOCZNOŚĆ o wartości 4 140 zł. WZROST jest więc jawnie gorszy od MAKSIMUM — jego jedyną funkcją jest sprawić, żeby MAKSIMUM wyglądało na okazję, a START na decyzję bez ryzyka. To jest jawna konstrukcja cennika, nie oszustwo: wszystkie trzy pakiety realnie dostarczasz, wszystkie ceny są prawdziwe.
-**Układ wizualny:** trzy karty obok siebie. START **wyróżniony ramką w kolorze akcentu** i etykietą „Od tego zaczyna 9 na 10 warsztatów". MAKSIMUM z etykietą „Najwięcej za złotówkę". WZROST bez żadnej etykiety — wabik nie może się reklamować. Na telefonie kolejność pionowa: START, WZROST, MAKSIMUM.
+**Mechanizm 2 — efekt wabika (asymetrycznie zdominowana opcja):** środkowy pakiet STANDARD kosztuje 2 900 zł i nie zawiera ani opieki, ani priorytetu w kolejce. Pakiet KOMPLET kosztuje 3 900 zł i dokłada wejście poza kolejnością, komplet gotowych opisów oraz miesiąc opieki. STANDARD jest więc jawnie gorszy od KOMPLETU — jego jedyną funkcją jest sprawić, żeby KOMPLET wyglądał na okazję, a START na decyzję bez ryzyka. Zasada wyprowadzona w Części 3 (P3): **elementy odróżniające droższy pakiet to zasoby wielokrotnego użytku i pozycja w kolejce, nigdy dodatkowe godziny Twojej pracy.**
+**Układ wizualny:** trzy karty obok siebie. START **wyróżniony ramką w kolorze akcentu** i etykietą „Od tego zaczyna 9 na 10 warsztatów". KOMPLET z etykietą „Najwięcej za złotówkę". STANDARD bez żadnej etykiety — wabik nie może się reklamować. Na telefonie kolejność pionowa: START, STANDARD, KOMPLET.
 
 **Gotowe copy:**
 ```
@@ -856,7 +866,7 @@ NAGŁÓWEK:
 Cennik. Bez wycen "na oko" i bez rozmów o budżecie.
 
 ZDANIE KOTWICZĄCE (nad kartami, mniejszą czcionką):
-Agencja z dużego miasta policzy za stronę firmową 6 000–12 000 zł.
+Agencja z dużego miasta policzy za stronę firmową 6 000-12 000 zł.
 Nie musisz mi wierzyć: wpisz w Google "strona internetowa dla firmy
 cennik" i otwórz trzy pierwsze wyniki. Poniżej moje ceny.
 
@@ -864,32 +874,37 @@ cennik" i otwórz trzy pierwsze wyniki. Poniżej moje ceny.
 │  Od tego zaczyna 9 na 10 warsztatów       │
 │                                            │
 │  · jedna strona z galerią Twoich realizacji│
+│  · do 15 Twoich zdjęć - wybieram,          │
+│    kadruję i poprawiam ja                  │
 │  · formularz i klikalny numer telefonu     │
 │  · odzyskanie i uzupełnienie wizytówki     │
 │    w Mapach Google                         │
-│  · zdjęcia wybrane, skadrowane i poprawione│
-│  · 7 dni roboczych                         │
+│  · dwie rundy poprawek                     │
+│  · 10 dni roboczych                        │
 │  · 50% na start, 50% po odbiorze           │
 └────────────────────────────────────────────┘
 
-┌─ WZROST ─────────────────────── 3 900 zł ─┐
+┌─ STANDARD ───────────────────── 2 900 zł ─┐
 │                                            │
 │  · wszystko z pakietu START                │
-│  · cztery dodatkowe podstrony              │
-│    (kuchnie / szafy / zabudowy / kontakt)  │
-│  · teksty pod cztery miasta w okolicy      │
-│  · 14 dni roboczych                        │
-│  · bez abonamentu w cenie                  │
+│  · trzy dodatkowe podstrony                │
+│    (kuchnie / szafy / zabudowy)            │
+│  · do 30 zdjęć                             │
+│  · teksty pod trzy miasta w okolicy        │
+│  · 15 dni roboczych                        │
+│  · bez opieki w cenie                      │
 └────────────────────────────────────────────┘
 
-┌─ MAKSIMUM ───────────────────── 4 900 zł ─┐
+┌─ KOMPLET ────────────────────── 3 900 zł ─┐
 │  Najwięcej za złotówkę                     │
 │                                            │
-│  · wszystko z pakietu WZROST               │
-│  · SZEŚĆ MIESIĘCY opieki WIDOCZNOŚĆ w cenie│
-│    (wartość 4 140 zł)                      │
-│  · comiesięczny raport pozycji w Google     │
-│  · dodawanie nowych realizacji za Ciebie    │
+│  · wszystko z pakietu STANDARD             │
+│  · WEJŚCIE POZA KOLEJNOŚCIĄ:               │
+│    5 dni roboczych zamiast 15              │
+│  · gotowe opisy Twojej firmy do Map Google,│
+│    Facebooka, OLX i Oferteo                │
+│  · nagranie wideo: jak samemu dodać zdjęcie│
+│  · PIERWSZY MIESIĄC OPIEKI W CENIE (390 zł)│
 └────────────────────────────────────────────┘
 
 POD KARTAMI:
@@ -942,9 +957,12 @@ Najpierw bezpłatne sprawdzenie, dopiero potem rozmowa o pakiecie.
   i 6 opinii. To nie jest wiara, to jest do policzenia.
 
 » Co, jeśli mi się nie spodoba?
-  Płacisz połowę na start. Jeśli po odbiorze strona Ci się nie podoba
-  i nie da się tego naprawić poprawkami — drugiej połowy nie płacisz,
-  a stronę zdejmuję. Zostaje mi wtedy 745 zł i doświadczenie.
+  Zanim zacznę, zatwierdzasz mailem szkic: sekcje, teksty i zdjęcia.
+  Potem masz dwie rundy poprawek w cenie i pięć dni roboczych na uwagi.
+  Jeśli po dwóch rundach strona nadal Ci nie odpowiada, nie płacisz
+  drugiej raty, a stronę zdejmuję w 24 godziny. Zaliczka 745 zł zostaje
+  u mnie za wykonaną pracę i to jest cały Twój koszt.
+  Odbiór sprawdzamy razem po sześciu mierzalnych punktach.
 
 » Ile naprawdę mnie to będzie kosztować przez rok?
   1 490 zł za stronę + 11 miesięcy opieki po 390 zł = 5 780 zł w pierwszym
@@ -991,7 +1009,7 @@ Jeśli wolisz sam — mój numer to 512 000 111.
 ```
 [ ] Zgadzam się na kontakt telefoniczny i SMS w sprawie bezpłatnego
     sprawdzenia mojej firmy. Zgodę mogę wycofać w każdej chwili.
-    Administratorem danych jest Marcin Nowak, NIP 000-000-00-00.
+    Administratorem danych jest Marcin Nowak (działalność nierejestrowana).
     Pełna informacja: Polityka prywatności.
 ```
 
@@ -999,13 +1017,13 @@ Jeśli wolisz sam — mój numer to 512 000 111.
 
 ### SEKCJA 10 — STOPKA
 
-**Cel psychologiczny:** ostatni sygnał realności. NIP w stopce jest w Polsce czytany jako „ta firma istnieje i da się ją sprawdzić w rejestrze".
+**Cel psychologiczny:** ostatni sygnał realności. Dane rejestrowe w stopce są w Polsce czytane jako „tę firmę da się sprawdzić". Do czasu wpisu do CEIDG wpisujesz „Działalność nierejestrowana" — to jest uczciwe i wystarczające; NIP pojawia się tam w dniu rejestracji.
 **Układ wizualny:** ciemne tło (granat), jasny tekst, trzy linijki, wyśrodkowane.
 
 **Gotowe copy:**
 ```
 Marcin Nowak, ul. Przykładowa 1, 07-300 Ostrów Mazowiecka
-NIP 000-000-00-00 · 512 000 111 · marcin@nowak-strony.pl
+Działalność nierejestrowana · 512 000 111 · marcin@nowak-strony.pl
 Polityka prywatności
 ```
 
@@ -1064,7 +1082,7 @@ Dodatkowo, poza listą, dwa zabójcy techniczne: **zdjęcia wrzucone prosto z ap
 4. Trzy poprawne odpowiedzi = przechodzi. Dwie = przerabiasz nagłówek. Jedna lub zero = przerabiasz cały pierwszy ekran.
 5. Powtórz z trzema różnymi osobami. Jedna osoba to nie test.
 
-**SPRAWDŹ, ŻE JEST DOBRZE:** strona zaliczona do publikacji, gdy spełnia jednocześnie wszystkie sześć warunków: (1) test 5 sekund przeszedł u trzech różnych osób, (2) na każdym ekranie telefonu widać dokładnie **jeden** przycisk w kolorze `#C2410C` i ani jednego elementu w tym kolorze, którego nie da się kliknąć, (3) formularz ma dwa pola i jeden checkbox, (4) w całym tekście strony nie występuje żadne ze słów: „responsywny", „konwersja", „optymalizacja", „kompleksowo", „indywidualne podejście", „zapraszamy", (5) NIP i numer telefonu są widoczne bez przewijania na dowolnym ekranie, (6) żadne zdjęcie na stronie nie przedstawia człowieka, którego nie znasz osobiście.
+**SPRAWDŹ, ŻE JEST DOBRZE:** strona zaliczona do publikacji, gdy spełnia jednocześnie wszystkie sześć warunków: (1) test 5 sekund przeszedł u trzech różnych osób, (2) na każdym ekranie telefonu widać dokładnie **jeden** przycisk w kolorze `#C2410C` i ani jednego elementu w tym kolorze, którego nie da się kliknąć, (3) formularz ma dwa pola i jeden checkbox, (4) w całym tekście strony nie występuje żadne ze słów: „responsywny", „konwersja", „optymalizacja", „kompleksowo", „indywidualne podejście", „zapraszamy", (5) dane rejestrowe i numer telefonu są widoczne bez przewijania na dowolnym ekranie, (6) żadne zdjęcie na stronie nie przedstawia człowieka, którego nie znasz osobiście.
 
 ---
 
