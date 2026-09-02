@@ -57,33 +57,92 @@ Dla firmy **z** sygnałem wolnych mocy skrypt zostaje bez zmian — tam działa 
 
 Sprawdziłem i masz rację: karta zgody z 5.3 wymaga pełnej nazwy z CEIDG i NIP-u, stopka strony i checkbox w formularzu też, a w FAZIE 0 sam ustaliłem, że firmy nie masz. **Bez rozstrzygnięcia poniżej nie mógłbyś odbyć ani jednej wizyty ani opublikować strony. To był błąd konstrukcyjny, nie drobiazg.**
 
-### Decyzja: **działalność nierejestrowana na start. CEIDG dopiero wtedy, gdy wymusi to limit albo drugi abonament.**
+### Decyzja: **działalność nierejestrowana na start. CEIDG przy SIÓDMYM abonamencie albo przy 80% limitu kwartalnego — zależnie od tego, co nastąpi pierwsze.**
 
 Uzasadnienie w liczbach: CEIDG od pierwszego dnia oznacza obowiązkową **składkę zdrowotną już w pierwszym miesiącu**, także przy zerowym przychodzie — ulga na start zwalnia ze składek społecznych, ale **nie ze zdrowotnej** [DANE]. To jest stały wypływ gotówki w miesiącu, w którym możesz jeszcze nie mieć klienta, i łamie zasadę „pierwszy wydatek z pieniędzy pierwszego klienta".
 
-### Limit działalności nierejestrowanej
+### Limit działalności nierejestrowanej — KWARTALNY, nie miesięczny
+
+> **KOREKTA PO WERYFIKACJI ŹRÓDŁA.** Moje pierwotne założenie (75% minimalnego wynagrodzenia miesięcznie, ok. 3 500–3 700 zł) było **błędne** — to była reguła sprzed 2026 r. Poniższe liczby pochodzą z `biznes.gov.pl` i zostały potwierdzone dwukrotnie: przez Ciebie i przeze mnie, niezależnie.
 
 | Pozycja | Wartość | Znacznik |
 |---|---|---|
-| Reguła | Przychód należny **w żadnym miesiącu** nie może przekroczyć **75% minimalnego wynagrodzenia** (art. 5 Prawa przedsiębiorców) | [DANE — stan mojej wiedzy; próg 75% obowiązuje od 1 lipca 2023 r.] |
-| Minimalne wynagrodzenie 2026 | **Nie znam pewnej kwoty na 2026 r.** | Nie zgaduję. **Sprawdź:** `biznes.gov.pl`, wyszukaj „działalność nierejestrowana" — na tej stronie podana jest aktualna kwota limitu wprost, bez liczenia |
-| Limit miesięczny — rząd wielkości do planowania | ok. **3 500–3 700 zł** | [SZACUNEK] — założenie: minimalne wynagrodzenie 2026 w przedziale 4 700–4 900 zł. **Zanim wystawisz pierwszy rachunek, zastąp to prawdziwą liczbą z biznes.gov.pl** |
-| Dodatkowe warunki | Nie prowadziłeś działalności gospodarczej w ciągu ostatnich 60 miesięcy; działalność nie wymaga koncesji ani zezwolenia (tworzenie stron nie wymaga) | [DANE] |
+| Sposób liczenia | **kwartalnie**, od 1 stycznia 2026 r. | [DANE — biznes.gov.pl, zweryfikowane 2 września 2026] |
+| Wysokość limitu | **225% minimalnego wynagrodzenia** | [DANE — j.w.] |
+| Minimalne wynagrodzenie 2026 | **4 806 zł** | [DANE — j.w.] |
+| **Limit kwartalny 2026** | **10 813,50 zł** | [DANE — j.w.] |
+| Skutek przekroczenia | działalność zostaje uznana za działalność gospodarczą | [DANE — j.w.] |
+| Termin na wniosek do CEIDG | **7 dni od momentu przekroczenia limitu** | [DANE — j.w.; reguła **nie zmieniła się** przy przejściu na ujęcie kwartalne, tylko podstawa liczenia] |
+| Dodatkowe warunki | brak działalności gospodarczej przez ostatnie 60 miesięcy; działalność nie wymaga koncesji | [DANE] |
 
-### Co się dzieje, gdy drugi klient przekroczy limit w jednym miesiącu
+**Kwartały kalendarzowe:** I = styczeń–marzec, II = kwiecień–czerwiec, III = lipiec–wrzesień, IV = październik–grudzień. Licznik zeruje się 1. dnia każdego z nich.
 
-To nie jest teoria — **przy cenie 1 490 zł trafisz na to w drugim albo trzecim miesiącu**:
+### Ile pakietów mieści się w jednym kwartale
 
-| Sprzedaż w jednym miesiącu | Przychód | Mieści się? |
+**Same wdrożenia, zero abonamentów:**
+
+| Pakiet | Ile sztuk mieści się w kwartale | Wykorzystany limit | Ile brakuje do kolejnej sztuki |
+|---|---|---|---|
+| START 1 490 zł | **7** | 10 430 zł (96,5%) | 8. sztuka = 11 920 zł → przekroczenie |
+| STANDARD 2 900 zł | **3** | 8 700 zł (80,5%) | 4. sztuka = 11 600 zł → przekroczenie |
+| KOMPLET 3 900 zł | **2** | 7 800 zł (72,1%) | 3. sztuka = 11 700 zł → przekroczenie |
+
+**Kombinacje mieszane, które się mieszczą:**
+
+| Kombinacja | Suma | Zapas do limitu |
 |---|---|---|
-| 1 × START | 1 490 zł | tak |
-| 2 × START | 2 980 zł | tak, z zapasem ok. 600 zł |
-| 2 × START + 1 abonament | 3 370 zł | **na styk — policz to zanim wystawisz rachunek** |
-| 3 × START | 4 470 zł | **NIE. Limit przekroczony** |
+| 1 × KOMPLET + 4 × START | 9 860 zł | 953,50 zł |
+| 1 × STANDARD + 5 × START | 10 350 zł | 463,50 zł |
+| 2 × STANDARD + 3 × START | 10 270 zł | 543,50 zł |
+| 2 × KOMPLET + 2 × START | 10 780 zł | **33,50 zł — na styk, nie planuj tak** |
 
-Mechanizm prawny po przekroczeniu: działalność **staje się działalnością gospodarczą od dnia przekroczenia limitu**, a Ty masz **7 dni na złożenie wniosku o wpis do CEIDG** [DANE — art. 5 ust. 3–4 Prawa przedsiębiorców; **zweryfikuj na `biznes.gov.pl`**].
+### ⚠️ Abonamenty zjadają limit i to one go w końcu wysadzą
 
-**Reguła operacyjna, którą wpisujesz sobie do arkusza:** kolumna „przychód w tym miesiącu" z sumą na górze i warunkiem: **gdy suma przekroczy 80% limitu, trzecią sprzedaż w tym miesiącu przesuwasz terminem płatności na 1. dzień kolejnego miesiąca** (data wystawienia rachunku, nie data rozmowy, decyduje o miesiącu). To jest legalne planowanie terminu płatności, nie ukrywanie przychodu — ale **umów to z klientem otwarcie i zapisz w rachunku**.
+Abonament to przychód taki sam jak wdrożenie. Jeden abonament OPIEKA aktywny przez cały kwartał to **3 × 390 = 1 170 zł**. Ta tabela jest ważniejsza od poprzedniej:
+
+| Aktywnych abonamentów OPIEKA | Przychód z abonamentów w kwartale | Zostaje na wdrożenia | Ile pakietów START |
+|---|---|---|---|
+| 0 | 0 zł | 10 813,50 zł | **7** |
+| 1 | 1 170 zł | 9 643,50 zł | **6** |
+| 2 | 2 340 zł | 8 473,50 zł | **5** |
+| 3 | 3 510 zł | 7 303,50 zł | **4** |
+| 4 | 4 680 zł | 6 133,50 zł | **4** |
+| 5 | 5 850 zł | 4 963,50 zł | **3** |
+| 6 | 7 020 zł | 3 793,50 zł | **2** |
+| **7** | **8 190 zł** | 2 623,50 zł | **1** |
+| 8 | 9 360 zł | 1 453,50 zł | **0** |
+| 9 | 10 530 zł | 283,50 zł | **0** |
+| **10** | **11 700 zł** | — | **PRZEKROCZENIE bez jednego wdrożenia** |
+
+**Wniosek, który zmienia moment rejestracji:** działalność nierejestrowana **pęka przy dziesiątym kliencie abonamentowym, nawet gdybyś nie sprzedał ani jednego wdrożenia**. A praktycznie kończy się wcześniej — przy siedmiu abonamentach zostaje Ci miejsce na jedno wdrożenie w kwartale, czyli firma przestaje móc rosnąć.
+
+### W którym momencie realnie dobijasz do limitu
+
+Przy tempie z D12 — 3 wdrożenia na kwartał, każde konwertujące na abonament OPIEKA od 31. dnia:
+
+| Kwartał | Wdrożenia | Abonamenty | Przychód | Wykorzystanie limitu |
+|---|---|---|---|---|
+| **III 2026** (start 2.09, licznik od 0) | 1–2 | 0 | 1 490–2 980 zł | **14–28%** |
+| **IV 2026** | 3 | 1–2 aktywne część kwartału | ok. 5 640 zł | **52%** |
+| **I 2027** | 3 | 4 aktywne | ok. 9 150 zł | **85% — próg alarmowy przekroczony** |
+| **II 2027** | 2–3 | 7 aktywnych | ok. 11 170 zł | **PRZEKROCZENIE** |
+
+[SZACUNEK — założenie: 3 sprzedaże na kwartał, zero rezygnacji z abonamentu, wyłącznie pakiet START i wyłącznie abonament OPIEKA. Twoje prawdziwe tempo wpiszesz po pierwszym kwartale.]
+
+### Reguła buforowa — na kwartale, nie na miesiącu
+
+**Stara reguła („przesuń trzecią sprzedaż na kolejny miesiąc") jest skasowana. Nie obowiązuje.** W jej miejsce:
+
+1. W arkuszu ewidencji prowadzisz kolumnę **„suma narastająco w kwartale"** i pole z datą początku bieżącego kwartału.
+2. Przy **8 650,80 zł (80% limitu)** pole zapala się na czerwono.
+3. Po zapaleniu masz trzy ruchy i wybierasz **według tego, ile zostało do końca kwartału**:
+
+| Ile zostało do końca kwartału | Co robisz |
+|---|---|
+| **Mniej niż 3 tygodnie** | Umawiasz kolejną sprzedaż z datą rachunku na pierwszy dzień nowego kwartału (1.01, 1.04, 1.07 albo 1.10). Mówisz to klientowi wprost: *„Umowę podpisujemy dziś, prace startują dziś, rachunek wystawię pierwszego — mam sztywny limit rozliczeń w kwartale."* |
+| **Więcej niż 3 tygodnie** | **Rejestrujesz się w CEIDG.** Przesuwanie sprzedaży o sześć tygodni to nie jest planowanie, tylko wstrzymywanie firmy. Kwartał jest za długi, żeby go przeczekać |
+
+**Czego nie robisz nigdy:** nie bierzesz gotówki bez dokumentu, nie dzielisz jednej usługi na dwa rachunki w dwóch kwartałach za pracę wykonaną w jednym, nie „zapominasz" wpisać abonamentu do ewidencji.
 
 ### Koszt CEIDG w pierwszym roku
 
@@ -93,7 +152,7 @@ Mechanizm prawny po przekroczeniu: działalność **staje się działalnością 
 | Miesiąc 7–30 (**preferencyjne składki / mały ZUS**, 24 miesiące) | społeczne od podstawy 30% minimalnego wynagrodzenia + zdrowotna | ok. **650–800 zł** | [SZACUNEK] — założenie jak wyżej. **Sprawdź:** `zus.pl` → „preferencyjne składki" |
 | Od 31. miesiąca | pełny ZUS + zdrowotna | ok. **1 700–2 000 zł** | [SZACUNEK]. **Sprawdź:** `zus.pl`, tabela składek na dany rok |
 
-Wniosek dla decyzji: **rejestrujesz się w miesiącu, w którym masz podpisany drugi abonament** (2 × 390 zł = 780 zł powtarzalnie) **albo wcześniej, jeśli zmusi Cię limit.** Wtedy ulga na start startuje w momencie, w którym firma już zarabia, a nie w miesiącu zerowym.
+Wniosek dla decyzji — **poprawiony po weryfikacji limitu kwartalnego**: rejestrujesz się w kwartale, w którym **liczba aktywnych abonamentów dochodzi do siedmiu** (8 190 zł na kwartał, czyli 76% limitu, i miejsce na jedno wdrożenie) **albo w którym licznik przekroczy 80% limitu przy więcej niż trzech tygodniach do końca kwartału.** Przy tempie z D12 wypada to realnie na **I kwartał 2027 r.** — czyli w piątym–szóstym miesiącu działania, gdy firma ma już powtarzalny przychód. Wtedy ulga na start (6 miesięcy bez składek społecznych) zaczyna biec w momencie, w którym jest z czego płacić, a nie w miesiącu zerowym.
 
 ### ⚠️ Pułapka VAT, o której musisz wiedzieć zanim wystawisz cokolwiek
 
@@ -137,7 +196,14 @@ przetwarzania, przeniesienia oraz prawo sprzeciwu. Prawo wniesienia
 skargi do Prezesa Urzędu Ochrony Danych Osobowych, ul. Stawki 2,
 00-193 Warszawa. Aby skorzystać - wystarczy napisać na [E-MAIL].
 
-Dane nie są przekazywane innym podmiotom ani poza Unię Europejską.
+KOMU JESZCZE POKAZUJĘ TE DANE
+Korzystam z dwóch narzędzi firm zewnętrznych i one również mają dostęp
+do Państwa danych kontaktowych:
+  - Google - poczta e-mail oraz arkusz, w którym prowadzę listę firm,
+  - Netlify - firma, na której serwerach stoi moja strona internetowa
+    i która przyjmuje zgłoszenia z formularza kontaktowego.
+Obie mają siedzibę w Stanach Zjednoczonych. Poza nimi nie przekazuję
+Państwa danych nikomu i nikomu ich nie sprzedaję.
 Nie podejmuję decyzji w sposób zautomatyzowany.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,6 +221,8 @@ E-mail: .............................................................
 Telefon: ............................................................
 Data i podpis: ......................................................
 ```
+
+> **Dlaczego to zdanie się zmieniło:** pierwotna wersja karty mówiła „dane nie są przekazywane innym podmiotom ani poza Unię Europejską". **To była nieprawda** — Twoje CRM to Arkusz Google, poczta to Gmail, a formularz obsługuje Netlify. Podpisywanie obcego człowieka pod nieprawdziwym oświadczeniem przy każdej wizycie jest gorsze niż brak karty. **Jedna rzecz do sprawdzenia przed pierwszą wizytą:** podstawa przekazywania danych do USA (obecnie ramy Data Privacy Framework) — **potwierdź aktualny stan na `uodo.gov.pl`, szukając „przekazywanie danych do USA"**. Nie podaję tu podstawy prawnej transferu, bo nie jestem jej pewien.
 
 **Ważne, żeby nie było wątpliwości:** brak wpisu do CEIDG **nie zwalnia Cię z obowiązków administratora danych**. RODO stosuje się do Ciebie tak samo. Zmienia się tylko treść pola „kim jestem".
 

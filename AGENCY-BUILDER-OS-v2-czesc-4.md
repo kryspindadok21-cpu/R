@@ -270,30 +270,48 @@ To jest lista rzeczy, których nie obejdziesz, i **razem zajmują większość T
 
 # D12 — PLAN 30 DNI
 
-## 12.0 ⚠️ Konflikt między celami — przeczytaj przed planem
+## 12.0 Co Cię naprawdę ogranicza — przeliczone na limicie kwartalnym
 
-**Plan NIE MOŻE zakładać trzech sprzedaży w jednym miesiącu i to nie jest kwestia Twojej pracowitości.** Dwa niezależne sufity:
+> **KOREKTA.** Poprzednia wersja tej sekcji („cel to jedna sprzedaż, nie trzy") opierała się na limicie miesięcznym ok. 3 500 zł. **Taki limit nie istnieje.** Od 1 stycznia 2026 r. limit jest kwartalny i wynosi **10 813,50 zł** [DANE — biznes.gov.pl, zweryfikowane 2 września 2026]. Cała ta sekcja jest policzona od nowa.
 
-| Sufit | Wartość | Skąd |
+### Dwa sufity, zestawione uczciwie
+
+| Sufit | Na kwartał | Skąd |
 |---|---|---|
-| **Moce przerobowe** | 3 wdrożenia START miesięcznie (24 h z 52 h) | P3, Część 3 |
-| **Limit przychodu** | ok. 3 500–3 700 zł/mies. [SZACUNEK — **prawdziwą kwotę bierzesz z biznes.gov.pl**] | P2, Część 3 |
+| **Moce przerobowe** | **9 wdrożeń** (3 miesięcznie × 3) | P3, Część 3 — sufit operacyjny, nie arytmetyczny |
+| **Limit przychodu** | **7 wdrożeń START** (10 813,50 ÷ 1 490 = 7,25) | [DANE — biznes.gov.pl, 2.09.2026] |
 
-3 × START = **4 470 zł**. To **przekracza limit działalności nierejestrowanej**, choć mieści się w mocach przerobowych. **Ostrzejszy jest limit przychodu, nie Twój czas.**
+**Odpowiedź wprost: twardszy jest limit przychodu — ale tylko o dwa wdrożenia i tylko dopóki nie masz abonamentów.** Od trzeciego abonamentu przewaga limitu robi się druzgocąca:
 
-### Co z tego wynika dla planu — decyzja
+| Aktywnych abonamentów | Limit pozwala na | Moce pozwalają na | Co wiąże |
+|---|---|---|---|
+| 0 | 7 wdrożeń | 9 | limit, nieznacznie |
+| 3 | 4 wdrożenia | 9 | **limit, mocno** |
+| 5 | 3 wdrożenia | 8 | **limit, drastycznie** |
+| 7 | 1 wdrożenie | 8 | **limit — firma przestaje móc rosnąć** |
+| 10 | 0 wdrożeń | 8 | **przekroczenie samymi abonamentami** |
 
-> **Cel na pierwsze 30 dni to JEDNA sprzedaż, z widełkami do dwóch. Nie trzy.** Dwie sprzedaże (2 980 zł) mieszczą się w limicie z zapasem. Trzecia go łamie.
+### A co ogranicza Cię w pierwszych 30 dniach? Ani jedno, ani drugie.
 
-### Co robisz, gdy trzeci klient chce podpisać w tym samym miesiącu
+Plan startuje **2 września**, czyli w III kwartale, w którym Twój licznik przychodu wynosi **0 zł**. Cały limit 10 813,50 zł jest do dyspozycji na sam wrzesień — zmieściłoby się **siedem** pakietów START. Moce przerobowe pozwalają na trzy, ale siedem z trzydziestu dni idzie na budowę fundamentu, więc realnie na dwa.
 
-Masz **trzy legalne wyjścia** i wybierasz świadomie, nie w panice:
+> **W pierwszych 30 dniach nie ogranicza Cię ani limit, ani czas. Ogranicza Cię liczba drzwi, które otworzysz, i to jest jedyna zmienna, na którą masz wpływ.**
 
-1. **Przesuwasz datę rachunku** na 1. dzień kolejnego miesiąca, umawiając to z klientem otwarcie: *„Umowę podpisujemy dziś, prace startują dziś, rachunek za zaliczkę wystawię pierwszego — mam sztywny limit rozliczeń w miesiącu i nie chcę go łamać."* Klienci-przedsiębiorcy rozumieją to natychmiast, bo sami mają limity.
-2. **Rejestrujesz się w CEIDG** — i to jest scenariusz **dobry**, nie awaryjny. Trzeci klient w miesiącu oznacza, że firma zarabia i ulga na start (6 miesięcy bez składek społecznych) zacznie biec w momencie, gdy masz przychód. Wniosek składasz w ciągu 7 dni od przekroczenia limitu.
-3. **Sprzedajesz mu pakiet z terminem w kolejnym miesiącu** i mówisz to wprost: *„Najbliższy wolny termin mam od [data]. Mogę zapisać, ale nie oszukam Pana, że zrobię to w tym tygodniu."* Kolejka jest sygnałem, że masz robotę — nie przeprosinami.
+### Cel na 30 dni — ustawiony na nowo
 
-**Czego nie robisz:** nie bierzesz gotówki „na boku", nie dzielisz jednej usługi na dwa rachunki w dwóch miesiącach za tę samą pracę wykonaną w jednym, nie prosisz klienta o zapłatę bez dokumentu.
+| | Wartość |
+|---|---|
+| **Cel** | **2 podpisy** |
+| Minimum, poniżej którego wchodzisz w korekty z 12.4 | 1 podpis |
+| Sufit wynikający z mocy przerobowych | 3 podpisy |
+| Przychód przy celu | 2 980 zł = **27,6% limitu kwartalnego** |
+| Przychód przy suficie | 4 470 zł = 41,3% limitu |
+
+**1 października licznik kwartalny zeruje się** i IV kwartał zaczynasz od zera z pełnym limitem. Sprzedaż z 30. dnia planu (1.10) liczy się już do IV kwartału — to jedyny moment, w którym data rachunku ma znaczenie taktyczne.
+
+### Kiedy limit realnie zacznie boleć
+
+Nie w tym miesiącu i nie w tym kwartale. Przy tempie 3 wdrożeń na kwartał licznik przekracza próg alarmowy 80% w **I kwartale 2027**, a przekroczenie następuje w **II kwartale 2027** — i wtedy przechodzisz na CEIDG. Pełna tabela kwartał po kwartale jest w Części 3, sekcja P2.
 
 ## 12.1 Plan dzień po dniu — 2 września – 1 października 2026
 
@@ -303,7 +321,7 @@ Blok dzienny: **4 h**, w tym ok. **2,5 h pracy produkcyjnej** i 1,5 h na dojazdy
 
 | Dzień | Data | Zadanie na 4 h | Efekt na koniec dnia |
 |---|---|---|---|
-| 1 | śr 02.09 | Blok 1 z kartki: limit z biznes.gov.pl, arkusz ewidencji, wzór rachunku, telefon do KIS | Wiesz, ile wolno Ci zarobić i czym to rozliczysz |
+| 1 | śr 02.09 | Blok 1 z kartki: limit **kwartalny** z biznes.gov.pl, arkusz ewidencji z sumą narastająco w kwartale, wzór rachunku, telefon do KIS | Wiesz, ile wolno Ci zarobić w kwartale i czym to rozliczysz |
 | 2 | czw 03.09 | Blok 2 z kartki: karta zgody dla osoby bez firmy — wydruk 20 szt.; przeczytanie D5.0 | Masz papier, który odblokowuje maile i telefony |
 | 3 | pt 04.09 | Mapy Google: dwa miasta, 4 frazy, 40 firm do arkusza | 40 wierszy z sygnałami bólu |
 | 4 | **sob 05.09** | REGON + CEIDG po PKD, uzupełnienie listy do 60 firm (2 h) | 60 wierszy |
@@ -356,7 +374,7 @@ Wpisujesz liczby i **porównujesz z tabelą z 12.2**. Jeśli którykolwiek wska�
 | Dzień | Data | Zadanie | Cel dnia |
 |---|---|---|---|
 | 29 | śr 30.09 | **Odbiór po sześciu punktach z § 4**, przy kliencie. Rachunek na II ratę | ✅ Odbiór |
-| 30 | czw 01.10 | Podsumowanie 30 dni. Wpisanie prawdziwych wskaźników. Decyzja o drugim kliencie i o CEIDG | Plan na kolejne 30 dni |
+| 30 | czw 01.10 | Podsumowanie 30 dni. Wpisanie prawdziwych wskaźników. **Nowy kwartał — licznik przychodu zeruje się dziś**, pełne 10 813,50 zł do dyspozycji na IV kwartał | Plan na kolejne 30 dni |
 
 ## 12.2 Wskaźniki z wartościami docelowymi
 
@@ -371,8 +389,8 @@ Wszystkie wartości docelowe to **[SZACUNEK]** — założenie: kontakt osobisty
 | Telefonów wykonanych (dotknięcie 3) | **18** | 4 | arkusz, kolumna „nr dotknięcia" |
 | Rozmów o cenie | **8** | 1 | arkusz, status |
 | Wysłanych umów | **3** | 0 | arkusz |
-| **Podpisów** | **1–2** | 0 | ewidencja sprzedaży |
-| **Przychód** | **1 490–2 980 zł** | 0 zł | ewidencja sprzedaży |
+| **Podpisów** | **2** (min. 1, sufit 3) | 0 | ewidencja sprzedaży |
+| **Przychód** | **2 980 zł** (widełki 1 490–4 470) | 0 zł | ewidencja, kolumna „narastająco w kwartale" |
 
 Współczynniki, które musisz umieć wyliczyć na koniec miesiąca — **to one, a nie samopoczucie, mówią, gdzie jest problem**:
 - **wizyta → rozmowa** (cel 40%): niżej = zły dzień, zła godzina albo złe pierwsze zdanie
@@ -436,7 +454,9 @@ Przy D: nagrywasz swoją rozmowę na dyktafon w telefonie (za zgodą rozmówcy a
 
 # BRAMKA QA — PRZEJŚCIE PO WSZYSTKICH CZTERECH CZĘŚCIACH
 
-## QA.1 Sprzeczności znalezione i naprawione (22 sztuki)
+## QA.1 Sprzeczności znalezione i naprawione (39 sztuk, w dwóch turach)
+
+### Tura 1 — po poprawkach P1–P6 (22 sztuki)
 
 Nie zgłaszam ich do Twojej decyzji — **poprawiłem je w plikach**. Poniżej rejestr, żebyś wiedział, co się zmieniło w dokumentach, które już czytałeś.
 
@@ -459,6 +479,30 @@ Nie zgłaszam ich do Twojej decyzji — **poprawiłem je w plikach**. Poniżej r
 | 15–21 | C2 / D6, siedem miejsc | „NIP" jako wymóg strony | „dane rejestrowe" + „Działalność nierejestrowana" do czasu CEIDG |
 | 22 | `strona-agencji/index.html` | stary cennik, 7 dni, stara gwarancja, dwa dodatkowe pliki | nowy cennik, 10 dni, nowa gwarancja, jeden plik z polityką w środku |
 
+### Tura 2 — po weryfikacji limitu na biznes.gov.pl (17 sztuk)
+
+Wyjściowy błąd: przyjąłem limit **miesięczny** na poziomie 75% minimalnego wynagrodzenia (ok. 3 500–3 700 zł). Od 1 stycznia 2026 r. limit jest **kwartalny** i wynosi **10 813,50 zł** [DANE — biznes.gov.pl, zweryfikowane 2 września 2026 dwukrotnie: przez użytkownika i przeze mnie niezależnie]. Błąd przewrócił całą sekcję P2 i całą sekcję 12.0.
+
+| # | Gdzie | Było | Jest |
+|---|---|---|---|
+| 23 | C3 / P2, tabela limitu | limit miesięczny ok. 3 500–3 700 zł, [SZACUNEK] | limit kwartalny 10 813,50 zł, [DANE] z datą weryfikacji |
+| 24 | C3 / P2, tabela pakietów | „1 × START / 2 × START / 3 × START" w miesiącu | trzy tabele kwartalne: same wdrożenia, kombinacje mieszane, wpływ abonamentów |
+| 25 | C3 / P2 | brak analizy wpływu abonamentów na limit | tabela 0–10 abonamentów; ustalenie, że **10. abonament wysadza limit bez ani jednego wdrożenia** |
+| 26 | C3 / P2 | brak prognozy | tabela kwartał po kwartale: przekroczenie w II kw. 2027 |
+| 27 | C3 / P2, reguła buforowa | „przesuń trzecią sprzedaż na kolejny **miesiąc**" | **skasowana**; w jej miejsce próg 80% limitu kwartalnego (8 650,80 zł) i wybór ruchu zależny od tego, ile zostało do końca kwartału |
+| 28 | C3 / P2, moment przekroczenia | reguła 7 dni przepisana bez weryfikacji | **zweryfikowana u źródła**: 7 dni od przekroczenia limitu kwartalnego — reguła ta sama, zmieniła się tylko podstawa liczenia |
+| 29 | C3 / P2, decyzja o rejestracji | „przy drugim abonamencie albo gdy zmusi limit" | „przy **siódmym** abonamencie albo przy 80% limitu kwartalnego" |
+| 30 | C3 / P2, moment rejestracji | „w miesiącu drugiego abonamentu" | **I kwartał 2027**, z wyliczeniem |
+| 31 | C4 / 12.0 | cała sekcja oparta na nieistniejącym limicie miesięcznym | przeliczona: dwa sufity zestawione, odpowiedź wprost który jest twardszy |
+| 32 | C4 / 12.0, cel | „1 sprzedaż, widełki do 2, nie 3" | **2 podpisy**, minimum 1, sufit 3 — bo w III kw. licznik startuje od zera |
+| 33 | C4 / 12.2 | podpisy 1–2, przychód 1 490–2 980 zł | podpisy 2 (min. 1, sufit 3), przychód 2 980 zł, kolumna „narastająco w kwartale" |
+| 34 | C4 / 12.1, dzień 1 i 30 | brak informacji o kwartale | dzień 1: licznik kwartalny; dzień 30: **reset licznika 1.10** |
+| 35 | C4 / błąd nr 8 | „trzeci klient w miesiącu" | „same abonamenty zjadły kwartał" |
+| 36 | C4 / Ruch 1 | „wejdź na biznes.gov.pl po limit" | ruch wykonany — w zamian budowa licznika kwartalnego z formatowaniem warunkowym |
+| 37 | KARTKA / poz. 1 i 3 | limit miesięczny, suma w miesiącu | limit kwartalny z datą końca kwartału; ewidencja z sumą narastająco w kwartale i alarmem 8 650,80 zł; osobny punkt o wliczaniu abonamentów |
+| 38 | C2 i C3 / karta zgody | „Dane nie są przekazywane innym podmiotom ani poza Unię Europejską" — **nieprawda**, podpisywana przez obcą osobę przy każdej wizycie | jawna lista odbiorców: Google i Netlify, siedziba w USA, prostym językiem; dopisana luka do sprawdzenia (podstawa transferu do USA) |
+| 39 | UMOWA / § 4 oraz `index.html` | PageSpeed ≥ 80 bez metody pomiaru; polityka nie wspominała o transferze poza EOG | § 4 ust. 4a–4c: kto mierzy, kiedy, trzy pomiary, **mediana wiążąca**, wynik zamrożony na dzień odbioru, spadek po zmianach klienta nie jest wadą; polityka na stronie uzupełniona o transfer poza EOG |
+
 ## QA.2 Spójność po naprawach — sprawdzone punkt po punkcie
 
 | Co sprawdzałem | Wynik |
@@ -469,7 +513,11 @@ Nie zgłaszam ich do Twojej decyzji — **poprawiłem je w plikach**. Poniżej r
 | Czy termin z P4 jest wszędzie ten sam | ✅ 10 dni roboczych w C1, C2, C3, C4, umowie i na stronie |
 | Czy gwarancja jest identyczna w D6, D9, D10 i umowie | ✅ ten sam mechanizm: szkic → 2 rundy → 5 dni → 6 punktów → zaliczka zostaje |
 | Czy roczny koszt w FAQ zgadza się z cennikiem | ✅ 1 490 + 11 × 390 = 5 780 zł, ta sama liczba w D10 |
-| Czy plan 30 dni mieści się w sufitach z P2 i P3 | ✅ cel 1–2 sprzedaże, konflikt opisany wprost w 12.0 |
+| Czy plan 30 dni mieści się w sufitach z P2 i P3 | ✅ cel 2 podpisy = 27,6% limitu kwartalnego; ani limit, ani moce nie wiążą w pierwszych 30 dniach |
+| Czy limit kwartalny jest ten sam we wszystkich plikach | ✅ 10 813,50 zł w C3, C4 i na kartce; nigdzie nie została stara liczba miesięczna (sprawdzone grepem) |
+| Czy próg alarmowy jest ten sam wszędzie | ✅ 8 650,80 zł w C3, C4 i na kartce |
+| Czy karta zgody mówi prawdę o odbiorcach danych | ✅ Google i Netlify wymienione w karcie, w umowie § 8 ust. 5 i w polityce na stronie — trzy dokumenty zgodne |
+| Czy kryterium PageSpeed da się rozstrzygnąć bez sporu | ✅ mediana z trzech pomiarów w dniu odbioru, wynik zamrożony (§ 4 ust. 4a–4b) |
 | Czy karta zgody pasuje do stanu prawnego z P2 | ✅ wersja bez NIP-u jako obowiązująca, wersja z NIP-em oznaczona jako „po CEIDG" |
 
 ## QA.3 Czego nadal NIE WIEM — i gdzie to sprawdzasz
@@ -478,7 +526,9 @@ To nie są luki do zignorowania. To są cztery liczby i jedna konstrukcja, któr
 
 | Czego nie wiem | Gdzie sprawdzasz | Do kiedy |
 |---|---|---|
-| Kwota limitu działalności nierejestrowanej w 2026 r. | `biznes.gov.pl`, hasło „działalność nierejestrowana" | Dzień 1 |
+| ~~Kwota limitu działalności nierejestrowanej w 2026 r.~~ | **✅ USTALONE: 10 813,50 zł kwartalnie** (225% × 4 806 zł); 7 dni na wniosek do CEIDG od przekroczenia [DANE — biznes.gov.pl, 2 września 2026] | zrobione |
+| Podstawa prawna przekazywania danych do USA (Google, Netlify) — obecnie ramy Data Privacy Framework | `uodo.gov.pl`, hasło „przekazywanie danych do USA" | Przed pierwszą wizytą |
+| Czy limit 10 813,50 zł nie zmienił się od 2 września 2026 | `biznes.gov.pl` — sprawdzasz raz na kwartał, przy zerowaniu licznika | Co kwartał |
 | Aktualne składki ZUS: ulga na start, preferencyjne, pełne | `zus.pl` + kalkulator na `biznes.gov.pl` | Przed rejestracją |
 | Czy wykonanie i obsługa strony są wyłączone ze zwolnienia z VAT | infolinia Krajowej Informacji Skarbowej, numer na `podatki.gov.pl` | Dzień 1 |
 | Aktualne brzmienie art. 398 Prawa komunikacji elektronicznej | `isap.sejm.gov.pl`, tekst ujednolicony | Dzień 2 |
@@ -498,7 +548,7 @@ To nie są luki do zignorowania. To są cztery liczby i jedna konstrukcja, któr
 | **5** | **Obiecanie terminu, którego nie znasz** | „Siedem dni" przy pierwszym wdrożeniu, które zajmuje szesnaście — i tracisz klienta, który miał Cię polecić | 10 dni na pierwszych trzech klientach, cel wewnętrzny 6. Zgłoszenie obsunięcia **w połowie terminu**, z datą dzienną |
 | **6** | **Gwarancja bez kryteriów** | „Jak się nie spodoba, nie płacisz" — i klient nie płaci, bo „jakoś tak nie czuje" | Szkic zatwierdzony mailem, 2 rundy, 5 dni na uwagi, 6 mierzalnych punktów odbioru, zaliczka zostaje (§ 4) |
 | **7** | **Oddanie dostępów przed zapłatą** | Klient ma stronę, hasła i domenę — i przestaje odbierać | Dostępy po zapłacie całości (§ 5 ust. 6). Prawa autorskie też (§ 6 ust. 2) |
-| **8** | **Przekroczenie limitu przychodu bez zauważenia** | Trzeci klient w miesiącu, przekroczony limit, brak wniosku do CEIDG w 7 dni — i zaczynasz od zaległości wobec urzędu | Licznik w arkuszu z alarmem przy 80% limitu i trzy legalne wyjścia z 12.0 |
+| **8** | **Przekroczenie limitu przychodu bez zauważenia** | Nie zauważasz, że **same abonamenty** zjadły kwartał — dziesiąty abonament przekracza limit bez ani jednego wdrożenia, brak wniosku do CEIDG w 7 dni i zaczynasz od zaległości wobec urzędu | Licznik narastająco **w kwartale**, alarm przy 8 650,80 zł, rejestracja przy siódmym abonamencie (P2, Część 3) |
 | **9** | **Cold mailing „bo wszyscy tak robią"** | Skarga do UODO albo spalona domena w dwa tygodnie — i tracisz jedyny adres, jaki masz | Pierwsze dotknięcie zawsze offline. Mail dopiero po podpisanej zgodzie. Bez wyjątków, także po tygodniu ciszy |
 | **10** | **Zbudowanie sobie drugiego etatu zamiast firmy** | 5 wdrożeń miesięcznie = 40 godzin i zero przychodu powtarzalnego; jeden zły miesiąc i wszystko staje | Próg opłacalności liczysz **w abonamentach, nie we wdrożeniach** (12.3). 5 abonamentów OPIEKA = 7,5 h miesięcznie i pokryty pełny ZUS |
 
@@ -510,12 +560,16 @@ Nie na jutro. Na teraz. Trzy rzeczy, po których masz coś, czego godzinę temu 
 
 ### RUCH 1 — 15 minut. Poznaj swój limit.
 
-1. Otwórz przeglądarkę, wpisz w pasku adresu `biznes.gov.pl`.
-2. W polu wyszukiwania na stronie wpisz `działalność nierejestrowana` i otwórz pierwszy wynik.
-3. Znajdź akapit z kwotą limitu miesięcznego. **Zapisz tę kwotę na kartce i przyklej ją do monitora.**
-4. Sprawdź w tym samym tekście warunek 60 miesięcy — czy Cię dotyczy.
+> ✅ **Ten ruch jest już wykonany.** Limit kwartalny 2026: **10 813,50 zł** (225% minimalnego wynagrodzenia 4 806 zł), za kwartał kalendarzowy, 7 dni na wniosek do CEIDG od przekroczenia [DANE — biznes.gov.pl, zweryfikowane 2 września 2026]. Zamiast tego zrób poniższe.
 
-**Po co:** dopóki nie znasz tej liczby, nie wiesz, ile wolno Ci zarobić, a bez tego nie możesz zaplanować ani jednej sprzedaży. To jest jedyna liczba w całym systemie, której nie mogłem podać za Ciebie.
+1. Otwórz `sheets.google.com`, nowy arkusz, nazwij go **EWIDENCJA SPRZEDAŻY**.
+2. Wiersz 1, kolumny A–F: `data | nr rachunku | klient | pozycja | kwota | narastająco w kwartale`.
+3. W `H1` wpisz `LIMIT KWARTALNY`, w `H2` wpisz `10813,50`. W `I1` wpisz `ALARM 80%`, w `I2` formułę `=H2*0,8` — wyjdzie 8 650,80.
+4. W `F2` wpisz `=E2`, w `F3` wpisz `=F2+E3` i przeciągnij w dół.
+5. Zaznacz kolumnę F → `Format` → `Formatowanie warunkowe` → `Większe niż` → `8650,80` → kolor czerwony.
+6. Na górze arkusza dopisz datę końca bieżącego kwartału: **30.09.2026**. Tego dnia licznik zerujesz.
+
+**Po co:** jedyna liczba, której nie znałem, jest już znana — ale bez licznika i tak jej nie upilnujesz, bo **abonamenty dochodzą po cichu co miesiąc i to one wysadzą limit, nie wdrożenia**. Ten arkusz jest jedynym miejscem, które Ci o tym powie, zanim będzie za późno.
 
 ### RUCH 2 — 30 minut. Zbuduj pierwsze 15 leadów.
 

@@ -121,7 +121,8 @@ zwanymi dalej łącznie "Stronami".
    a) strona otwiera się pod uzgodnionym adresem z aktywnym
       certyfikatem HTTPS;
    b) wynik narzędzia Google PageSpeed Insights dla wersji
-      mobilnej wynosi co najmniej 80 punktów;
+      mobilnej wynosi co najmniej 80 punktów, ustalony zgodnie
+      z ust. 4a;
    c) formularz kontaktowy dostarcza wiadomość testową na adres
       wskazany przez Zamawiającego;
    d) numer telefonu jest aktywnym odnośnikiem na urządzeniu
@@ -130,6 +131,36 @@ zwanymi dalej łącznie "Stronami".
       zgodnie z ust. 1;
    f) treści na stronie są zgodne z treściami zatwierdzonymi
       zgodnie z ust. 1.
+
+4a. Sposób ustalenia wyniku, o którym mowa w ust. 4 lit. b:
+   a) pomiaru dokonuje Wykonawca w dniu odbioru, w obecności
+      Zamawiającego albo przesyłając mu zrzuty ekranu z pomiarów
+      pocztą elektroniczną tego samego dnia;
+   b) mierzony jest adres strony uzgodniony w § 1 ust. 1,
+      w zakładce "Telefon" narzędzia PageSpeed Insights;
+   c) wykonuje się trzy pomiary w odstępach co najmniej dwóch minut;
+      wiążący jest wynik ŚRODKOWY co do wartości (mediana),
+      a nie najwyższy ani najniższy;
+   d) jeżeli narzędzie Google jest w dniu odbioru niedostępne,
+      pomiar wykonuje się narzędziem Lighthouse wbudowanym
+      w przeglądarkę Chrome, w trybie mobilnym, tą samą metodą;
+   e) wynik pomiaru z dnia odbioru jest ostateczny dla celów odbioru.
+
+4b. Wynik, o którym mowa w ust. 4 lit. b, dotyczy wyłącznie wersji
+   strony wykonanej przez Wykonawcę i wyłącznie na dzień odbioru.
+   Późniejszy spadek wyniku spowodowany zmianami wprowadzonymi
+   przez Zamawiającego lub osoby trzecie - w szczególności dodaniem
+   zdjęć, filmów, wtyczek, kodów reklamowych lub narzędzi
+   analitycznych - nie stanowi wady wykonania i nie jest podstawą
+   reklamacji ani odstąpienia. Przywrócenie wyniku po takich
+   zmianach Wykonawca wykonuje w ramach opieki z § 7, w granicach
+   sufitu godzin, a w razie braku opieki - odpłatnie, po uprzednim
+   uzgodnieniu.
+
+4c. Zdjęcia przekazane przez Zamawiającego Wykonawca przygotowuje
+   we własnym zakresie tak, aby żaden plik graficzny na stronie
+   nie przekraczał 200 kB. Zamawiający nie odpowiada za jakość
+   techniczną przekazanych plików źródłowych.
 
 5. Jeżeli po wykorzystaniu rund poprawek Zamawiający nie akceptuje
    strony, może odstąpić od umowy w terminie 3 dni roboczych.
@@ -358,6 +389,7 @@ WYKONAWCA                              ZAMAWIAJĄCY
 |---|---|
 | **Kar umownych za opóźnienie** (§ 3 ust. 3) | Kara umowna działa w obie strony, a to **Ty** jesteś stroną, która realnie może się spóźnić — jeden człowiek, brak zastępstwa, pierwsze wdrożenia. Zapis, który wygląda na zabezpieczenie, byłby w praktyce bronią wycelowaną w Ciebie. Rekompensatę za obsunięcie oddajesz dobrowolnie, gestem z poprawki P4 — bo gest robi wrażenie, a paragraf nie. |
 | **Jakiejkolwiek gwarancji pozycji w Google, liczby zapytań lub przychodu** (§ 1 ust. 2) | Nikt tego uczciwie nie zagwarantuje, a obietnica w umowie byłaby ściemą wobec klienta z §5.4 briefu i realnym roszczeniem przeciw Tobie. Zapis jest sformułowany **wprost jako wyłączenie**, żeby klient przeczytał to przed podpisem, a nie usłyszał w trzecim miesiącu. |
+| **Kar umownych po stronie Zamawiającego za spadek wyniku PageSpeed** | Wynik zależy częściowo od zdjęć i późniejszych zmian klienta, więc jedyne uczciwe rozwiązanie to zamrożenie pomiaru na dzień odbioru (§ 4 ust. 4a i 4b), a nie kara za coś, czego żadna ze Stron nie kontroluje w całości. |
 | **Zaliczki zwrotnej** | Zaliczka bezzwrotna jest jedynym mechanizmem, który chroni Cię przed klientem testującym gwarancję za darmo. Bez tego § 4 ust. 5 jest darmową opcją dla klienta. |
 | **Zapisu na sąd polubowny i klauzuli arbitrażowej** | Przy kwotach 1 490–3 900 zł jedyną realną drogą jest e-sąd (EPU), który jest tani i nie wymaga prawnika. Klauzula arbitrażowa zamknęłaby Ci tę drogę. |
 | **Zakazu konkurencji i wyłączności** | Nie masz czym jej egzekwować i niczego Ci nie daje. Klient, który chce odejść, i tak odejdzie. |

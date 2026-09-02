@@ -13,18 +13,30 @@ Bloki 4–6 możesz dokończyć po pierwszych wizytach. Bloki 1–3 nie — bez 
 ## BLOK 1 — ŻEBYŚ MÓGŁ WZIĄĆ PIENIĄDZE
 
 ```
-[ ]  1. Wszedłem na biznes.gov.pl, wyszukałem "działalność
-        nierejestrowana" i ZAPISAŁEM AKTUALNY LIMIT MIESIĘCZNY:
+[ ]  1. Znam LIMIT KWARTALNY działalności nierejestrowanej.
+        Stan na 2.09.2026: 10 813,50 zł za kwartał kalendarzowy
+        (225% minimalnego wynagrodzenia 4 806 zł).
+        Sprawdziłem na biznes.gov.pl, czy nadal aktualny:
 
-              limit = ................... zł
+              limit kwartalny = ................... zł
+              bieżący kwartał kończy się ...............
 
-        (nie planuję na oko - mam prawdziwą liczbę)
+        UWAGA: limit jest KWARTALNY, nie miesięczny. W jednym
+        miesiącu mogę zafakturować choćby całość - byle suma
+        w całym kwartale nie przekroczyła limitu.
 
 [ ]  2. Sprawdziłem, że spełniam warunki: nie prowadziłem
         działalności gospodarczej przez ostatnie 60 miesięcy.
 
 [ ]  3. Założyłem arkusz EWIDENCJA SPRZEDAŻY z kolumnami:
-        data | nr rachunku | klient | kwota | suma w miesiącu
+        data | nr rachunku | klient | pozycja | kwota |
+        NARASTAJĄCO W KWARTALE
+
+    [ ]  3a. Kolumna "narastająco" ma czerwone tło powyżej
+             8 650,80 zł (80% limitu kwartalnego).
+    [ ]  3b. Wpisuję do niej TAKŻE abonamenty, nie tylko
+             wdrożenia. Dziesięć abonamentów wysadza limit
+             bez ani jednego wdrożenia.
 
 [ ]  4. Mam wzór rachunku (Część 3, punkt P2) zapisany
         jako plik do skopiowania - z moim numerem konta.

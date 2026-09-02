@@ -354,7 +354,14 @@ Urzędu Ochrony Danych Osobowych, ul. Stawki 2, 00-193 Warszawa.
 Aby skorzystać z któregokolwiek z tych praw, wystarczy napisać
 na adres [E-MAIL].
 
-Dane nie są przekazywane innym podmiotom ani poza Unię Europejską.
+KOMU JESZCZE POKAZUJĘ TE DANE
+Korzystam z dwóch narzędzi firm zewnętrznych i one również mają dostęp
+do Państwa danych kontaktowych:
+  - Google - poczta e-mail oraz arkusz, w którym prowadzę listę firm,
+  - Netlify - firma, na której serwerach stoi moja strona internetowa
+    i która przyjmuje zgłoszenia z formularza kontaktowego.
+Obie mają siedzibę w Stanach Zjednoczonych. Poza nimi nie przekazuję
+Państwa danych nikomu i nikomu ich nie sprzedaję.
 Nie podejmuję decyzji w sposób zautomatyzowany.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
